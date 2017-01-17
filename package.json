@@ -1,6 +1,6 @@
 {
   "name": "iobroker.circuit",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "ioBroker circuit Adapter",
   "author": {
     "name": "Stefan0875",
