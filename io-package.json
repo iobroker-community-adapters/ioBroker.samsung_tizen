@@ -5,14 +5,14 @@
 	    "news": {
 			"0.1.0": {
 			  "en": "alpha version",
-			  "de": "Alphaversion",
+			  "de": "Alphaversion"
 			  
 			}
 		},
         "title":                    "Javascript/Node.js based circuit adapter",
         "desc":                     {
 				 "en": "ioBroker circuit Adapter",
-				 "de": "ioBroker Circuit Adapter",
+				 "de": "ioBroker Circuit Adapter"
 		},
         "platform":                 "Javascript/Node.js",
         "mode":                     "daemon",
