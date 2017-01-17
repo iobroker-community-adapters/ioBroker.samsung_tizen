@@ -1,9 +1,9 @@
 {
     "common": {
         "name":                     "circuit",
-        "version":                  "0.0.1",
+        "version":                  "0.0.2",
 	    "news": {
-			"0.1.0": {
+			"0.0.2": {
 			  "en": "alpha version",
 			  "de": "Alphaversion"
 			  
