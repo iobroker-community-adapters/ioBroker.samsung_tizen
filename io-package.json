@@ -22,7 +22,7 @@
 		"keywords":                 ["template", "circuit", "GUI", "graphical", "scada"],
         "readme":                   "https://github.com/Stefan0875/ioBroker.helloWorld/blob/master/README.md",
 		"loglevel":                 "info",
-        "type":                     "common adapters",
+        "type":                     "common adapters"
         
     },
     "native": {
