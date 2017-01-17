@@ -18,7 +18,7 @@
         "mode":                     "daemon",
         "icon":                     "circuit.png",
         "enabled":                  true,
-		"extIcon":                  "admin/circuit.png",
+		"extIcon":                  "https://github.com/Stefan0875/ioBroker.helloWorld/blob/master/admin/circuit.png",
 		"keywords":                 ["template", "circuit", "GUI", "graphical", "scada"],
         "readme":                   "https://github.com/Stefan0875/ioBroker.helloWorld/blob/master/README.md",
 		"loglevel":                 "info",
