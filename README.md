@@ -1,5 +1,5 @@
 ![Logo](admin/template.png)
-# ioBroker.circuit
+# ioBroker.mediaserverJMX
 =================
 
 This adapter is to connect iobroker with a Mediaserver using JMX
