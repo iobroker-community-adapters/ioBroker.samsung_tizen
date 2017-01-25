@@ -1,6 +1,6 @@
 {
     "common": {
-        "name":                     "circuit",
+        "name":                     "mediaserverJMX",
         "version":                  "0.0.2",
 	    "news": {
 			"0.0.2": {
@@ -9,10 +9,10 @@
 			  
 			}
 		},
-        "title":                    "Javascript/Node.js based circuit adapter",
+        "title":                    "Javascript/Node.js based mediaserver jmx adapter",
         "desc":                     {
-				 "en": "ioBroker circuit Adapter",
-				 "de": "ioBroker Circuit Adapter"
+				 "en": "ioBroker mediaserver jmx Adapter",
+				 "de": "ioBroker mediaserver jmx Adapter"
 		},
         "platform":                 "Javascript/Node.js",
         "mode":                     "daemon",
@@ -20,7 +20,7 @@
         "enabled":                  true,
 		"extIcon":                  "https://raw.githubusercontent.com/Stefan0875/ioBroker.helloWorld/master/admin/circuit.png",
 		"keywords":                 ["template", "circuit", "GUI", "graphical", "scada"],
-        "readme":                   "https://github.com/Stefan0875/ioBroker.helloWorld/blob/master/README.md",
+        "readme":                   "https://github.com/Stefan0875/ioBroker.mediaserverJMXAdapter/blob/master/README.md",
 		"loglevel":                 "info",
         "type":                     "common adapters"
         
