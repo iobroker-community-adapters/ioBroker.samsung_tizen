@@ -1,7 +1,7 @@
 {
-  "name": "iobroker.circuit",
+  "name": "iobroker.mediaserverJMXAdapter",
   "version": "0.0.2",
-  "description": "ioBroker circuit Adapter",
+  "description": "ioBroker Mediaserver JMX Adapter",
   "author": {
     "name": "Stefan0875",
     "email": "stefan0875@gmail.com"
@@ -12,7 +12,7 @@
       "email": "@@email@@"
     }
   ],
-  "homepage": "https://github.com/Stefan0875/ioBroker.helloWorld",
+  "homepage": "https://github.com/Stefan0875/iobroker.mediaserverJMXAdapter",
   "license": "MIT",
   "keywords": [
     "ioBroker",
@@ -22,7 +22,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Stefan0875/ioBroker.helloWorld"
+    "url": "https://github.com/Stefan0875/iobroker.mediaserverJMXAdapter"
   },
   "dependencies": {
   },
@@ -40,7 +40,7 @@
     "test": "node node_modules/mocha/bin/mocha"
   },
   "bugs": {
-    "url": "https://github.com/Stefan0875/ioBroker.helloWorld/issues"
+    "url": "https://github.com/Stefan0875/iobroker.mediaserverJMXAdapter/issues"
   },
   "readmeFilename": "README.md"
 }
