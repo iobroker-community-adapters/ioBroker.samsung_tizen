@@ -2,7 +2,7 @@
 # ioBroker.circuit
 =================
 
-This adapter is to connect iobroker with Unify Circuit
+This adapter is to connect iobroker with a Mediaserver using JMX
 
 
 
