@@ -44,6 +44,8 @@ var wol = require('wake_on_lan');
 var request = require('request');
 
 var app_name_base64 = (new Buffer("ioBroker")).toString('base64');
+var ipAddress;
+var macAddress;
 
 var sendKey = function(key, done) {
       adapter.log.info("Try to open a websocket connection to " + this.ipAddress);
@@ -101,7 +103,7 @@ adapter.on('stateChange', function (id, state) {
     // Switch TV on or off
     if ( id == 'samsung2016.0.tvOn') {
         if(state.val) {
-            adapter.log.info("Will now try to switch TV on");
+            adapter.log.info("Will now try to switch TV on. Mac address is " + macAddress);
             wake(function(err) {
                 console.log ("Switch SamsungTV on returned with " + err);     
             });
@@ -184,6 +186,8 @@ function main() {
     adapter.log.info("Entered main");
     adapter.log.info('config ip address  : ' + adapter.config.ipAddress);
     adapter.log.info('config mac address : ' + adapter.config.macAddress);
-
+      
+      this.ipAddress = adapter.config.ipAddress;
+      this.macAddress = adapter.config.macAddress;
 
 }
