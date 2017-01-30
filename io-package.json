@@ -26,8 +26,8 @@
         
     },
     "native": {
-        "test1": true,
-        "test2": 42
+        "ipAddress": "ip",
+        "macAddress": "42"
     },
     "objects": [
 
