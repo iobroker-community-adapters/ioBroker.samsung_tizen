@@ -70,6 +70,7 @@ var sendKey = function(key, done) {
 };
 
 var wake = function(done) {
+      adapter.log.info("Sending wol command");
       wol.wake(macAddress, function(error) {
         if (error) { done(1); }
         else { done(0); }
