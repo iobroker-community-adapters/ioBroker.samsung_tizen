@@ -43,13 +43,15 @@ var webSocket = require('ws');
 var wol = require('wake_on_lan');
 var request = require('request');
 
-var app_name_base64 = (new Buffer("ioBroker")).toString('base64');
+
 
 var sendKey = function(key, done) {
       var ipAddress = adapter.config.ipAddress;
+      var app_name_base64 = (new Buffer("ioBroker")).toString('base64');
+      
       adapter.log.info("Trying ipAddress " + ipAddress);
       adapter.log.info("Try to open a websocket connection to " + ipAddress);
-      var ws = new webSocket('http://' + ipAddress + ':8001/api/v2/channels/samsung.remote.control?name=' + this.app_name_base64, function(error) {
+      var ws = new webSocket('http://' + ipAddress + ':8001/api/v2/channels/samsung.remote.control?name=' + app_name_base64, function(error) {
         done(new Error(error));
       });
       ws.on('error', function (e) {
