@@ -1,9 +1,8 @@
 ![Logo](admin/template.png)
-# ioBroker.mediaserverJMX
+# ioBroker.samsung2016
 =================
 
-This adapter is to connect iobroker with a Mediaserver using JMX
-
+This adapter is to control samsung tvs KU/KS series from 2016
 
 
 The MIT License (MIT)
