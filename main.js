@@ -124,6 +124,20 @@ var wake = function(done) {
 
 function main() {
 
+    adapter.setObject('tvOn', {
+        type: 'state',
+        common: {
+            name: 'tvOn',
+            type: 'boolean',
+            role: 'indicator'
+        },
+        native: {}
+    });
+    
+    adapter.on('tvOn', function(state) {
+        adapter.log.info("on TvOn");
+    });
+    
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
     // adapter.config:
     adapter.log.info("Entered main");
