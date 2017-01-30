@@ -1,4 +1,4 @@
-![Logo](admin/template.png)
+![Logo](admin/samsung.png)
 # ioBroker.samsung2016
 =================
 
