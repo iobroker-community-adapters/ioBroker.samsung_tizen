@@ -106,7 +106,7 @@ adapter.on('stateChange', function (id, state) {
     // Switch TV on or off
     if ( id == 'samsung2016.0.tvOn') {
         if(state.val) {
-            adapter.log.info("Will now try to switch TV on.);
+            adapter.log.info("Will now try to switch TV on.");
             wake(function(err) {
                 console.log ("Switch SamsungTV on returned with " + err);     
             });
