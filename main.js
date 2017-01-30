@@ -106,6 +106,16 @@ adapter.on('stateChange', function (id, state) {
             });
         } else {
             adapter.log.info("Will now try to switch TV off");
+              
+            sendKey('KEY_POWER', function(err) {
+                 adapter.log.info("Sending Power Key");
+                  if (err) {
+                      adapter.log.info("Got error:" + err);
+                  } else {
+                      // command has been successfully transmitted to your tv
+                      adapter.log.info('successfully powered off tv');
+                  }
+              });  
         }
     }
     
