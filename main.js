@@ -89,9 +89,9 @@ function main() {
 
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
     // adapter.config:
-adapter.log.info("Entered main");
-    //    adapter.log.info('config test1: ' + adapter.config.test1);
- //   adapter.log.info('config test1: ' + adapter.config.test2);
+    adapter.log.info("Entered main");
+    adapter.log.info('config ip address  : ' + adapter.config.ipAddress);
+    adapter.log.info('config mac address : ' + adapter.config.macAddress);
 
 
 }
