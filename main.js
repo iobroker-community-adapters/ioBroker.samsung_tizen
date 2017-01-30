@@ -45,6 +45,36 @@ var request = require('request');
 
 var app_name_base64 = (new Buffer("ioBroker")).toString('base64');
 
+var sendKey = function(key, done) {
+      adapter.log.info("Try to open a websocket connection to " + this.samsungIP);
+      var ws = new webSocket('http://' + this.ipAddress + ':8001/api/v2/channels/samsung.remote.control?name=' + this.app_name_base64, function(error) {
+        done(new Error(error));
+      });
+      ws.on('error', function (e) {
+        adapter.log.info('Error in sendKey WebSocket communication');
+        done(e);
+      });
+      ws.on('message', function(data, flags) {
+        var cmd =  {"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}};
+        data = JSON.parse(data);
+        if(data.event == "ms.channel.connect") {
+          adapter.log.info('websocket connect');
+          ws.send(JSON.stringify(cmd));
+          setTimeout(function() {
+            ws.close(); 
+            adapter.log.info('websocket closed');
+          }, 1000);
+          done(0);
+        }
+      });
+};
+
+var wake = function(done) {
+      wol.wake(macAddress, function(error) {
+        if (error) { done(1); }
+        else { done(0); }
+      });
+};
 
 // is called when adapter shuts down - callback has to be called under any circumstances!
 adapter.on('unload', function (callback) {
@@ -71,6 +101,9 @@ adapter.on('stateChange', function (id, state) {
     if ( id == 'samsung2016.0.tvOn') {
         if(state.val) {
             adapter.log.info("Will now try to switch TV on");
+            wake(function(err) {
+                console.log ("Switch SamsungTV on returned with " + err);     
+            });
         } else {
             adapter.log.info("Will now try to switch TV off");
         }
@@ -103,33 +136,7 @@ adapter.on('ready', function () {
 });
 
 
-var sendKey = function(key, done) {
-      adapter.log.info("Try to open a websocket connection to " + this.samsungIP);
-      var ws = new webSocket('http://' + this.samsungIP + ':8001/api/v2/channels/samsung.remote.control?name=' + this.app_name_base64, function(error) {
-        done(new Error(error));
-      });
-      ws.on('error', function (e) {
-        console.log('Error in sendKey WebSocket communication');
-        done(e);
-      });
-      ws.on('message', function(data, flags) {
-        var cmd =  {"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}};
-        data = JSON.parse(data);
-        if(data.event == "ms.channel.connect") {
-          console.log('websocket connect');
-          ws.send(JSON.stringify(cmd));
-          setTimeout(function() {ws.close(); console.log('websocket closed');}, 1000);
-          done(0);
-        }
-      });
-};
 
-var wake = function(done) {
-      wol.wake(samsungMAC, function(error) {
-        if (error) { done(1); }
-        else { done(0); }
-      });
-};
 
 
 function main() {
