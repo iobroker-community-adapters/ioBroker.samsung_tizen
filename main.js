@@ -134,7 +134,10 @@ function main() {
         native: {}
     });
     
-    adapter.on('tvOn', function(state) {
+    adapter.subscribeStates('*');
+
+    
+    adapter.on('tvOn', function() {
         adapter.log.info("on TvOn");
     });
     
