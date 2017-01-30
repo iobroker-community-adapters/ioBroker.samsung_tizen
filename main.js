@@ -44,8 +44,8 @@ var wol = require('wake_on_lan');
 var request = require('request');
 
 var app_name_base64 = (new Buffer("ioBroker")).toString('base64');
-var ipAddress;
-var macAddress;
+var ipAddress = "0.0.0.0";
+var macAddress = "";
 
 var sendKey = function(key, done) {
       adapter.log.info("Try to open a websocket connection to " + this.ipAddress);
