@@ -66,11 +66,21 @@ adapter.on('objectChange', function (id, obj) {
 adapter.on('stateChange', function (id, state) {
     // Warning, state can be null if it was deleted
     adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
-
-    // you can use the ack flag to detect if it is status (true) or command (false)
-    if (state && !state.ack) {
-        adapter.log.info('ack is not set!');
+    
+    // Switch TV on or off
+    if ( id == 'samsung2016.0.tvOn') {
+        if(state) {
+            adapter.log.info("Will now try to switch TV on");
+        } else {
+            adapter.log.info("Will now try to switch TV off");
+        }
     }
+    
+    //Send a key to TV
+    
+    if ( id == 'samsung2016.0.sendKey') {       
+        adapter.log.info("Will now send key " + state + " to TV");
+     }
 });
 
 // Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
@@ -129,7 +139,17 @@ function main() {
         common: {
             name: 'tvOn',
             type: 'boolean',
-            role: 'indicator'
+            role: 'button'
+        },
+        native: {}
+    });
+    
+    adapter.setObject('sendKey', {
+        type: 'state',
+        common: {
+            name: 'sendKey',
+            type: 'val',
+            role: 'button'
         },
         native: {}
     });
