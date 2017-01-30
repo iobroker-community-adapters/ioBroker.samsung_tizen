@@ -187,7 +187,7 @@ function main() {
     adapter.log.info('config ip address  : ' + adapter.config.ipAddress);
     adapter.log.info('config mac address : ' + adapter.config.macAddress);
       
-      this.ipAddress = adapter.config.ipAddress;
-      this.macAddress = adapter.config.macAddress;
+    //  this.ipAddress = adapter.config.ipAddress;
+    //  this.macAddress = adapter.config.macAddress;
 
 }
