@@ -1,7 +1,7 @@
 {
-  "name": "iobroker.mediaserverJMXAdapter",
+  "name": "iobroker.samsung2016",
   "version": "0.0.2",
-  "description": "ioBroker Mediaserver JMX Adapter",
+  "description": "ioBroker adapter to control 2016 samsung tvs",
   "author": {
     "name": "Stefan0875",
     "email": "stefan0875@gmail.com"
@@ -12,17 +12,17 @@
       "email": "@@email@@"
     }
   ],
-  "homepage": "https://github.com/Stefan0875/iobroker.mediaserverJMXAdapter",
+  "homepage": "https://github.com/Stefan0875/iobroker.samsung2016",
   "license": "MIT",
   "keywords": [
     "ioBroker",
-    "template",
+    "samsung",
     "Smart Home",
     "home automation"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Stefan0875/iobroker.mediaserverJMXAdapter"
+    "url": "https://github.com/Stefan0875/iobroker.samsung2016"
   },
   "dependencies": {
   },
@@ -40,7 +40,7 @@
     "test": "node node_modules/mocha/bin/mocha"
   },
   "bugs": {
-    "url": "https://github.com/Stefan0875/iobroker.mediaserverJMXAdapter/issues"
+    "url": "https://github.com/Stefan0875/iobroker.samsung2016/issues"
   },
   "readmeFilename": "README.md"
 }
