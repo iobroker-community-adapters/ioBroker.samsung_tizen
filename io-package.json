@@ -9,14 +9,14 @@
 			  
 			}
 		},
-        "title":                    "Javascript/Node.js based ioBroker adapter to control 2016 samsung tv",
+        "title":                    "Samsung 2016 TVs",
         "desc":                     {
 				 "en": "ioBroker adapter to control 2016 samsung tv",
 				 "de": "ioBroker Adapter zur Steuerung der 2016er Samtung TVs"
 		},
         "platform":                 "Javascript/Node.js",
         "mode":                     "daemon",
-        "icon":                     "samsung.png",
+        "icon":                     "admin/samsung.png",
         "enabled":                  true,
 		"extIcon":                  "https://raw.githubusercontent.com/Stefan0875/ioBroker.helloWorld/master/admin/samsung.png",
 		"keywords":                 ["samsung", "home"],
