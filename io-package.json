@@ -18,7 +18,7 @@
         "mode":                     "daemon",
         "icon":                     "admin/samsung.png",
         "enabled":                  true,
-		"extIcon":                  "https://raw.githubusercontent.com/Stefan0875/ioBroker.helloWorld/master/admin/samsung.png",
+		"extIcon":                  "https://raw.githubusercontent.com/Stefan0875/ioBroker.samsung2016/master/admin/samsung.png",
 		"keywords":                 ["samsung", "home"],
         "readme":                   "https://github.com/Stefan0875/ioBroker.samsung2016/blob/master/README.md",
 		"loglevel":                 "info",
