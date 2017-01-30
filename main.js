@@ -89,8 +89,9 @@ function main() {
 
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
     // adapter.config:
-    adapter.log.info('config ip address: ' + adapter.config.ipAddress);
-    adapter.log.info('config mac address: ' + adapter.config.macAddress);
+    adapter.log.info("Entering main");
+    //adapter.log.info('config ip address: ' + adapter.config.ipAddress);
+    //adapter.log.info('config mac address: ' + adapter.config.macAddress);
 
 
     /**
@@ -105,7 +106,7 @@ function main() {
 
    
     // in this template all states changes inside the adapters namespace are subscribed
-    adapter.subscribeStates('*');
+   // adapter.subscribeStates('*');
 
 
 
