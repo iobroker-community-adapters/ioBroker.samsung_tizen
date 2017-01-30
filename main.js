@@ -128,7 +128,18 @@ adapter.on('stateChange', function (id, state) {
     //Send a key to TV
     
     if ( id == 'samsung2016.0.sendKey') {       
-        adapter.log.info("Will now send key " + state + " to TV");
+        adapter.log.info("Will now send key " + state.val + " to TV");
+          
+        sendKey(state.val, function(err) {
+                 adapter.log.info("Sending Key");
+                  if (err) {
+                      adapter.log.info("Got error:" + err);
+                  } else {
+                      // command has been successfully transmitted to your tv
+                      adapter.log.info('successfully sent key');
+                  }
+         });    
+          
      }
 });
 
