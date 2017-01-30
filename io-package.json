@@ -24,6 +24,13 @@
 		"loglevel":                 "info",
         "type":                     "common adapters"
         
-    }
+    },
+    "native": {
+        "test1": true,
+        "test2": 42
+    },
+    "objects": [
+
+    ]
     
 }
