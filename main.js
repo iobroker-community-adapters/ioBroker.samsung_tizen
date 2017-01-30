@@ -44,10 +44,9 @@ var wol = require('wake_on_lan');
 var request = require('request');
 
 var app_name_base64 = (new Buffer("ioBroker")).toString('base64');
-var ipAddress = "0.0.0.0";
-var macAddress = "";
 
 var sendKey = function(key, done) {
+      var ipAddress = adapter.config.ipAddress;
       adapter.log.info("Try to open a websocket connection to " + this.ipAddress);
       var ws = new webSocket('http://' + this.ipAddress + ':8001/api/v2/channels/samsung.remote.control?name=' + this.app_name_base64, function(error) {
         done(new Error(error));
@@ -72,6 +71,7 @@ var sendKey = function(key, done) {
 };
 
 var wake = function(done) {
+      var macAddress = adapter.config.macAddress;
       adapter.log.info("Sending wol command");
       wol.wake(macAddress, function(error) {
         if (error) { done(1); }
