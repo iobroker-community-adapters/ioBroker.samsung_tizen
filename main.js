@@ -69,7 +69,7 @@ adapter.on('stateChange', function (id, state) {
     
     // Switch TV on or off
     if ( id == 'samsung2016.0.tvOn') {
-        if(state) {
+        if(state.val) {
             adapter.log.info("Will now try to switch TV on");
         } else {
             adapter.log.info("Will now try to switch TV off");
