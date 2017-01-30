@@ -1,35 +1,29 @@
 {
     "common": {
-        "name":                     "mediaserverJMX",
-        "version":                  "0.0.2",
+        "name":                     "samsung2016",
+        "version":                  "0.0.1",
 	    "news": {
-			"0.0.2": {
+			"0.0.1": {
 			  "en": "alpha version",
 			  "de": "Alphaversion"
 			  
 			}
 		},
-        "title":                    "Javascript/Node.js based mediaserver jmx adapter",
+        "title":                    "Javascript/Node.js based ioBroker adapter to control 2016 samsung tv",
         "desc":                     {
-				 "en": "ioBroker mediaserver jmx Adapter",
-				 "de": "ioBroker mediaserver jmx Adapter"
+				 "en": "ioBroker adapter to control 2016 samsung tv",
+				 "de": "ioBroker Adapter zur Steuerung der 2016er Samtung TVs"
 		},
         "platform":                 "Javascript/Node.js",
         "mode":                     "daemon",
-        "icon":                     "circuit.png",
+        "icon":                     "samsung.png",
         "enabled":                  true,
-		"extIcon":                  "https://raw.githubusercontent.com/Stefan0875/ioBroker.helloWorld/master/admin/circuit.png",
-		"keywords":                 ["template", "circuit", "GUI", "graphical", "scada"],
-        "readme":                   "https://github.com/Stefan0875/ioBroker.mediaserverJMXAdapter/blob/master/README.md",
+		"extIcon":                  "https://raw.githubusercontent.com/Stefan0875/ioBroker.helloWorld/master/admin/samsung.png",
+		"keywords":                 ["samsung", "home"],
+        "readme":                   "https://github.com/Stefan0875/ioBroker.samsung2016/blob/master/README.md",
 		"loglevel":                 "info",
         "type":                     "common adapters"
         
-    },
-    "native": {
-        "test1": true,
-        "test2": 42
-    },
-    "objects": [
-
-    ]
+    }
+    
 }
