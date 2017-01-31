@@ -182,7 +182,7 @@ function main() {
         type: 'state',
         common: {
             name: 'sendKey',
-            type: 'val',
+            type: 'string',
             role: 'button'
         },
         native: {}
