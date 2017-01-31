@@ -4,6 +4,10 @@
 
 This adapter is to control samsung tvs KU/KS series from 2016
 
+Set state of 'tvOn' to true in order to turn on the TV
+Set state of 'tvOn' to false in order to turn off the TV
+
+Set sate of 'sendKey' to a valid Key (e.g. 'KEY_MUTE') in order to execute a remote command
 
 The MIT License (MIT)
 
