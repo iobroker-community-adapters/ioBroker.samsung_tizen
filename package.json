@@ -25,8 +25,8 @@
     "url": "https://github.com/Stefan0875/iobroker.samsung2016"
   },
   "dependencies": {
-    "ws",
-    "wake_on_lan"
+    "ws": "^2.0.0",
+    "wake_on_lan": "^0.0.4"
   },
   "devDependencies": {
       "grunt": "^0.4.5",
