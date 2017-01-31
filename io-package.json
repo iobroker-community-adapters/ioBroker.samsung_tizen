@@ -16,7 +16,7 @@
 		},
         "platform":                 "Javascript/Node.js",
         "mode":                     "daemon",
-        "icon":                     "admin/samsung.png",
+        "icon":                     "samsung.png",
         "enabled":                  true,
 		"extIcon":                  "https://raw.githubusercontent.com/Stefan0875/ioBroker.samsung2016/master/admin/samsung.png",
 		"keywords":                 ["samsung", "home"],
@@ -26,8 +26,8 @@
         
     },
     "native": {
-        "ipAddress": "ip",
-        "macAddress": "42"
+        "ipAddress": "192.168.178.50",
+        "macAddress": "ab:cd:ef:12:34:56"
     },
     "objects": [
 
