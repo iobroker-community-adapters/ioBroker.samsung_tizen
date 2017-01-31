@@ -41,7 +41,7 @@ var adapter = utils.adapter('samsung2016');
 
 var webSocket = require('ws');
 var wol = require('wake_on_lan');
-var request = require('request');
+//var request = require('request');
 
 
 
