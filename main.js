@@ -1,3 +1,6 @@
+// upgraded version made by ioBroker Forum User HighPressure
+// Feel free to adopt, modify and distribute my changes
+
 /**
  *
  * samsung2016 adapter
@@ -78,7 +81,10 @@ var wake = function(done) {
       adapter.log.info("Sending wol command");
       wol.wake(macAddress, function(error) {
         if (error) { done(1); }
-        else { done(0); }
+        else{ 
+			
+			done(0); 
+		}
       });
 };
 
@@ -98,19 +104,30 @@ adapter.on('objectChange', function (id, obj) {
     adapter.log.info('objectChange ' + id + ' ' + JSON.stringify(obj));
 });
 
+
+
+
 // is called if a subscribed state changes
 adapter.on('stateChange', function (id, state) {
     // Warning, state can be null if it was deleted
     adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
     
     // Switch TV on or off
-    if ( id == 'samsung2016.0.tvOn') {
-        if(state.val) {
+    if ( id == 'samsung2016.0.Power') {
+        if(state.val && !state.ack || state.val == "on" && !state.ack) {
+			//first try traditional power on key, in case of short standby
+			sendKey('KEY_POWER', function(err) {
+                  if (err) {
+                      adapter.log.info("Got error:" + err);
+                  }
+              });  
             adapter.log.info("Will now try to switch TV on.");
             wake(function(err) {
                 console.log ("Switch SamsungTV on returned with " + err);     
             });
-        } else {
+			
+        }
+		if(!state.val && !state.ack || state.val == "off" && !state.ack) {
             adapter.log.info("Will now try to switch TV off");
               
             sendKey('KEY_POWER', function(err) {
@@ -120,6 +137,7 @@ adapter.on('stateChange', function (id, state) {
                   } else {
                       // command has been successfully transmitted to your tv
                       adapter.log.info('successfully powered off tv');
+					  //adapter.setState("Power", "off", false);
                   }
               });  
         }
@@ -168,12 +186,12 @@ adapter.on('ready', function () {
 
 function main() {
 
-    adapter.setObject('tvOn', {
+    adapter.setObject('Power', {
         type: 'state',
         common: {
-            name: 'tvOn',
-            type: 'boolean',
-            role: 'button'
+            name: 'Power',
+            type: 'string',
+            role: 'state'
         },
         native: {}
     });
@@ -191,7 +209,7 @@ function main() {
     adapter.subscribeStates('*');
 
     
-    adapter.on('tvOn', function() {
+    adapter.on('Power', function() {
         adapter.log.info("on TvOn");
     });
     
