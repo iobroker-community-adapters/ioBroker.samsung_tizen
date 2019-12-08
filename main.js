@@ -20,7 +20,7 @@ var sendKey = function(key, done) {
       wsUrl = protocol + '://' + ipAddress + ':' + port + '/api/v2/channels/samsung.remote.control?name=' + app_name_base64 + '&token=' + token;
       }
       adapter.log.info("Try to open a websocket connection to " + wsUrl);
-      var ws = new webSocket(wsUrl, function(error) {
+      var ws = new webSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
         done(new Error(error));
       });
       ws.on('error', function (e) {
