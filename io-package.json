@@ -27,10 +27,10 @@
     },
     "native": {
         "protocol": "wss",
-        "ipAddress": "192.168.178.50",
+        "ipAddress": "10.0.0.70",
         "port": "8002",
-        "token": "0",
-        "macAddress": "ab:cd:ef:12:34:56",
+        "token": "66895830",
+        "macAddress": "64:1C:AE:E3:5F:ED",
         "pollingPort": "9110",
         "pollingInterval": "60"
 	
