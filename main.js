@@ -5,6 +5,7 @@ const adapter = utils.adapter('samsungTizen');
 const webSocket = require('ws');
 const wol = require('wake_on_lan');
 const req = require('request-promise');
+
 var sendKey = function(key, done) {
       const protocol = adapter.config.protocol;
       const ipAddress = adapter.config.ipAddress;
@@ -174,7 +175,7 @@ function main() {
         native: {}
     });
 	
-    adapter.setObject('PowerOn', {
+    adapter.setObject('powerOn', {
         type: 'state',
         common: {
             name: 'power state of TV',
@@ -195,26 +196,26 @@ function main() {
     adapter.log.info('config port  : ' + adapter.config.port);
     adapter.log.info('config token  : ' + adapter.config.token);
     adapter.log.info('config mac address : ' + adapter.config.macAddress);
-    adapter.log.info('config pollingPort : ' + adapter.config.pollingPort);
+    adapter.log.info('config pollingEndpoint : ' + adapter.config.pollingEndpoint);
     adapter.log.info('config pollingInterval : ' + adapter.config.pollingInterval);
     adapter.log.info('adapter instance : ' + adapter.instance);
 	
-    const pollingPort = parseFloat(adapter.config.pollingPort);
+    const pollingEndpoint = adapter.config.pollingEndpoint;
     const pollingInterval = parseFloat(adapter.config.pollingInterval);
     const ipAddress = adapter.config.ipAddress;
     if (pollingPort > 0) 
     {
 	    setInterval(function(){ 
-		    req({uri:'http://' + ipAddress + ':' + pollingPort + '/ip_control', timeout:10000})
+		    req({uri:'http://' + ipAddress + ':' + pollingEndpoint, timeout:10000})
     			.then(()=> {
                     adapter.log.debug('TV state OK');
-                    adapter.setState('PowerOn', true, true, function (err) {
+                    adapter.setState('powerOn', true, true, function (err) {
                      if (err) adapter.log.error(err);
                 });
                 })
     			.catch(error => {       	   
 				    adapter.log.debug('TV state NOK');
-              		adapter.setState('PowerOn', false, true, function (err) {
+              		adapter.setState('powerOn', false, true, function (err) {
               			// analyse if the state could be set (because of permissions)
                			if (err) adapter.log.error(err);
                     });
