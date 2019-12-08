@@ -29,7 +29,7 @@
         "protocol": "wss",
         "ipAddress": "10.0.0.70",
         "port": "8002",
-        "token": "66895830",
+        "token": "10916644",
         "macAddress": "64:1C:AE:E3:5F:ED",
         "pollingEndpoint": "9110/ip_control",
         "pollingInterval": "60"
