@@ -60,7 +60,7 @@ const pollingInterval = parseFloat(adapter.config.pollingInterval);
 
 var sendKey = function(key, done) {
       let wsUrl;
-      if (token = 0) {
+      if (token === 0) {
       wsUrl = protocol + '://' + ipAddress + ':' + port + '/api/v2/channels/samsung.remote.control?name=' + app_name_base64;  
       }
       if (token > 0) {
@@ -202,8 +202,8 @@ function main() {
         type: 'state',
         common: {
             name: 'Power',
-            type: 'string',
-            role: 'state'
+            type: 'boolean',
+            role: 'button'
         },
         native: {}
     });
@@ -213,10 +213,20 @@ function main() {
         common: {
             name: 'sendKey',
             type: 'string',
-            role: 'button'
+            role: 'state'
         },
         native: {}
     });
+	
+    adapter.setObject('PowerOn', {
+        type: 'state',
+        common: {
+            name: 'sendKey',
+            type: 'boolean',
+            role: 'state'
+        },
+        native: {}
+    });    
     
     adapter.subscribeStates('*');
 
@@ -238,5 +248,29 @@ function main() {
       
     //  this.ipAddress = adapter.config.ipAddress;
     //  this.macAddress = adapter.config.macAddress;
-
+    if (pollingPort > 0) 
+    {setInterval(function(){ 
+    request
+  	.get({uri:'http://' + ipAddress + ':' + pollingPort, timeout:10000})
+  	.on('response', function(response) {
+	    if ( response.statusCode === 200){
+       	      adapter.log.info('TV state OK');
+              adapter.setState('PowerOn', true, true, function (err) {
+              // analyse if the state could be set (because of permissions)
+               if (err) adapter.log.error(err);
+              });
+	    }
+	    if ( response.statusCode !== 200){
+       	      adapter.log.info('TV state NOK');
+              adapter.setState('PowerOn', false, true, function (err) {
+              // analyse if the state could be set (because of permissions)
+               if (err) adapter.log.error(err);
+              });
+	    }
+    	adapter.log.info(response.statusCode)
+  })
+  .pipe(request.put('http://mysite.com/img.png'))
+    }, pollingInterval * 1000)
+    
+    }
 }
