@@ -74,14 +74,14 @@ adapter.on('objectChange', function (id, obj) {
 // is called if a subscribed state changes
 adapter.on('stateChange', function (id, state) {
     adapter.log.info('stateChange: '+ id);
-    adapter.log.info(adapter.name + adapter.instance + '.Power');
-    adapter.log.info(id === adapter.name + adapter.instance + '.Power');
+    adapter.log.info(adapter.name + '.' + adapter.instance + '.Power');
+    adapter.log.info(id === adapter.name + '.' + adapter.instance + '.Power');
 
     // Warning, state can be null if it was deleted
     adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
     
     // Switch TV on or off
-    if ( id === adapter.name + adapter.instance + '.Power') {
+    if ( id === adapter.name + '.' + adapter.instance + '.Power') {
         if(state.val && !state.ack || state.val == "on" && !state.ack) {
 			//first try traditional power on key, in case of short standby
 			sendKey('KEY_POWER', function(err) {
@@ -113,7 +113,7 @@ adapter.on('stateChange', function (id, state) {
     
     //Send a key to TV
     
-    if ( id === adapter.name + adapter.instance + '.sendKey') {       
+    if ( id === adapter.name + '.' + adapter.instance + '.sendKey') {       
         adapter.log.info("Will now send key " + state.val + " to TV");
           
         sendKey(state.val, function(err) {
@@ -158,8 +158,8 @@ function main() {
         type: 'state',
         common: {
             name: 'on/off',
-            type: 'string',
-            role: 'state'
+            type: 'boolean',
+            role: 'button'
         },
         native: {}
     });
