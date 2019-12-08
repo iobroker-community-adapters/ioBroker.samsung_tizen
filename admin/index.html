@@ -30,12 +30,19 @@
     // Dictionary (systemDictionary is global variable from adapter-settings.js)
     systemDictionary = {
         "samsung2016 adapter settings": {"de": "Samsung 2016"},
+	"protocol":                    {"en": "protocol", "de": "Protokoll"},
         "ipAddress":                    {"en": "ip address", "de": "IP Adresse"},
+	"port":                    {"en": "port", "de": "Port"},
+	"token":                    {"en": "token", "de": "Token"},
+	"pollingPort":                    {"en": "polling port", "de": "Pooling Port"},
+	"pollingInterval":                    {"en": "polling interval", "de": "Pooling Intervall"},
         "macAddress":                    {"en": "mac address", "de": "MAC Adresse"},
         "on save adapter restarts with new config immediately": {
             "de": "Beim Speichern von Einstellungen der Adapter wird sofort neu gestartet.",
             "ru": "Сразу после сохранения настроек драйвер перезапуститься с новыми значениями"
-        }
+        },
+	"TV state polling(experimental):": {"de": "TV Statusabfrage(experementell):"},
+	"(0 to deactivate)": {"de": "0 zum deaktivieren"}
     };
 
     // the function loadSettings has to exist ...
@@ -80,12 +87,18 @@
         <td><h3 class="translate">samsung2016 adapter settings</h3></td>
     </tr></table>
     <p>
+        <span class="translate">protocol</span> <input class="value" id="protocol"/>(http or wss)<br>
         <span class="translate">ipAddress</span> <input class="value" id="ipAddress"/><br>
-        <span class="translate">macAddress</span> <input class="value" id="macAddress"/><br>
+        <span class="translate">port</span> <input class="value" id="port"/><br>
+        <span class="translate">token</span> <input class="value" id="token"/><span class="translate">(let 0 to deactivate)</span><br>
+        <span class="translate">macAddress</span> <input class="value" id="macAddress"/><br>	
     </p>
-
+    <p>
+    <span class="translate">TV state polling(experimental):</span>
+    </p>
     <p class="translate">on save adapter restarts with new config immediately</p>
-
+	<span class="translate">pollingPort</span> <input class="value" id="pollingPort"/><span class="translate">(let 0 to deactivate)</span><br>
+        <span class="translate">pollingInterval</span> <input class="value" id="pollingInterval"/><br>
 </div>
 
 </html>
