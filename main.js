@@ -35,26 +35,39 @@
 "use strict";
 
 // you have to require the utils module and call adapter function
-var utils =    require(__dirname + '/lib/utils'); // Get common adapter utils
+const utils =    require(__dirname + '/lib/utils'); // Get common adapter utils
 
 // you have to call the adapter function and pass a options object
 // name has to be set and has to be equal to adapters folder name and main file name excluding extension
 // adapter will be restarted automatically every time as the configuration changed, e.g system.adapter.template.0
-var adapter = utils.adapter('samsung2016');
+const adapter = utils.adapter('samsung2016');
 
-var webSocket = require('ws');
-var wol = require('wake_on_lan');
-//var request = require('request');
+const webSocket = require('ws');
+const wol = require('wake_on_lan');
+const request = require('request');
+
+// config params
+const protocol = adapter.config.protocol;
+const ipAddress = adapter.config.ipAddress;
+const app_name_base64 = (new Buffer("ioBroker")).toString('base64');
+const port = parseFloat(adapter.config.port);
+const token = parseFloat(adapter.config.token);
+const macAddress = adapter.config.macAdress;
+const pollingPort = parseFloat(adapter.config.pollingPort);
+const pollingInterval = parseFloat(adapter.config.pollingInterval);
 
 
 
 var sendKey = function(key, done) {
-      var ipAddress = adapter.config.ipAddress;
-      var app_name_base64 = (new Buffer("ioBroker")).toString('base64');
-      
-      adapter.log.info("Trying ipAddress " + ipAddress);
-      adapter.log.info("Try to open a websocket connection to " + ipAddress);
-      var ws = new webSocket('http://' + ipAddress + ':8001/api/v2/channels/samsung.remote.control?name=' + app_name_base64, function(error) {
+      let wsUrl;
+      if (token = 0) {
+      wsUrl = protocol + '://' + ipAddress + ':' + port + '/api/v2/channels/samsung.remote.control?name=' + app_name_base64;  
+      }
+      if (token > 0) {
+      wsUrl = protocol + '://' + ipAddress + ':' + port + '/api/v2/channels/samsung.remote.control?name=' + app_name_base64 + '&token=' + token;
+      }
+      adapter.log.info("Try to open a websocket connection to " + wsUrl);
+      var ws = new webSocket(wsUrl, function(error) {
         done(new Error(error));
       });
       ws.on('error', function (e) {
@@ -82,7 +95,6 @@ var wake = function(done) {
       wol.wake(macAddress, function(error) {
         if (error) { done(1); }
         else{ 
-			
 			done(0); 
 		}
       });
@@ -216,8 +228,13 @@ function main() {
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
     // adapter.config:
     adapter.log.info("Entered main");
-    adapter.log.info('config ip address  : ' + adapter.config.ipAddress);
-    adapter.log.info('config mac address : ' + adapter.config.macAddress);
+    adapter.log.info('config protocol : ' + protocol);
+    adapter.log.info('config ip address  : ' + ipAddress);
+    adapter.log.info('config port  : ' + port);
+    adapter.log.info('config token  : ' + token);
+    adapter.log.info('config mac address : ' + macAddress);
+    adapter.log.info('config pollingPort : ' + pollingPort);
+    adapter.log.info('config pollingInterval : ' + pollingInterval);
       
     //  this.ipAddress = adapter.config.ipAddress;
     //  this.macAddress = adapter.config.macAddress;
