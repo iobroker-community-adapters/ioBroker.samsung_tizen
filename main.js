@@ -250,22 +250,21 @@ function main() {
     {setInterval(function(){ 
     request
   	.get({uri:'http://' + ipAddress + ':' + pollingPort, timeout:10000})
-  	.on('response', function(response) {
-	    if ( response.statusCode === 200){
+  	.on('response', function(error, response) {
+	    if ( !error ){
        	      adapter.log.info('TV state OK');
               adapter.setState('PowerOn', true, true, function (err) {
               // analyse if the state could be set (because of permissions)
                if (err) adapter.log.error(err);
               });
 	    }
-	    if ( response.statusCode !== 200){
+	    if ( error ){
        	      adapter.log.info('TV state NOK');
               adapter.setState('PowerOn', false, true, function (err) {
               // analyse if the state could be set (because of permissions)
                if (err) adapter.log.error(err);
               });
 	    }
-    	adapter.log.info(response.statusCode)
   })
     }, pollingInterval * 1000)
     
