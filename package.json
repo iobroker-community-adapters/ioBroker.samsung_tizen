@@ -1,6 +1,6 @@
 {
   "name": "iobroker.samsung2016",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "ioBroker adapter to control 2016 samsung tvs",
   "author": {
     "name": "Stefan0875",
@@ -26,7 +26,8 @@
   },
   "dependencies": {
     "ws": "^2.0.0",
-    "wake_on_lan": "^0.0.4"
+    "wake_on_lan": "^0.0.4",
+    "request": "^2.88.0"
   },
   "devDependencies": {
       "grunt": "^0.4.5",
