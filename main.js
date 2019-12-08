@@ -203,7 +203,8 @@ function main() {
     const pollingEndpoint = adapter.config.pollingEndpoint;
     const pollingInterval = parseFloat(adapter.config.pollingInterval);
     const ipAddress = adapter.config.ipAddress;
-    if (pollingPort > 0) 
+	
+    if (Interval > 0) 
     {
 	    setInterval(function(){ 
 		    req({uri:'http://' + ipAddress + ':' + pollingEndpoint, timeout:10000})
