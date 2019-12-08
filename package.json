@@ -1,10 +1,9 @@
 {
-  "name": "iobroker.samsung2016",
+  "name": "iobroker.samsungTizen",
   "version": "0.0.3",
-  "description": "ioBroker adapter to control 2016 samsung tvs",
+  "description": "ioBroker adapter to control samsung tizenOs tvs",
   "author": {
-    "name": "Stefan0875",
-    "email": "stefan0875@gmail.com"
+    "name": "DaHuby"
   },
   "contributors": [
     {
@@ -12,7 +11,7 @@
       "email": "@@email@@"
     }
   ],
-  "homepage": "https://github.com/Stefan0875/iobroker.samsung2016",
+  "homepage": "https://github.com/dahuby/iobroker.samsungTizen",
   "license": "MIT",
   "keywords": [
     "ioBroker",
@@ -22,7 +21,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Stefan0875/iobroker.samsung2016"
+    "url": "https://github.com/dahuby/iobroker.samsungTizen"
   },
   "dependencies": {
     "ws": "^2.0.0",
@@ -44,7 +43,7 @@
     "test": "node node_modules/mocha/bin/mocha"
   },
   "bugs": {
-    "url": "https://github.com/Stefan0875/iobroker.samsung2016/issues"
+    "url": "https://github.com/dahuby/iobroker.samsungTizen/issues"
   },
   "readmeFilename": "README.md"
 }
