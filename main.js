@@ -47,18 +47,13 @@ const wol = require('wake_on_lan');
 const request = require('request');
 
 // config params
-const protocol = adapter.config.protocol;
-const ipAddress = adapter.config.ipAddress;
-const app_name_base64 = (new Buffer("ioBroker")).toString('base64');
-const port = parseFloat(adapter.config.port);
-const token = parseFloat(adapter.config.token);
-const macAddress = adapter.config.macAdress;
-const pollingPort = parseFloat(adapter.config.pollingPort);
-const pollingInterval = parseFloat(adapter.config.pollingInterval);
-
-
 
 var sendKey = function(key, done) {
+      const protocol = adapter.config.protocol;
+      const ipAddress = adapter.config.ipAddress;
+      const app_name_base64 = (new Buffer("ioBroker")).toString('base64');
+      const port = parseFloat(adapter.config.port);
+      const token = parseFloat(adapter.config.token);
       let wsUrl;
       if (token === 0) {
       wsUrl = protocol + '://' + ipAddress + ':' + port + '/api/v2/channels/samsung.remote.control?name=' + app_name_base64;  
@@ -238,14 +233,17 @@ function main() {
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
     // adapter.config:
     adapter.log.info("Entered main");
-    adapter.log.info('config protocol : ' + protocol);
-    adapter.log.info('config ip address  : ' + ipAddress);
-    adapter.log.info('config port  : ' + port);
-    adapter.log.info('config token  : ' + token);
+    adapter.log.info('config protocol : ' + adapter.config.protocol);
+    adapter.log.info('config ip address  : ' + adapter.config.ipAddress);
+    adapter.log.info('config port  : ' + adapter.config.port);
+    adapter.log.info('config token  : ' + adapter.config.token);
     adapter.log.info('config mac address : ' + macAddress);
-    adapter.log.info('config pollingPort : ' + pollingPort);
-    adapter.log.info('config pollingInterval : ' + pollingInterval);
-      
+    adapter.log.info('config pollingPort : ' + adapter.config.pollingPort);
+    adapter.log.info('config pollingInterval : ' + adapter.config.pollingInterval);
+	
+    const pollingPort = parseFloat(adapter.config.pollingPort);
+    const pollingInterval = parseFloat(adapter.config.pollingInterval);
+    const ipAddress = adapter.config.ipAddress;
     //  this.ipAddress = adapter.config.ipAddress;
     //  this.macAddress = adapter.config.macAddress;
     if (pollingPort > 0) 
