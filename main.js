@@ -44,7 +44,7 @@ const adapter = utils.adapter('samsung2016');
 
 const webSocket = require('ws');
 const wol = require('wake_on_lan');
-const request = require('request');
+const req = require('request-promise');
 
 // config params
 
@@ -229,10 +229,6 @@ function main() {
     adapter.on('Power', function() {
         adapter.log.info("on TvOn");
     });
-    
-    // The adapters config (in the instance object everything under the attribute "native") is accessible via
-    // adapter.config:
-    adapter.log.info("Entered main");
     adapter.log.info('config protocol : ' + adapter.config.protocol);
     adapter.log.info('config ip address  : ' + adapter.config.ipAddress);
     adapter.log.info('config port  : ' + adapter.config.port);
@@ -244,29 +240,25 @@ function main() {
     const pollingPort = parseFloat(adapter.config.pollingPort);
     const pollingInterval = parseFloat(adapter.config.pollingInterval);
     const ipAddress = adapter.config.ipAddress;
-    //  this.ipAddress = adapter.config.ipAddress;
-    //  this.macAddress = adapter.config.macAddress;
     if (pollingPort > 0) 
-    {setInterval(function(){ 
-    request
-  	.get({uri:'http://' + ipAddress + ':' + pollingPort, timeout:10000})
-  	.on('response', function(error, response) {
-	    if ( !error ){
-       	      adapter.log.info('TV state OK');
-              adapter.setState('PowerOn', true, true, function (err) {
-              // analyse if the state could be set (because of permissions)
-               if (err) adapter.log.error(err);
-              });
-	    }
-	    if ( error ){
-       	      adapter.log.info('TV state NOK');
-              adapter.setState('PowerOn', false, true, function (err) {
-              // analyse if the state could be set (because of permissions)
-               if (err) adapter.log.error(err);
-              });
-	    }
-  })
-    }, pollingInterval * 1000)
+    {
+	    setInterval(function(){ 
+		    rp({uri:'http://' + ipAddress + ':' + pollingPort, timeout:10000})
+    			.then(
+				adapter.log.info('TV state OK');
+              			adapter.setState('PowerOn', true, true, function (err) {
+              				// analyse if the state could be set (because of permissions)
+               				if (err) adapter.log.error(err);
+              			});
+		    	)
+    			.catch(function (error) {       	      
+				adapter.log.info(error);
+				adapter.log.info('TV state NOK');
+              			adapter.setState('PowerOn', false, true, function (err) {
+              				// analyse if the state could be set (because of permissions)
+               				if (err) adapter.log.error(err);
+              			});
+	    }, pollingInterval * 1000)
     
     }
 }
