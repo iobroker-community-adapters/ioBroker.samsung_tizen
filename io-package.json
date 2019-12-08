@@ -31,7 +31,7 @@
         "port": "8002",
         "token": "0",
         "macAddress": "ab:cd:ef:12:34:56",
-        "pollingPort": "9119",
+        "pollingPort": "9110",
         "pollingInterval": "60"
 	
     },
