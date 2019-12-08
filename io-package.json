@@ -31,7 +31,7 @@
         "port": "8002",
         "token": "66895830",
         "macAddress": "64:1C:AE:E3:5F:ED",
-        "pollingPort": "9110",
+        "pollingEndpoint": "9110/ip_control",
         "pollingInterval": "60"
 	
     },
