@@ -30,8 +30,8 @@
         "ipAddress": "192.168.178.50",
         "port": "8002",
         "token": "0",
-        "macAddress": "ab:cd:ef:12:34:56"
-        "pollingPort": "9119"
+        "macAddress": "ab:cd:ef:12:34:56",
+        "pollingPort": "9119",
         "pollingInterval": "60"
 	
     },
