@@ -1,26 +1,26 @@
 {
     "common": {
-        "name":                     "samsung2016",
-        "version":                  "0.0.2",
+        "name":                     "samsungTizen",
+        "version":                  "0.0.3",
 	    "news": {
-			"0.0.2": {
+			"0.0.3": {
 			  "en": "alpha version",
 			  "de": "Alphaversion"
 			  
 			}
 		},
-        "title":                    "Samsung 2016 TVs",
+        "title":                    "Samsung TizenOS TVs",
         "desc":                     {
-				 "en": "ioBroker adapter to control 2016 samsung tv",
-				 "de": "ioBroker Adapter zur Steuerung der 2016er Samtung TVs"
+				 "en": "ioBroker adapter to control samsung tizenOS tv",
+				 "de": "ioBroker Adapter zur Steuerung der Samsung Tizen OS TVs"
 		},
         "platform":                 "Javascript/Node.js",
         "mode":                     "daemon",
         "icon":                     "samsung.png",
         "enabled":                  true,
-		"extIcon":                  "https://raw.githubusercontent.com/Stefan0875/ioBroker.samsung2016/master/admin/samsung.png",
+		"extIcon":                  "https://raw.githubusercontent.com/dahuby/ioBroker.samsungTizen/master/admin/samsung.png",
 		"keywords":                 ["samsung", "home"],
-        "readme":                   "https://github.com/Stefan0875/ioBroker.samsung2016/blob/master/README.md",
+        "readme":                   "https://github.com/dahuby/ioBroker.samsungTizen/blob/master/README.md",
 		"loglevel":                 "info",
         "type":                     "common adapters"
         
