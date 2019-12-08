@@ -73,9 +73,9 @@ adapter.on('objectChange', function (id, obj) {
 
 // is called if a subscribed state changes
 adapter.on('stateChange', function (id, state) {
-    adapter.log.debug('stateChange: '+ id);
-    adapter.log.debug(adapter.name + adapter.instance + '.Power');
-    adapter.log.debug(id === adapter.name + adapter.instance + '.Power');
+    adapter.log.info('stateChange: '+ id);
+    adapter.log.info(adapter.name + adapter.instance + '.Power');
+    adapter.log.info(id === adapter.name + adapter.instance + '.Power');
 
     // Warning, state can be null if it was deleted
     adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
@@ -91,7 +91,7 @@ adapter.on('stateChange', function (id, state) {
               });  
             adapter.log.info("Will now try to switch TV on.");
             wake(function(err) {
-                console.log ("Switch SamsungTV on returned with " + err);     
+                adapter.log.info ("Switch SamsungTV on returned with " + err);     
             });
 			
         }
@@ -134,7 +134,7 @@ adapter.on('message', function (obj) {
     if (typeof obj == 'object' && obj.message) {
         if (obj.command == 'send') {
             // e.g. send email or pushover or whatever
-            console.log('send command');
+            adapter.log.info('send command');
 
             // Send response in callback if required
             if (obj.callback) adapter.sendTo(obj.from, obj.command, 'Message received', obj.callback);
@@ -157,9 +157,9 @@ function main() {
     adapter.setObject('Power', {
         type: 'state',
         common: {
-            name: 'Power',
-            type: 'boolean',
-            role: 'button'
+            name: 'on/off',
+            type: 'string',
+            role: 'state'
         },
         native: {}
     });
