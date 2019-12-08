@@ -19,23 +19,21 @@ var sendKey = function(key, done) {
       if (token > 0) {
       wsUrl = protocol + '://' + ipAddress + ':' + port + '/api/v2/channels/samsung.remote.control?name=' + app_name_base64 + '&token=' + token;
       }
-      adapter.log.info("Try to open a websocket connection to " + wsUrl);
+      adapter.log.info('open connection: ' + wsUrl + ', to sendKey: ' + key );
       var ws = new webSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
         done(new Error(error));
       });
       ws.on('error', function (e) {
-        adapter.log.info('Error in sendKey WebSocket communication');
+        adapter.log.info('Error in sendKey: ' + key);
         done(e);
       });
       ws.on('message', function(data, flags) {
         var cmd =  {"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}};
         data = JSON.parse(data);
         if(data.event == "ms.channel.connect") {
-          adapter.log.info('websocket connect');
           ws.send(JSON.stringify(cmd));
           setTimeout(function() {
             ws.close(); 
-            adapter.log.info('websocket closed');
           }, 1000);
           done(0);
         }
@@ -44,45 +42,25 @@ var sendKey = function(key, done) {
 
 var wake = function(done) {
       var macAddress = adapter.config.macAddress;
-      adapter.log.info("Sending wol command");
       wol.wake(macAddress, function(error) {
         if (error) { done(1); }
-        else{ 
-			done(0); 
-		}
+        else{done(0);}
       });
 };
 
-// is called when adapter shuts down - callback has to be called under any circumstances!
 adapter.on('unload', function (callback) {
-    try {
-        adapter.log.info('cleaned everything up...');
-        callback();
-    } catch (e) {
-        callback();
-    }
+    try {callback();} catch (e) {callback();}
 });
-
-// is called if a subscribed object changes
 adapter.on('objectChange', function (id, obj) {
-    // Warning, obj can be null if it was deleted
-    adapter.log.info('objectChange ' + id + ' ' + JSON.stringify(obj));
+    adapter.log.info('objectChange: ' + id + ' ' + JSON.stringify(obj));
 });
 
-
-
-
-// is called if a subscribed state changes
 adapter.on('stateChange', function (id, state) {
-    adapter.log.info('stateChange: '+ id);
-    adapter.log.info(adapter.name + '.' + adapter.instance + '.Power');
-    adapter.log.info(id === adapter.name + '.' + adapter.instance + '.Power');
-
-    // Warning, state can be null if it was deleted
-    adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
+    adapter.log.info('stateChange: ' + id + ' ' + JSON.stringify(state));
     
-    // Switch TV on or off
-    if ( id === adapter.name + '.' + adapter.instance + '.Power') {
+    if ( id === adapter.name + '.' + adapter.instance + '.power') {
+	    adapter.log.info(state);
+	    adapter.log.info(state.val);
         if(state.val && !state.ack || state.val == "on" && !state.ack) {
 			//first try traditional power on key, in case of short standby
 			sendKey('KEY_POWER', function(err) {
@@ -113,49 +91,25 @@ adapter.on('stateChange', function (id, state) {
     }
     
     //Send a key to TV
-    
     if ( id === adapter.name + '.' + adapter.instance + '.sendKey') {       
-        adapter.log.info("Will now send key " + state.val + " to TV");
-          
         sendKey(state.val, function(err) {
-                 adapter.log.info("Sending Key");
                   if (err) {
                       adapter.log.info("Got error:" + err);
                   } else {
-                      // command has been successfully transmitted to your tv
-                      adapter.log.info('successfully sent key');
+                      adapter.log.info('successfully sent key: ' + state.val + ' to tv');
                   }
          });    
           
      }
 });
 
-// Some message was sent to adapter instance over message box. Used by email, pushover, text2speech, ...
-adapter.on('message', function (obj) {
-    if (typeof obj == 'object' && obj.message) {
-        if (obj.command == 'send') {
-            // e.g. send email or pushover or whatever
-            adapter.log.info('send command');
-
-            // Send response in callback if required
-            if (obj.callback) adapter.sendTo(obj.from, obj.command, 'Message received', obj.callback);
-        }
-    }
-});
-
-// is called when databases are connected and adapter received configuration.
-// start here!
 adapter.on('ready', function () {
     main();
 });
 
-
-
-
-
 function main() {
 
-    adapter.setObject('Power', {
+    adapter.setObject('power', {
         type: 'state',
         common: {
             name: 'on/off',
@@ -205,21 +159,27 @@ function main() {
     const ipAddress = adapter.config.ipAddress;
 	
     if (pollingInterval > 0) 
-    {
-	    setInterval(function(){ 
-		    req({uri:'http://' + ipAddress + ':' + pollingEndpoint, timeout:10000})
+    { 
+	    setInterval(function(){
+            	let powerState;
+            	adapter.getState('powerOn', function (err, state) {powerState = state.val;}); 
+		req({uri:'http://' + ipAddress + ':' + pollingEndpoint, timeout:10000})
     			.then(()=> {
-                    adapter.log.debug('TV state OK');
-                    adapter.setState('powerOn', true, true, function (err) {
-                     if (err) adapter.log.error(err);
-                });
+                    	adapter.log.debug('TV state OK');
+			console.log(powerState);
+			if(!powerState){
+                    	adapter.setState('powerOn', true, true, function (err) {
+                     		if (err) adapter.log.error(err);
+                	});}
                 })
     			.catch(error => {       	   
-				    adapter.log.debug('TV state NOK');
-              		adapter.setState('powerOn', false, true, function (err) {
+				adapter.log.debug('TV state NOK');
+				console.log(powerState);
+				if(powerState){
+              			adapter.setState('powerOn', false, true, function (err) {
               			// analyse if the state could be set (because of permissions)
                			if (err) adapter.log.error(err);
-                    });
+                    });}
                 })
 	    }, pollingInterval * 1000)
     
