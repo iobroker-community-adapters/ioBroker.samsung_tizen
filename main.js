@@ -73,6 +73,10 @@ adapter.on('objectChange', function (id, obj) {
 
 // is called if a subscribed state changes
 adapter.on('stateChange', function (id, state) {
+    adapter.log.debug('stateChange: '+ id);
+    adapter.log.debug(adapter.name + adapter.instance + '.Power');
+    adapter.log.debug(id === adapter.name + adapter.instance + '.Power');
+
     // Warning, state can be null if it was deleted
     adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
     
@@ -201,15 +205,14 @@ function main() {
     if (pollingPort > 0) 
     {
 	    setInterval(function(){ 
-		    req({uri:'http://' + ipAddress + ':' + pollingPort, timeout:10000})
+		    req({uri:'http://' + ipAddress + ':' + pollingPort + '/ip_control', timeout:10000})
     			.then(()=> {
                     adapter.log.debug('TV state OK');
                     adapter.setState('PowerOn', true, true, function (err) {
                      if (err) adapter.log.error(err);
                 });
                 })
-    			.catch(error => {       	      
-				    adapter.log.error(error);
+    			.catch(error => {       	   
 				    adapter.log.debug('TV state NOK');
               		adapter.setState('PowerOn', false, true, function (err) {
               			// analyse if the state could be set (because of permissions)
