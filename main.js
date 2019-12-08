@@ -77,7 +77,7 @@ adapter.on('stateChange', function (id, state) {
     adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
     
     // Switch TV on or off
-    if ( id == 'samsung2016' + adapter.instance + 'Power') {
+    if ( id === 'samsung2016.' + adapter.instance + '.Power') {
         if(state.val && !state.ack || state.val == "on" && !state.ack) {
 			//first try traditional power on key, in case of short standby
 			sendKey('KEY_POWER', function(err) {
@@ -109,7 +109,7 @@ adapter.on('stateChange', function (id, state) {
     
     //Send a key to TV
     
-    if ( id == 'samsung2016' + adapter.instance + 'sendKey') {       
+    if ( id === 'samsung2016.' + adapter.instance + '.sendKey') {       
         adapter.log.info("Will now send key " + state.val + " to TV");
           
         sendKey(state.val, function(err) {
@@ -201,7 +201,7 @@ function main() {
     if (pollingPort > 0) 
     {
 	    setInterval(function(){ 
-		    rp({uri:'http://' + ipAddress + ':' + pollingPort, timeout:10000})
+		    req({uri:'http://' + ipAddress + ':' + pollingPort, timeout:10000})
     			.then(()=> {
                     adapter.log.debug('TV state OK');
                     adapter.setState('PowerOn', true, true, function (err) {
