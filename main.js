@@ -237,7 +237,7 @@ function main() {
     adapter.log.info('config ip address  : ' + adapter.config.ipAddress);
     adapter.log.info('config port  : ' + adapter.config.port);
     adapter.log.info('config token  : ' + adapter.config.token);
-    adapter.log.info('config mac address : ' + macAddress);
+    adapter.log.info('config mac address : ' + adapter.config.macAddress);
     adapter.log.info('config pollingPort : ' + adapter.config.pollingPort);
     adapter.log.info('config pollingInterval : ' + adapter.config.pollingInterval);
 	
