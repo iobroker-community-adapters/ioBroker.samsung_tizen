@@ -1,6 +1,6 @@
 "use strict";
 const utils =    require(__dirname + '/lib/utils');
-const adapter = utils.adapter('samsung2016');
+const adapter = utils.adapter('samsungTizen');
 
 const webSocket = require('ws');
 const wol = require('wake_on_lan');
@@ -77,7 +77,7 @@ adapter.on('stateChange', function (id, state) {
     adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
     
     // Switch TV on or off
-    if ( id === 'samsung2016.' + adapter.instance + '.Power') {
+    if ( id === adapter.name + adapter.instance + '.Power') {
         if(state.val && !state.ack || state.val == "on" && !state.ack) {
 			//first try traditional power on key, in case of short standby
 			sendKey('KEY_POWER', function(err) {
@@ -109,7 +109,7 @@ adapter.on('stateChange', function (id, state) {
     
     //Send a key to TV
     
-    if ( id === 'samsung2016.' + adapter.instance + '.sendKey') {       
+    if ( id === adapter.name + adapter.instance + '.sendKey') {       
         adapter.log.info("Will now send key " + state.val + " to TV");
           
         sendKey(state.val, function(err) {
