@@ -1,53 +1,10 @@
-// upgraded version made by ioBroker Forum User HighPressure
-// Feel free to adopt, modify and distribute my changes
-
-/**
- *
- * samsung2016 adapter
- *
- *
- *  file io-package.json comments:
- *
- *  {
- *      "common": {
- *          "name":         "template",                  // name has to be set and has to be equal to adapters folder name and main file name excluding extension
- *          "version":      "0.0.0",                    // use "Semantic Versioning"! see http://semver.org/
- *          "title":        "Node.js template Adapter",  // Adapter title shown in User Interfaces
- *          "authors":  [                               // Array of authord
- *              "name <mail@template.com>"
- *          ]
- *          "desc":         "template adapter",          // Adapter description shown in User Interfaces. Can be a language object {de:"...",ru:"..."} or a string
- *          "platform":     "Javascript/Node.js",       // possible values "javascript", "javascript/Node.js" - more coming
- *          "mode":         "daemon",                   // possible values "daemon", "schedule", "subscribe"
- *          "schedule":     "0 0 * * *"                 // cron-style schedule. Only needed if mode=schedule
- *          "loglevel":     "info"                      // Adapters Log Level
- *      },
- *      "native": {                                     // the native object is available via adapter.config in your adapters code - use it for configuration
- *          "test1": true,
- *          "test2": 42
- *      }
- *  }
- *
- */
-
-/* jshint -W097 */// jshint strict:false
-/*jslint node: true */
 "use strict";
-
-// you have to require the utils module and call adapter function
-const utils =    require(__dirname + '/lib/utils'); // Get common adapter utils
-
-// you have to call the adapter function and pass a options object
-// name has to be set and has to be equal to adapters folder name and main file name excluding extension
-// adapter will be restarted automatically every time as the configuration changed, e.g system.adapter.template.0
+const utils =    require(__dirname + '/lib/utils');
 const adapter = utils.adapter('samsung2016');
 
 const webSocket = require('ws');
 const wol = require('wake_on_lan');
 const req = require('request-promise');
-
-// config params
-
 var sendKey = function(key, done) {
       const protocol = adapter.config.protocol;
       const ipAddress = adapter.config.ipAddress;
@@ -120,7 +77,7 @@ adapter.on('stateChange', function (id, state) {
     adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
     
     // Switch TV on or off
-    if ( id == 'samsung2016.0.Power') {
+    if ( id == 'samsung2016' + adapter.instance + 'Power') {
         if(state.val && !state.ack || state.val == "on" && !state.ack) {
 			//first try traditional power on key, in case of short standby
 			sendKey('KEY_POWER', function(err) {
@@ -152,7 +109,7 @@ adapter.on('stateChange', function (id, state) {
     
     //Send a key to TV
     
-    if ( id == 'samsung2016.0.sendKey') {       
+    if ( id == 'samsung2016' + adapter.instance + 'sendKey') {       
         adapter.log.info("Will now send key " + state.val + " to TV");
           
         sendKey(state.val, function(err) {
@@ -216,7 +173,7 @@ function main() {
     adapter.setObject('PowerOn', {
         type: 'state',
         common: {
-            name: 'sendKey',
+            name: 'power state of TV',
             type: 'boolean',
             role: 'state'
         },
@@ -236,6 +193,7 @@ function main() {
     adapter.log.info('config mac address : ' + adapter.config.macAddress);
     adapter.log.info('config pollingPort : ' + adapter.config.pollingPort);
     adapter.log.info('config pollingInterval : ' + adapter.config.pollingInterval);
+    adapter.log.info('adapter instance : ' + adapter.instance);
 	
     const pollingPort = parseFloat(adapter.config.pollingPort);
     const pollingInterval = parseFloat(adapter.config.pollingInterval);
@@ -244,20 +202,20 @@ function main() {
     {
 	    setInterval(function(){ 
 		    rp({uri:'http://' + ipAddress + ':' + pollingPort, timeout:10000})
-    			.then(
-				adapter.log.info('TV state OK');
-              			adapter.setState('PowerOn', true, true, function (err) {
-              				// analyse if the state could be set (because of permissions)
-               				if (err) adapter.log.error(err);
-              			});
-		    	)
-    			.catch(function (error) {       	      
-				adapter.log.info(error);
-				adapter.log.info('TV state NOK');
-              			adapter.setState('PowerOn', false, true, function (err) {
-              				// analyse if the state could be set (because of permissions)
-               				if (err) adapter.log.error(err);
-              			});
+    			.then(()=> {
+                    adapter.log.debug('TV state OK');
+                    adapter.setState('PowerOn', true, true, function (err) {
+                     if (err) adapter.log.error(err);
+                });
+                })
+    			.catch(error => {       	      
+				    adapter.log.error(error);
+				    adapter.log.debug('TV state NOK');
+              		adapter.setState('PowerOn', false, true, function (err) {
+              			// analyse if the state could be set (because of permissions)
+               			if (err) adapter.log.error(err);
+                    });
+                })
 	    }, pollingInterval * 1000)
     
     }
