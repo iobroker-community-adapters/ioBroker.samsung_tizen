@@ -269,7 +269,6 @@ function main() {
 	    }
     	adapter.log.info(response.statusCode)
   })
-  .pipe(request.put('http://mysite.com/img.png'))
     }, pollingInterval * 1000)
     
     }
