@@ -83,7 +83,7 @@ function powerOnStatePolling(){
                 });
             }
         })
-    }, parseFloat(adapter.config.pollingInterval) > 0) * 1000)
+    }, parseFloat(adapter.config.pollingInterval) * 1000)
 }
 
 adapter.on('ready', function () {
