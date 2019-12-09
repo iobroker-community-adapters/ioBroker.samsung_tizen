@@ -60,7 +60,7 @@ Work on my 2018 model( NU Series7 )
 
 #### Polling Endpoint
 
-An http endpoint to poll the state 
+a http endpoint to poll the state 
 default: 9110/ip_control
 
 #### Polling Interval 
