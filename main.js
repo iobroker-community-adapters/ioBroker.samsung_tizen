@@ -68,8 +68,7 @@ adapter.on('stateChange', function (id, state) {
                   }
          });    
           
-     }
-     if ( id !== adapter.name + '.' + adapter.instance + 'control.sendKey' || id !== adapter.name + '.' + adapter.instance + 'control.power') {
+     } else {
         const key = id.split('.')
         adapter.setState('control.sendKey', 'KEY_' + key[3].toUpperCase(), true, function (err) {
             if (err) adapter.log.error(err);
