@@ -46,11 +46,11 @@ adapter.on('unload', function (callback) {
 adapter.on('stateChange', function (id, state) {
   const key = id.split('.');
   if (key[3].toUpperCase() === 'SENDKEY'){
-    sendKey('KEY_' + key[3].toUpperCase(), function(err) {
+    sendKey(state.val, function(err) {
       if (err) {
-          adapter.log.info('Error in sendKey: KEY_' + key[3].toUpperCase() + ' error: ' + err);
+          adapter.log.info('Error in sendKey: ' + state.val + ' error: ' + err);
       } else {
-            adapter.log.info('sendKey: KEY_' + key[3].toUpperCase() + ' successfully sent to tv');
+            adapter.log.info('sendKey: ' + state.val + ' successfully sent to tv');
       }});
   } else {
     sendKey('KEY_' + key[3].toUpperCase(), function(err) {
