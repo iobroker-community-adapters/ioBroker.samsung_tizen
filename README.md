@@ -60,6 +60,6 @@ default: 9110/ip_control
 
 #### Polling Interval 
 
-how often should the poll request be sent
+how often the poll request shall be sent
 default: 60 seconds
 can be deactiveted with value "0"
