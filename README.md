@@ -49,11 +49,6 @@ MAC Address of your Samsung TV, will be used for WakeOnLAN.
 Does only work if your TV is connected per wire and not wireless.
 If your TV is wireless connected it can only powered on from shortStandby.
 
-ioBroker uses "in memory" database to hold the data and saves it on disk with resonable intervals. There are two types of
-storage:
-- states (values)
-- objects (meta/configuration information)
-
 ### TV state polling (experimental)
 
 Work on my 2018 model( NU Series7 )
