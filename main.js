@@ -67,7 +67,10 @@ adapter.on('stateChange', function (id, state) {
 function powerOnStatePolling(){
     setInterval(function(){
         let powerState;
-        adapter.getState('powerOn', function (err, state) {powerState = state.val;}); 
+        adapter.getState('powerOn', function (err, state) {
+		if (state.val == null){powerState = false;}
+		if (state.val != null){powerState = state.val;}
+	}); 
         req({uri:'http://' + adapter.config.ipAddress + ':' + adapter.config.pollingEndpoint, timeout:10000})
         .then(()=> {
             if(!powerState){
