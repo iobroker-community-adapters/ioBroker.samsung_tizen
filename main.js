@@ -45,37 +45,46 @@ adapter.on('unload', function (callback) {
 
 adapter.on('stateChange', function (id, state) {
     adapter.log.info('stateChange: ' + id + ' ' + JSON.stringify(state));
-    
-    if ( id === adapter.name + '.' + adapter.instance + 'control.power') {
-			sendKey('KEY_POWER', function(err) {
-                  if (err) {
-                      adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
-                      wol.wake(adapter.config.macAddress, function(error) {
-                          if (error) {adapter.log.error('Cannot wake TV with MAC: ' + adapter.config.macAddress + ' error: ' + error )
-                          } else {adapter.log.info('WakeOnLAN successfully executed for MAC: ' + adapter.config.macAddress)}
-                        });
-                  } else {
-                        adapter.log.info('sendKey: ' + state.val + ' successfully sent to tv');
-                }
-              });  
-    }
-    if ( id === adapter.name + '.' + adapter.instance + 'control.sendKey') {       
-        sendKey(state.val, function(err) {
-                  if (err) {
-                      adapter.log.info('Error in sendKey: ' + state.val + ' error: ' + err);
-                  } else {
-                        adapter.log.info('sendKey: ' + state.val + ' successfully sent to tv');
-                  }
-         });    
-          
-     } else {
+
         const key = id.split('.')
-        adapter.setState('control.sendKey', 'KEY_' + key[3].toUpperCase(), true, function (err) {
-            if (err) adapter.log.error(err);
-        });  
-          
-     }
+        sendKey('KEY_' + key[3].toUpperCase(), function(err) {
+            if (err && key[3].toUpperCase() === 'POWER'){
+                adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
+                wol.wake(adapter.config.macAddress, function(error) {
+                    if (error) {adapter.log.error('Cannot wake TV with MAC: ' + adapter.config.macAddress + ' error: ' + error )
+                    } else {adapter.log.info('WakeOnLAN successfully executed for MAC: ' + adapter.config.macAddress)}
+                  }); 
+            }
+            if (err) {
+                adapter.log.info('Error in sendKey: KEY_' + key[3].toUpperCase() + ' error: ' + err);
+            } else {
+                  adapter.log.info('sendKey: KEY_' + key[3].toUpperCase() + ' successfully sent to tv');
+            }
+   });  
+     
 });
+
+function powerOnStatePolling(){
+    setInterval(function(){
+        let powerState;
+        adapter.getState('powerOn', function (err, state) {powerState = state.val;}); 
+        req({uri:'http://' + adapter.config.ipAddress + ':' + adapter.config.pollingEndpoint, timeout:10000})
+        .then(()=> {
+            if(!powerState){
+                adapter.setState('powerOn', true, true, function (err) {
+                    if (err) adapter.log.error(err);
+                });
+            }
+        })
+        .catch(error => {       	   
+            if(powerState){
+                adapter.setState('powerOn', false, true, function (err) {
+                    if (err) adapter.log.error(err);
+                });
+            }
+        })
+    }, pollingInterval * 1000)
+}
 
 adapter.on('ready', function () {
     main();
@@ -419,31 +428,8 @@ function main() {
     });    
     
     adapter.subscribeStates('control.*');
-	
-    const pollingInterval = parseFloat(adapter.config.pollingInterval);
-	
-    if (pollingInterval > 0) 
-    { 
-        setInterval(function(){
-            let powerState;
-            adapter.getState('powerOn', function (err, state) {powerState = state.val;}); 
-            req({uri:'http://' + adapter.config.ipAddress + ':' + adapter.config.pollingEndpoint, timeout:10000})
-            .then(()=> {
-                if(!powerState){
-                    adapter.setState('powerOn', true, true, function (err) {
-                        if (err) adapter.log.error(err);
-                    });
-                }
-            })
-            .catch(error => {       	   
-                if(powerState){
-                    adapter.setState('powerOn', false, true, function (err) {
-                        if (err) adapter.log.error(err);
-                    });
-                }
-            })
-	    }, pollingInterval * 1000)
-        
-    }
+		
+    if (parseFloat(adapter.config.pollingInterval) > 0){powerOnStatePolling();}
+
     adapter.log.info(adapter.name + '.' + adapter.instance + ' started with config : ' + JSON.stringify(adapter.config));
 }
