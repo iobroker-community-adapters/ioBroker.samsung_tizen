@@ -22,7 +22,7 @@
 		"keywords":                 ["samsung", "home"],
         "readme":                   "https://github.com/dahuby/ioBroker.samsungTizen/blob/master/README.md",
 		"loglevel":                 "info",
-        "type":                     "common adapters"
+        "type":                     "multimedia"
         
     },
     "native": {
