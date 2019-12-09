@@ -44,8 +44,6 @@ adapter.on('unload', function (callback) {
 });
 
 adapter.on('stateChange', function (id, state) {
-    adapter.log.info('stateChange: ' + id + ' ' + JSON.stringify(state));
-
         const key = id.split('.')
         sendKey('KEY_' + key[3].toUpperCase(), function(err) {
             if (err && key[3].toUpperCase() === 'POWER'){
@@ -66,25 +64,16 @@ adapter.on('stateChange', function (id, state) {
 
 function powerOnStatePolling(){
     setInterval(function(){
-        let powerState;
-        adapter.getState('powerOn', function (err, state) {
-		if (state.val == null){powerState = false;}
-		if (state.val != null){powerState = state.val;}
-	}); 
         req({uri:'http://' + adapter.config.ipAddress + ':' + adapter.config.pollingEndpoint, timeout:10000})
         .then(()=> {
-            if(!powerState){
                 adapter.setState('powerOn', true, true, function (err) {
                     if (err) adapter.log.error(err);
                 });
-            }
         })
         .catch(error => {       	   
-            if(powerState){
                 adapter.setState('powerOn', false, true, function (err) {
                     if (err) adapter.log.error(err);
                 });
-            }
         })
     }, parseFloat(adapter.config.pollingInterval) * 1000)
 }
