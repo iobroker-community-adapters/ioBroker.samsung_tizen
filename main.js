@@ -44,22 +44,31 @@ adapter.on('unload', function (callback) {
 });
 
 adapter.on('stateChange', function (id, state) {
-        const key = id.split('.')
-        sendKey('KEY_' + key[3].toUpperCase(), function(err) {
-            if (err && key[3].toUpperCase() === 'POWER'){
-                adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
-                wol.wake(adapter.config.macAddress, function(error) {
-                    if (error) {adapter.log.error('Cannot wake TV with MAC: ' + adapter.config.macAddress + ' error: ' + error )
-                    } else {adapter.log.info('WakeOnLAN successfully executed for MAC: ' + adapter.config.macAddress)}
-                  }); 
-            }
-            if (err) {
-                adapter.log.info('Error in sendKey: KEY_' + key[3].toUpperCase() + ' error: ' + err);
-            } else {
-                  adapter.log.info('sendKey: KEY_' + key[3].toUpperCase() + ' successfully sent to tv');
-            }
-   });  
-     
+  const key = id.split('.');
+  if (key[3].toUpperCase() === 'SENDKEY'){
+    sendKey('KEY_' + key[3].toUpperCase(), function(err) {
+      if (err) {
+          adapter.log.info('Error in sendKey: KEY_' + key[3].toUpperCase() + ' error: ' + err);
+      } else {
+            adapter.log.info('sendKey: KEY_' + key[3].toUpperCase() + ' successfully sent to tv');
+      }});
+  } else {
+    sendKey('KEY_' + key[3].toUpperCase(), function(err) {
+      if (err && key[3].toUpperCase() === 'POWER'){
+        adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
+          wol.wake(adapter.config.macAddress, function(error) {
+            if (error) {adapter.log.error('Cannot wake TV with MAC: ' + adapter.config.macAddress + ' error: ' + error )}
+            else {adapter.log.info('WakeOnLAN successfully executed for MAC: ' + adapter.config.macAddress)}
+          });
+      }
+      if (err) {
+        adapter.log.info('Error in sendKey: KEY_' + key[3].toUpperCase() + ' error: ' + err);
+      } else {
+        adapter.log.info('sendKey: KEY_' + key[3].toUpperCase() + ' successfully sent to tv');
+        }
+      });
+    }
+
 });
 
 function powerOnStatePolling(){
