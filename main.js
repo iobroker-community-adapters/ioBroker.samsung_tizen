@@ -63,6 +63,9 @@ adapter.on('unload', function (callback) {
 
 adapter.on('stateChange', function (id, state) {
   const key = id.split('.');
+  if (key[3] === 'getInstalledApps'){
+   getApps();
+  } 
   if (key[3].toUpperCase() === 'SENDKEY'){
     sendKey(state.val, function(err) {
       if (err) {
@@ -110,7 +113,15 @@ adapter.on('ready', function () {
 });
 
 function main() {
-
+    adapter.setObject('apps.getInstalledApps', {
+        type: 'state',
+        common: {
+            name: 'getInstalledApps',
+            type: 'boolean',
+            role: 'button'
+        },
+        native: {}
+    });
     adapter.setObject('control.power', {
         type: 'state',
         common: {
@@ -447,6 +458,7 @@ function main() {
     });    
     
     adapter.subscribeStates('control.*');
+    adapter.subscribeStates('apps.*');
 		
     if (parseFloat(adapter.config.pollingInterval) > 0){powerOnStatePolling();}
 
