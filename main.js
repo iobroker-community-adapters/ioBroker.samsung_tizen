@@ -2,10 +2,11 @@
 const utils =    require(__dirname + '/lib/utils');
 const adapter = utils.adapter('samsungTizen');
 
-const webSocket = require('ws');
+const WebSocket = require('ws');
 const wol = require('wake_on_lan');
 const req = require('request-promise');
-let sendKey = (key, done) => {
+
+let sendKey = (key) => {
     const token = parseFloat(adapter.config.token);
     let wsUrl;
     if (token === 0) {
@@ -14,27 +15,23 @@ let sendKey = (key, done) => {
     if (token > 0) {
         wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64') + '&token=' + token;
     }
-      adapter.log.info('open connection: ' + wsUrl + ', to sendKey: ' + key );
-      let ws = new webSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
-        done(new Error(error));
-      });
-      ws.on('error', function (e) {
-        done(e);
-      });
-      ws.on('message', function(data, flags) {
-        let cmd =  {"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}};
-        data = JSON.parse(data);
-        if(data.event == "ms.channel.connect") {
-          ws.send(JSON.stringify(cmd));
-          setTimeout(function() {
+    adapter.log.info('open connection: ' + wsUrl + ', to sendKey: ' + key );
+    const ws = new WebSocket(wsUrl, {rejectUnauthorized : false});
+    ws.on('open', function open() {
+        ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
+    });
+    ws.on('message', function incoming(data) {
+        adapter.log.info(data);
+        setTimeout(function() {
             ws.close(); 
           }, 1000);
-          done(0);
-        }
-      });
+    });
+    ws.on('error', function (e) {
+      adapter.log.info(e);
+    });
 };
 
-let getApps = (done) => {
+let getApps = () => {
     const token = parseFloat(adapter.config.token);
     let wsUrl;
     if (token === 0) {
@@ -44,25 +41,18 @@ let getApps = (done) => {
         wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64') + '&token=' + token;
     }
     adapter.log.info('open connection: ' + wsUrl + ', to get installed Apps: ' );
-    let ws = new webSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
-      done(new Error(error));
+    const ws = new WebSocket(wsUrl, {rejectUnauthorized : false});
+    ws.on('open', function open() {
+        ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
+    });
+    ws.on('message', function incoming(data) {
+        adapter.log.info(data);
+        setTimeout(function() {
+            ws.close(); 
+          }, 1000);
     });
     ws.on('error', function (e) {
-      done(e);
-    });
-    ws.on('message', function(data, flags) {
-      var cmd =  {"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}};
-      data = JSON.parse(data);
-      if(data.event == "ms.channel.connect") {
-        ws.send(JSON.stringify(cmd));
-        ws.on('message', function(data, flags) {
-            console.log(data);
-        })
-        setTimeout(function() {
-          ws.close(); 
-        }, 1000);
-        done(0);
-      }
+      adapter.log.info(e);
     });
 };
 
@@ -71,7 +61,6 @@ adapter.on('unload', function (callback) {
 });
 
 adapter.on('stateChange', function (id, state) {
- adapter.log.info(id)
   const key = id.split('.');
   if (id === adapter.name + '.' + adapter.instance + '.apps.getInstalledApps'){
    getApps();
