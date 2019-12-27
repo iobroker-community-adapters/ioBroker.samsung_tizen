@@ -73,7 +73,7 @@ adapter.on('unload', function (callback) {
 adapter.on('stateChange', function (id, state) {
  adapter.log.info(id)
   const key = id.split('.');
-  if (id === '0.apps.getInstalledApps'){
+  if (id === adapter.name + '.' + adapter.instance + '.apps.getInstalledApps'){
    getApps();
   } 
   if (key[3].toUpperCase() === 'SENDKEY'){
@@ -83,7 +83,7 @@ adapter.on('stateChange', function (id, state) {
       } else {
             adapter.log.info('sendKey: ' + state.val + ' successfully sent to tv');
       }});
-  } else {
+  } else if (key[2] === 'control') {
     sendKey('KEY_' + key[3].toUpperCase(), function(err) {
       if (err && key[3].toUpperCase() === 'POWER'){
         adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
