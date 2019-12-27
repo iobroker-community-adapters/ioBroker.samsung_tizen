@@ -55,7 +55,9 @@ let getApps = (done) => {
       data = JSON.parse(data);
       if(data.event == "ms.channel.connect") {
         ws.send(JSON.stringify(cmd));
-        adapter.log.info(ws.send(JSON.stringify(cmd)));
+        ws.on('message', function(data, flags) {
+            console.log(data);
+        })
         setTimeout(function() {
           ws.close(); 
         }, 1000);
@@ -69,8 +71,9 @@ adapter.on('unload', function (callback) {
 });
 
 adapter.on('stateChange', function (id, state) {
+ adapter.log.info(id)
   const key = id.split('.');
-  if (key[3] === 'getInstalledApps'){
+  if (id === '0.apps.getInstalledApps'){
    getApps();
   } 
   if (key[3].toUpperCase() === 'SENDKEY'){
