@@ -462,5 +462,5 @@ function main() {
 		
     if (parseFloat(adapter.config.pollingInterval) > 0){powerOnStatePolling();}
 
-    adapter.log.info(adapter.name + '.' + adapter.instance + ' started with config : ' + JSON.stringify(adapter.config));
+    adapter.log.info(adapter.name + '.' + adapter.instance + ' NIGHTLY started with config : ' + JSON.stringify(adapter.config));
 }
