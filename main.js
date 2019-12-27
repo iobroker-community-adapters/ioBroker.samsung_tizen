@@ -5,16 +5,15 @@ const adapter = utils.adapter('samsungTizen');
 const webSocket = require('ws');
 const wol = require('wake_on_lan');
 const req = require('request-promise');
-let wsUrl = () => {    
-    const token = parseFloat(adapter.config.token);  
+let sendKey = (key, done) => {
+    const token = parseFloat(adapter.config.token);
+    let wsUrl;
     if (token === 0) {
-        return adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');  
+        wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
     }
     if (token > 0) {
-        return adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64') + '&token=' + token;
-    } 
-};
-let sendKey = (key, done) => {
+        wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64') + '&token=' + token;
+    }
       adapter.log.info('open connection: ' + wsUrl + ', to sendKey: ' + key );
       let ws = new webSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
         done(new Error(error));
@@ -36,6 +35,14 @@ let sendKey = (key, done) => {
 };
 
 let getApps = (done) => {
+    const token = parseFloat(adapter.config.token);
+    let wsUrl;
+    if (token === 0) {
+        wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
+    }
+    if (token > 0) {
+        wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64') + '&token=' + token;
+    }
     adapter.log.info('open connection: ' + wsUrl + ', to get installed Apps: ' );
     let ws = new webSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
       done(new Error(error));
