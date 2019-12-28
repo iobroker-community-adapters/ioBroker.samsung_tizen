@@ -1,6 +1,6 @@
 {
   "name": "iobroker.samsungTizen",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "ioBroker adapter to control samsung tizenOs tvs",
   "author": {
     "name": "DaHuby"
@@ -12,7 +12,6 @@
     }
   ],
   "homepage": "https://github.com/dahuby/iobroker.samsungTizen",
-  "license": "MIT",
   "keywords": [
     "ioBroker",
     "samsung",

@@ -25,9 +25,11 @@ let sendKey = (key) => {
         setTimeout(function() {
             ws.close(); 
           }, 1000);
-    });
+          return data;
+        });
     ws.on('error', function (e) {
       adapter.log.info(e);
+      return e;
     });
 };
 
@@ -40,7 +42,7 @@ let getApps = () => {
     if (token > 0) {
         wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64') + '&token=' + token;
     }
-    adapter.log.info('open connection: ' + wsUrl + ', to get installed Apps: ' );
+    adapter.log.info('open connection: ' + wsUrl + ', to get installed Apps' );
     const ws = new WebSocket(wsUrl, {rejectUnauthorized : false});
     ws.on('open', function open() {
         ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
@@ -50,19 +52,17 @@ let getApps = () => {
         setTimeout(function() {
             ws.close(); 
           }, 1000);
+          return data;
     });
     ws.on('error', function (e) {
       adapter.log.info(e);
+      return e;
     });
 };
 
-adapter.on('unload', function (callback) {
-    try {callback();} catch (e) {callback();}
-});
-
 adapter.on('stateChange', function (id, state) {
   const key = id.split('.');
-  if (id === adapter.name + '.' + adapter.instance + '.apps.getInstalledApps'){
+  if (id === adapter.name + '.' + adapter.instance + '.getInstalledApps'){
    getApps();
   } 
   if (key[3].toUpperCase() === 'SENDKEY'){
@@ -112,7 +112,7 @@ adapter.on('ready', function () {
 });
 
 function main() {
-    adapter.setObject('apps.getInstalledApps', {
+    adapter.setObject('.getInstalledApps', {
         type: 'state',
         common: {
             name: 'getInstalledApps',
