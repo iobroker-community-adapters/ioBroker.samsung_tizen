@@ -6,7 +6,7 @@ const WebSocket = require('ws');
 const wol = require('wake_on_lan');
 const req = require('request-promise');
 
-async function sendKey(key) {
+function sendKey(key) {
     const token = parseFloat(adapter.config.token);
     let wsUrl;
     if (token === 0) {
@@ -33,7 +33,7 @@ async function sendKey(key) {
     });
 };
 
-async function getApps(){
+function getApps(){
     const token = parseFloat(adapter.config.token);
     let wsUrl;
     if (token === 0) {
@@ -63,13 +63,13 @@ async function getApps(){
 adapter.on('stateChange', function (id, state) {
   const key = id.split('.');
   if (id === adapter.name + '.' + adapter.instance + '.getInstalledApps'){
-   await getApps();
+    getApps();
   } 
   if (key[3].toUpperCase() === 'SENDKEY'){
-    let response = await sendKey(state.val) ;
+    let response = sendKey(state.val) ;
     adapter.log.info(response);
   } else if (key[2] === 'control') {
-    let response = await sendKey('KEY_' + key[3].toUpperCase()) ;
+    let response = sendKey('KEY_' + key[3].toUpperCase()) ;
     adapter.log.info(response);
       if (err && key[3].toUpperCase() === 'POWER'){
         adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
