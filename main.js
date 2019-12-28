@@ -50,8 +50,8 @@ let getApps = (done) => {
             setTimeout(function() {
                 ws.close(); 
             }, 1000);
-            adapter.log.info(data.data.length);
-            adapter.log.info(data.data);
+            adapter.log.info(data.data[0].length);
+            adapter.log.info(data.data[0]);
             done(0);
         }
     });
