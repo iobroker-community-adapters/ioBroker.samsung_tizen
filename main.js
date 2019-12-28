@@ -46,13 +46,24 @@ let getApps = (done) => {
             ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
         }
         if(data.event == "ed.installedApp.get") {
-            ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
             setTimeout(function() {
                 ws.close(); 
             }, 1000);
-            adapter.log.info(JSON.stringify(data.data.data));
+            adapter.log.info(JSON.stringify(data.data.data[0]));
             adapter.log.info(data.data.data.length);
-            adapter.log.info(data.data.data[0]);
+            adapter.getStates('apps.*');
+            for(let i = 0; i <= data.data.data.length; i++){
+                adapter.setObject('apps.start'+data.data.data[i].name, {
+                    type: 'state',
+                    common: {
+                        name: data.data.data[i].appId,
+                        type: 'boolean',
+                        role: 'button'
+                    },
+                    native: {}
+                });
+            }
+
             done(0);
         }
     });
@@ -460,6 +471,7 @@ function main() {
     
     adapter.subscribeStates('control.*');
     adapter.subscribeStates('settings.*');
+    adapter.subscribeStates('apps.*');
 		
     if (parseFloat(adapter.config.pollingInterval) > 0){powerOnStatePolling();}
 
