@@ -60,7 +60,7 @@ let getApps = (done) => {
 
 adapter.on('stateChange', function (id, state) {
   const key = id.split('.');
-  if (id === adapter.name + '.' + adapter.instance + '.getInstalledApps'){
+  if (id === adapter.name + '.' + adapter.instance + 'settings.getInstalledApps'){
     getApps(function(err) {
         if (err) {
             adapter.log.info('Error in getInstalledApps error: ' + err);
@@ -114,7 +114,7 @@ adapter.on('ready', function () {
 });
 
 function main() {
-    adapter.setObject('getInstalledApps', {
+    adapter.setObject('settings.getInstalledApps', {
         type: 'state',
         common: {
             name: 'getInstalledApps',
@@ -459,7 +459,7 @@ function main() {
     });    
     
     adapter.subscribeStates('control.*');
-    adapter.subscribeStates('apps.*');
+    adapter.subscribeStates('settings.*');
 		
     if (parseFloat(adapter.config.pollingInterval) > 0){powerOnStatePolling();}
 
