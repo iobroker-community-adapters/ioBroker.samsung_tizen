@@ -32,7 +32,6 @@ let sendKey = (key, done) => {
             setTimeout(function() {
                 ws.close(); 
             }, 1500);
-          done(0);
         }
       });
 };
