@@ -49,8 +49,6 @@ let getApps = (done) => {
             setTimeout(function() {
                 ws.close(); 
             }, 1000);
-            adapter.log.info(JSON.stringify(data.data.data[0]));
-            adapter.log.info(data.data.data.length);
             for(let i = 0; i <= data.data.data.length; i++){
                 adapter.setObject('apps.start_'+data.data.data[i].name, {
                     type: 'state',
@@ -68,6 +66,7 @@ let getApps = (done) => {
 }
 
 let startApp = (app, done) => {
+    adapter.log.info(app);
     const token = parseFloat(adapter.config.token);
     let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
     if (token > 0) {wsUrl = wsUrl + '&token=' + token;}
@@ -84,8 +83,6 @@ let startApp = (app, done) => {
             ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
         }
         if(data.event == "ed.installedApp.get") {
-            adapter.log.info(JSON.stringify(data.data.data[0]));
-            adapter.log.info(data.data.data.length);
             for(let i = 0; i <= data.data.data.length; i++){
                 if( app === data.data.data[i].name){
                     ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.apps.launch", "to":"host", "data" :{ "action_type" : data.data.data[i].app_type == 2 ? 'DEEP_LINK' : 'NATIVE_LAUNCH',"appId":data.data.data[i].appId}}}));
@@ -108,7 +105,7 @@ adapter.on('stateChange', function (id, state) {
               adapter.log.info('getInstalledApps successfully sent to tv');
         }})  
     } 
-    if (key[3].toUpperCase() === 'APPS'){
+    if (key[2] === 'apps'){
         const app = key[3].split('-'); 
         startApp(app[1] ,function(err) {
             if (err) {
