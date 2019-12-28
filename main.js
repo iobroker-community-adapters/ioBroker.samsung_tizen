@@ -11,7 +11,7 @@ let sendKey = (key, done) => {
     let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
     if (token > 0) {wsUrl = wsUrl + '&token=' + token;}
     adapter.log.info('open connection: ' + wsUrl + ', to sendKey: ' + key );
-    var ws = new webSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
+    var ws = new WebSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
         done(new Error(error));
       });
       ws.on('error', function (e) {
