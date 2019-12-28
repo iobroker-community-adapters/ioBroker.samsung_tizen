@@ -18,16 +18,14 @@ let sendKey = (key, done) => {
       done(e);
     });
     ws.on('message', function(data, flags) {
-      adapter.log.info(data);
       data = JSON.parse(data);
       if(data.event == "ms.channel.connect") {
         ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
         setTimeout(function() {
           ws.close(); 
         }, 1000);
-      }else{
-        adapter.log.info(data);
-    }
+        done(0);
+      }
     });
 };
 
@@ -43,15 +41,18 @@ let getApps = (done) => {
       done(e);
     });
     ws.on('message', function(data, flags) {
-        adapter.log.info(data);
         data = JSON.parse(data);
         if(data.event == "ms.channel.connect") {
+            ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
+        }
+        if(data.event == "ed.installedApp.get") {
             ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
             setTimeout(function() {
                 ws.close(); 
             }, 1000);
-        }else{
-            adapter.log.info(data);
+            adapter.log.info(data.data.lenght);
+            adapter.log.info(data.data[0]);
+            done(0);
         }
     });
 }
