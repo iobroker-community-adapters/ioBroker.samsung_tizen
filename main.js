@@ -29,9 +29,9 @@ let sendKey = (key, done) => {
                 }, 1000);
             done(0);
             });
-          setTimeout(function() {
-            ws.close(); 
-          }, 1000);
+            setTimeout(function() {
+                ws.close(); 
+            }, 1500);
           done(0);
         }
       });
