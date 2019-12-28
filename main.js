@@ -112,9 +112,9 @@ adapter.on('stateChange', function (id, state) {
         const app = key[3].split('-'); 
         startApp(app[1] ,function(err) {
             if (err) {
-                adapter.log.info('Error in start app, error: ' + err);
+                adapter.log.info('Error in start app ' + app[1] +', error: ' + err);
             } else {
-                  adapter.log.info('start App ' + app[1] +' successfully sent to tv');
+                  adapter.log.info('start app ' + app[1] +' successfully sent to tv');
             }})  
         } 
   if (key[3].toUpperCase() === 'SENDKEY'){
