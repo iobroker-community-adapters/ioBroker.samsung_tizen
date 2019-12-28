@@ -38,6 +38,9 @@ let getApps = (done) => {
       done(new Error(error));
     });
     ws.on('error', function (e) {
+        adapter.setState('control.power', true, true, function (err) {
+            if (err) adapter.log.error(err);
+        });
       done(e);
     });
     ws.on('message', function(data, flags) {
@@ -75,6 +78,9 @@ let startApp = (app, done) => {
       done(new Error(error));
     });
     ws.on('error', function (e) {
+        adapter.setState('control.power', true, true, function (err) {
+            if (err) adapter.log.error(err);
+        });
       done(e);
     });
     ws.on('message', function(data, flags) {
@@ -100,19 +106,31 @@ adapter.on('stateChange', function (id, state) {
   if (id === adapter.name + '.' + adapter.instance + '.settings.getInstalledApps'){
     getApps(function(err) {
         if (err) {
-            adapter.log.info('Error in getInstalledApps, error: ' + err);
+            adapter.log.info('Error in getInstalledApps, request will be retried in 5 seconds | error: ' + err);
+            setTimeout(getApps(function(err) {
+                if (err) {
+                    adapter.log.info('Error in getInstalledApps, error: ' + err);
+                } else {
+                      adapter.log.info('getInstalledApps successfully sent to tv');
+                }}), 5000);
         } else {
               adapter.log.info('getInstalledApps successfully sent to tv');
-        }})  
+        }});
     } 
     if (key[2] === 'apps'){
         const app = key[3].split('-'); 
         startApp(app[1] ,function(err) {
             if (err) {
                 adapter.log.info('Error in start app ' + app[1] +', error: ' + err);
+                setTimeout(startApp(app[1] ,function(err) {
+                    if (err) {
+                        adapter.log.info('Error in start app ' + app[1] +', request will be retried in 5 seconds | error: ' + err);
+                    } else {
+                          adapter.log.info('start app ' + app[1] +' successfully sent to tv');
+                    }}),5000); 
             } else {
                   adapter.log.info('start app ' + app[1] +' successfully sent to tv');
-            }})  
+            }}); 
         } 
   if (key[3].toUpperCase() === 'SENDKEY'){
     sendKey(state.val, function(err) {
