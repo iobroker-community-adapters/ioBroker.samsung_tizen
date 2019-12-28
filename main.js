@@ -22,7 +22,6 @@ let sendKey = (key, done) => {
             ws.close();
             adapter.log.info('close connection: ' + wsUrl + ', to sendKey: ' + key );
             }, 1000);
-        done(0);  
         });
     ws.on('error', function (e) {
         setTimeout(function() {
@@ -41,7 +40,7 @@ let getApps = (done) => {
     adapter.log.info('open connection: ' + wsUrl + ', to get installed apps');
     let ws = new WebSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
       done(new Error(error));
-      ws.on('open', function open() {
+      ws.on('connection', function connection(ws) {
         ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
       });       
       ws.on('message', function incoming(data) {
@@ -50,7 +49,6 @@ let getApps = (done) => {
             ws.close();
             adapter.log.info('close connection: ' + wsUrl + ', to sendKey: ' + key );
             }, 1000);
-        done(0);  
         });
     ws.on('error', function (e) {
         setTimeout(function() {
