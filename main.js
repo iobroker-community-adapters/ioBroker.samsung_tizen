@@ -13,23 +13,21 @@ let sendKey = (key, done) => {
     adapter.log.info('open connection: ' + wsUrl + ', to sendKey: ' + key );
     var ws = new WebSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
       done(new Error(error));
-      ws.on('open', function open() {
-        ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
-    });       
-      ws.on('message', function incoming(data) {
-        adapter.log.info(data);
-        setTimeout(function() {
-            ws.close();
-            adapter.log.info('close connection: ' + wsUrl + ', to sendKey: ' + key );
-            }, 1000);
-        });
+    });
     ws.on('error', function (e) {
+      done(e);
+    });
+    ws.on('message', function(data, flags) {
+      adapter.log.info(data);
+      data = JSON.parse(data);
+      if(data.event == "ms.channel.connect") {
+        ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
         setTimeout(function() {
-            ws.close(); 
-            adapter.log.info('close connection: ' + wsUrl + ', to sendKey: ' + key );
-            }, 1000);
-        done(e);
-        });
+          ws.close(); 
+        }, 1000);
+      }else{
+        adapter.log.info(data);
+    }
     });
 };
 
@@ -40,23 +38,21 @@ let getApps = (done) => {
     adapter.log.info('open connection: ' + wsUrl + ', to get installed apps');
     let ws = new WebSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
       done(new Error(error));
-      ws.on('connection', function connection(ws) {
-        ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
-      });       
-      ws.on('message', function incoming(data) {
-        adapter.log.info(data);
-        setTimeout(function() {
-            ws.close();
-            adapter.log.info('close connection: ' + wsUrl + ', to sendKey: ' + key );
-            }, 1000);
-        });
+    });
     ws.on('error', function (e) {
-        setTimeout(function() {
-            ws.close(); 
-            adapter.log.info('close connection: ' + wsUrl + ', to sendKey: ' + key );
+      done(e);
+    });
+    ws.on('message', function(data, flags) {
+        adapter.log.info(data);
+        data = JSON.parse(data);
+        if(data.event == "ms.channel.connect") {
+            ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
+            setTimeout(function() {
+                ws.close(); 
             }, 1000);
-        done(e);
-        });
+        }else{
+            adapter.log.info(data);
+        }
     });
 }
 
