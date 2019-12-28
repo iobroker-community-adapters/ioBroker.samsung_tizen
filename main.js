@@ -60,7 +60,7 @@ let getApps = (done) => {
 
 adapter.on('stateChange', function (id, state) {
   const key = id.split('.');
-  if (id === adapter.name + '.' + adapter.instance + 'settings.getInstalledApps'){
+  if (id === adapter.name + '.' + adapter.instance + '.settings.getInstalledApps'){
     getApps(function(err) {
         if (err) {
             adapter.log.info('Error in getInstalledApps error: ' + err);
