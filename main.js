@@ -25,7 +25,10 @@ let sendKey = (key, done) => {
         });
     });
     ws.on('error', function (e) {
-      done(e);
+        setTimeout(function() {
+            ws.close(); 
+            }, 1000);
+        done(e);
     });
 };
 
@@ -33,7 +36,7 @@ let getApps = (done) => {
     const token = parseFloat(adapter.config.token);
     let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
     if (token > 0) {wsUrl = wsUrl + '&token=' + token;}
-    adapter.log.info('open connection: ' + wsUrl + ', to sendKey: ' + key );
+    adapter.log.info('open connection: ' + wsUrl + ', to get installed apps');
     var ws = new WebSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
       done(new Error(error));
     ws.on('open', function open() {
@@ -48,15 +51,22 @@ let getApps = (done) => {
         });
     });
     ws.on('error', function (e) {
-      done(e);
+        setTimeout(function() {
+            ws.close(); 
+            }, 1000);
+        done(e);
     });
 };
 
 adapter.on('stateChange', function (id, state) {
   const key = id.split('.');
   if (id === adapter.name + '.' + adapter.instance + '.getInstalledApps'){
-   getApps();
-  } 
+    getApps(function(err) {
+        if (err) {
+            adapter.log.info('Error in getInstalledApps error: ' + err);
+        } else {
+              adapter.log.info('getInstalledApps successfully sent to tv');
+        }})  } 
   if (key[3].toUpperCase() === 'SENDKEY'){
     sendKey(state.val, function(err) {
       if (err) {
@@ -104,7 +114,7 @@ adapter.on('ready', function () {
 });
 
 function main() {
-    adapter.setObject('.getInstalledApps', {
+    adapter.setObject('getInstalledApps', {
         type: 'state',
         common: {
             name: 'getInstalledApps',
