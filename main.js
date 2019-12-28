@@ -11,28 +11,30 @@ let sendKey = (key, done) => {
     let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
     if (token > 0) {wsUrl = wsUrl + '&token=' + token;}
     adapter.log.info('open connection: ' + wsUrl + ', to sendKey: ' + key );
-    var ws = new WebSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
-      done(new Error(error));
-    ws.on('open', function open() {
-        setTimeout(function(){
-        ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
-        }), 1000});
-    ws.on('message', function incoming(data) {
-        adapter.log.info(data);
-        setTimeout(function() {
-            ws.close(); 
-            adapter.log.info('close connection: ' + wsUrl + ', to sendKey: ' + key );
-            }, 1000);
-        done(0);
-        });
-    });
-    ws.on('error', function (e) {
-        setTimeout(function() {
-            ws.close(); 
-            adapter.log.info('close connection: ' + wsUrl + ', to sendKey: ' + key );
-            }, 1000);
+    var ws = new webSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
+        done(new Error(error));
+      });
+      ws.on('error', function (e) {
         done(e);
-    });
+      });
+      ws.on('message', function(data, flags) {
+        data = JSON.parse(data);
+        if(data.event == "ms.channel.connect") {
+          ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
+          ws.on('message', function incoming(data) {
+            adapter.log.info(data);
+            setTimeout(function() {
+                ws.close();
+                adapter.log.info('close connection: ' + wsUrl + ', to sendKey: ' + key );
+                }, 1000);
+            done(0);
+            });
+          setTimeout(function() {
+            ws.close(); 
+          }, 1000);
+          done(0);
+        }
+      });
 };
 
 let getApps = (done) => {
