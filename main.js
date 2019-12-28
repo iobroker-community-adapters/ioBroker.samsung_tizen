@@ -6,7 +6,7 @@ const WebSocket = require('ws');
 const wol = require('wake_on_lan');
 const req = require('request-promise');
 
-let sendKey = (key) => {
+async function sendKey(key) {
     const token = parseFloat(adapter.config.token);
     let wsUrl;
     if (token === 0) {
@@ -26,16 +26,14 @@ let sendKey = (key) => {
         setTimeout(function() {
             ws.close(); 
           }, 1000);
-          return data;
+          return 'sendKey: ' + key + ' successfully sent to tv';
         });
     ws.on('error', function (e) {
-      adapter.log.info('e');
-      adapter.log.info(e);
       return e;
     });
 };
 
-let getApps = () => {
+async function getApps(){
     const token = parseFloat(adapter.config.token);
     let wsUrl;
     if (token === 0) {
@@ -65,17 +63,14 @@ let getApps = () => {
 adapter.on('stateChange', function (id, state) {
   const key = id.split('.');
   if (id === adapter.name + '.' + adapter.instance + '.getInstalledApps'){
-   getApps();
+   await getApps();
   } 
   if (key[3].toUpperCase() === 'SENDKEY'){
-    sendKey(state.val, function(err) {
-      if (err) {
-          adapter.log.info('Error in sendKey: ' + state.val + ' error: ' + err);
-      } else {
-            adapter.log.info('sendKey: ' + state.val + ' successfully sent to tv');
-      }});
+    let response = await sendKey(state.val) ;
+    adapter.log.info(response);
   } else if (key[2] === 'control') {
-    sendKey('KEY_' + key[3].toUpperCase(), function(err) {
+    let response = await sendKey('KEY_' + key[3].toUpperCase()) ;
+    adapter.log.info(response);
       if (err && key[3].toUpperCase() === 'POWER'){
         adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
           wol.wake(adapter.config.macAddress, function(error) {
@@ -88,7 +83,6 @@ adapter.on('stateChange', function (id, state) {
       } else {
         adapter.log.info('sendKey: KEY_' + key[3].toUpperCase() + ' successfully sent to tv');
         }
-      });
     }
 
 });
