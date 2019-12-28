@@ -21,6 +21,7 @@ let sendKey = (key) => {
         ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
     });
     ws.on('message', function incoming(data) {
+        adapter.log.info('data');
         adapter.log.info(data);
         setTimeout(function() {
             ws.close(); 
@@ -28,6 +29,7 @@ let sendKey = (key) => {
           return data;
         });
     ws.on('error', function (e) {
+      adapter.log.info('e');
       adapter.log.info(e);
       return e;
     });
