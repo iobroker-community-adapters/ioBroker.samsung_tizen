@@ -51,9 +51,8 @@ let getApps = (done) => {
             }, 1000);
             adapter.log.info(JSON.stringify(data.data.data[0]));
             adapter.log.info(data.data.data.length);
-            adapter.getStates('apps.*');
             for(let i = 0; i <= data.data.data.length; i++){
-                adapter.setObject('apps.start'+data.data.data[i].name, {
+                adapter.setObject('apps.start_'+data.data.data[i].name, {
                     type: 'state',
                     common: {
                         name: data.data.data[i].appId,
@@ -63,7 +62,37 @@ let getApps = (done) => {
                     native: {}
                 });
             }
+            done(0);
+        }
+    });
+}
 
+let startApp = (app, done) => {
+    const token = parseFloat(adapter.config.token);
+    let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
+    if (token > 0) {wsUrl = wsUrl + '&token=' + token;}
+    adapter.log.info('open connection: ' + wsUrl + ', to get installed apps');
+    let ws = new WebSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
+      done(new Error(error));
+    });
+    ws.on('error', function (e) {
+      done(e);
+    });
+    ws.on('message', function(data, flags) {
+        data = JSON.parse(data);
+        if(data.event == "ms.channel.connect") {
+            ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
+        }
+        if(data.event == "ed.installedApp.get") {
+            adapter.log.info(JSON.stringify(data.data.data[0]));
+            adapter.log.info(data.data.data.length);
+            for(let i = 0; i <= data.data.data.length; i++){
+                if( app === data.data.data[i].name){
+                    ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.apps.launch", "to":"host", "data" :{ "action_type" : data.data.data[i].app_type == 2 ? 'DEEP_LINK' : 'NATIVE_LAUNCH',"appId":data.data.data[i].appId}}}));
+                    setTimeout(function() {
+                        ws.close(); 
+                    }, 1000);}
+            }
             done(0);
         }
     });
@@ -74,10 +103,20 @@ adapter.on('stateChange', function (id, state) {
   if (id === adapter.name + '.' + adapter.instance + '.settings.getInstalledApps'){
     getApps(function(err) {
         if (err) {
-            adapter.log.info('Error in getInstalledApps error: ' + err);
+            adapter.log.info('Error in getInstalledApps, error: ' + err);
         } else {
               adapter.log.info('getInstalledApps successfully sent to tv');
-        }})  } 
+        }})  
+    } 
+    if (key[3].toUpperCase() === 'APPS'){
+        const app = key[3].split('-'); 
+        startApp(app[1] ,function(err) {
+            if (err) {
+                adapter.log.info('Error in start app, error: ' + err);
+            } else {
+                  adapter.log.info('start App ' + app[1] +' successfully sent to tv');
+            }})  
+        } 
   if (key[3].toUpperCase() === 'SENDKEY'){
     sendKey(state.val, function(err) {
       if (err) {
