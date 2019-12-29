@@ -10,19 +10,19 @@ let ws;
 adapter.on('stateChange', function (id, state) {
     const key = id.split('.');
     if (id === adapter.name + '.' + adapter.instance + '.apps.getInstalledApps'){
-        let response = await getApps();
+        let response =  async function (){return await getApps();}
         adapter.log.info(response);
     } 
     if (key[2] === 'apps' && id !== adapter.name + '.' + adapter.instance + '.apps.getInstalledApps'){
         const app = key[3].split('-'); 
-        let response = await startApp(app[1]);
+        let response = async function (){return await startApp(app[1]);}
         adapter.log.info(response);
-        } 
+    } 
     if (key[3].toUpperCase() === 'SENDKEY'){
-        let response = await sendKey(state.val);
+        let response = async function (){return await sendKey(state.val);}
         adapter.log.info(response);
     } else if (key[2] === 'control') {
-        let response = await sendKey('KEY_' + key[3].toUpperCase());
+        let response = async function (){return await sendKey('KEY_' + key[3].toUpperCase());}
         adapter.log.info(response);
     }
 });
