@@ -76,7 +76,9 @@ async function wsConnect() {
     if (parseFloat(adapter.config.token) > 0) {wsUrl = wsUrl + '&token=' + adapter.config.token}
     adapter.log.info('open connection: ' + wsUrl );
     try {
-        ws = new WebSocket(wsUrl, {rejectUnauthorized : false});
+        ws = new WebSocket(wsUrl, {rejectUnauthorized : false, function(error) {
+            return new Error(error);
+          }});
         ws.on('message', function incoming(data) {
             data = JSON.parse(data);
             if(data.event == "ms.channel.connect") {
