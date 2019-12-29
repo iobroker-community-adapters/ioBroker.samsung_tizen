@@ -79,6 +79,9 @@ async function wsConnect() {
         ws = new WebSocket(wsUrl, {rejectUnauthorized : false, function(error) {
             return new Error(error);
           }});
+        ws.on('error', function (error) {
+            return new Error(error);
+        });
         ws.on('message', function incoming(data) {
             data = JSON.parse(data);
             if(data.event == "ms.channel.connect") {
