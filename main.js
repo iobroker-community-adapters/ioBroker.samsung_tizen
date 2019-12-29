@@ -1,5 +1,5 @@
 "use strict";
-const utils =    require('./lib/utils.js');
+const utils =    require(__dirname + '/lib/utils');
 const adapter = utils.adapter('samsungTizen');
 const req = require('request-promise');
 const wol = require('wake_on_lan');
@@ -30,7 +30,6 @@ adapter.on('ready', function () {
 main()
 });
 function main() {
-    adapter.log.info(adapter.name + '.' + adapter.instance + ' NIGHTLY started with config : ' + JSON.stringify(adapter.config));
     adapter.setObject('apps.getInstalledApps', {
         type: 'state',
         common: {
