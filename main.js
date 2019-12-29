@@ -8,11 +8,11 @@ const objects =    require(__dirname + '/lib/objects');
 
 adapter.on('stateChange', async function (id, state) {
     const key = id.split('.');
-    if (id === adapter.name + '.' + adapter.instance + '.settings.getInstalledApps'){
+    if (id === adapter.name + '.' + adapter.instance + '.apps.getInstalledApps'){
         let response = await wsfunction.getApps();
         adapter.log.info(response);
     } 
-    if (key[2] === 'apps'){
+    if (key[2] === 'apps' && id !== adapter.name + '.' + adapter.instance + '.apps.getInstalledApps'){
         const app = key[3].split('-'); 
         let response = await wsfunction.startApp(app[1]);
         adapter.log.info(response);
@@ -32,7 +32,7 @@ main()
 function main() {
     adapter.log.info(adapter.name + '.' + adapter.instance + ' NIGHTLY started with config : ' + JSON.stringify(adapter.config));
 
-    adapter.setObject('settings.getInstalledApps', {
+    adapter.setObject('apps.getInstalledApps', {
         type: 'state',
         common: {
             name: 'getInstalledApps',
@@ -376,9 +376,6 @@ function main() {
         native: {}
     });   
     adapter.subscribeStates('control.*');
-    adapter.subscribeStates('settings.*');
     adapter.subscribeStates('apps.*');
-		
-    if (parseFloat(adapter.config.pollingInterval) > 0){polling.powerOnState();}
     adapter.log.info(adapter.name + '.' + adapter.instance + ' NIGHTLY started with config : ' + JSON.stringify(adapter.config));
 }
