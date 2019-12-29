@@ -28,15 +28,6 @@ main()
 });
 function main() {
     const objects = [{object:"apps.getInstalledApps",name:"getInstalledApps"},{object:"control.power",name:"on/off"},{object:"control.up",name:"arrow up"},{object:"control.down",name:"arrow down"},{object:"control.left",name:"arrow left"},{object:"control.right",name:"arrow right"},{object:"control.chup",name:"channel up"},{object:"control.chdown",name:"chhannel down"},{object:"control.ch_list",name:"channel list"},{object:"control.enter",name:"enter"},{object:"control.return",name:"return"},{object:"control.menu",name:"menu"},{object:"control.source",name:"source"},{object:"control.guide",name:"guide"},{object:"control.tools",name:"tools"},{object:"control.info",name:"info"},{object:"control.red",name:"red"},{object:"control.blue",name:"blue"},{object:"control.green",name:"green"},{object:"control.yellow",name:"yellow"},{object:"control.volup",name:"volume up"},{object:"control.voldown",name:"volume down"},{object:"control.mute",name:"volume mute"},{object:"control.0",name:"0"},{object:"control.1",name:"1"},{object:"control.2",name:"2"},{object:"control.3",name:"3"},{object:"control.4",name:"4"},{object:"control.5",name:"5"},{object:"control.6",name:"6"},{object:"control.7",name:"7"},{object:"control.8",name:"8"},{object:"control.9",name:"9"},{object:"control.dtv",name:"dtv"},{object:"control.hdmi",name:"hdmi"},{object:"control.contents",name:"contents"},{object:"control.sendKey",name:"sendKey manually"}];
-    adapter.setObject('powerOn', {
-        type: 'state',
-        common: {
-            name: 'power state of TV',
-            type: 'boolean',
-            role: 'state'
-        },
-        native: {}
-    });  
     for(let i = 0; i < objects.length; i++){
         adapter.setObject(objects[i].object, {
             type: 'state',
@@ -54,6 +45,15 @@ function main() {
     adapter.log.info(adapter.name + '.' + adapter.instance + ' NIGHTLY started with config : ' + JSON.stringify(adapter.config));
 }
 function getPowerOnState(){
+    adapter.setObject('powerOn', {
+        type: 'state',
+        common: {
+            name: 'power state of TV',
+            type: 'boolean',
+            role: 'state'
+        },
+        native: {}
+    });  
     setInterval(function(){
         req({uri:'http://' + adapter.config.ipAddress + ':' + adapter.config.pollingEndpoint, timeout:10000})
         .then(()=> {
@@ -116,7 +116,7 @@ function sendKey(key, x) {
             ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
             adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
             adapter.log.info(JSON.stringify(ws));
-            if (ws.readyState === 1){
+            if (ws !== null){
                 ws.close();
             }
           }
