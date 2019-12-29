@@ -7,7 +7,7 @@ const WebSocket = require('ws');
 
 let ws;
 
-adapter.on('stateChange', async function (id, state) {
+adapter.on('stateChange', function (id, state) {
     const key = id.split('.');
     if (id === adapter.name + '.' + adapter.instance + '.apps.getInstalledApps'){
         let response = await getApps();
