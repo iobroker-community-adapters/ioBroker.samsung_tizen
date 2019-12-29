@@ -71,78 +71,70 @@ function getPowerOnState(){
         })
     }, parseFloat(adapter.config.pollingInterval) * 1000)
 }
-async function wsConnect() {
+function wsConnect(done) {
     let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
     if (parseFloat(adapter.config.token) > 0) {wsUrl = wsUrl + '&token=' + adapter.config.token}
     adapter.log.info('open connection: ' + wsUrl );
-    try {
-        ws = new WebSocket(wsUrl, {rejectUnauthorized : false, function(error) {
-            return new Error(error);
-          }});
-        ws.on('error', function (error) {
-            return new Error(error);
-        });
-        ws.on('message', function incoming(data) {
-            data = JSON.parse(data);
-            if(data.event == "ms.channel.connect") {
-                return true;
-            }
-        });
-    } 
-    catch(error){
+    ws = new webSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
+        done(new Error(error));
+      });
+    ws.on('error', function (e) {
         adapter.log.info('conn error ' + error);
-        return error;
-    }
+        done(e);
+    });
+    ws.on('message', function incoming(data) {
+        data = JSON.parse(data);
+        if(data.event == "ms.channel.connect") {
+            done(0);
+        }
+    });
 };
-async function wsClose() {
-    try {
-        ws.close()
-    } 
-    catch(error){
-        return error;
-    }
+function wsClose(done) {
+    ws.close(done)
+    ws.on('error', function (e) {
+        adapter.log.info('conn error ' + error);
+        done(e);
+    });
+    done(0)
 };
-async function sendKey(key, x) {
-    try{
-        await wsConnect();
-        setTimeout(function() {
-            try {
-                ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
-                ws.on('message', function incoming(data) {
-                    adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
-                    wsClose();
-                    return;
-                });
-            } 
-            catch(error){
-                return error;
+function sendKey(key, x) {
+    wsConnect(function(err) {
+        if (err){
+            adapter.log.info(err);
+            if ( x < 1 ){
+                if(parseFloat(adapter.config.macAddress) > 0){
+                    adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' retry 1/5 will be executed'); 
+                    adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
+                    wol.wake(adapter.config.macAddress);
+                };
+                x++;
+                sendKey(key, x);
             }
-            return;
-        }, 1000);
-    }
-    catch (error){
-        adapter.log.info(error);
-        if ( x == 0 ){
-            if(parseFloat(adapter.config.macAddress) > 0){
-                adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' retry 1/5 will be executed'); 
-                adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
-                wol.wake(adapter.config.macAddress);
-            };
-            x++;
-            sendKey(key, x);
-        }
-        if ( x < 5) {
-            setTimeout(function() {x++;             
-            adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' retry '+ x + '/5 will be executed'); 
-            sendKey(key, x);}, 1000);
-
-        }
-        if ( x >= 5) {
-            adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' maximum retries reached'); 
-            return error;        
-        }
-        await wsClose();
-    }
+            if ( x < 5) {
+                setTimeout(function() {x++;             
+                adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' retry '+ x + '/5 will be executed'); 
+                sendKey(key, x);}, 1000);
+    
+            }
+            if ( x > 4) {
+                adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' maximum retries reached'); 
+                done(err);        
+            }
+        } else {
+            ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
+            ws.on('message', function incoming(data) {
+                adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
+                wsClose(function(e){
+                    if (e){
+                    adapter.log.info( 'websocket connection cannot be closed');
+                    } else {
+                    adapter.log.info( 'websocket connection closed');
+                    }
+                });
+                done(0)
+            });
+          }
+        });
 };
 async function getApps(x) {
     try{
