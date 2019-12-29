@@ -2,11 +2,11 @@
 const utils =    require('./lib/utils.js');
 const adapter = utils.adapter('samsungTizen');
 const req = require('request-promise');
-const wsfunction =    require('./lib/wsfunction.js');
+//const wsfunction =    require('./lib/wsfunction.js');
 const objects =    require('./lib/objects.js');
 
 
-adapter.on('stateChange', async function (id, state) {
+/*adapter.on('stateChange', async function (id, state) {
     const key = id.split('.');
     if (id === adapter.name + '.' + adapter.instance + '.apps.getInstalledApps'){
         let response = await wsfunction.getApps();
@@ -24,7 +24,7 @@ adapter.on('stateChange', async function (id, state) {
         let response = await wsfunction.sendKey('KEY_' + key[3].toUpperCase());
         adapter.log.info(response);
     }
-});
+});*/
 
 adapter.on('ready', function () {
 main()
