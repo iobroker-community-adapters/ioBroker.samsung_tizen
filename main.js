@@ -10,20 +10,16 @@ let ws;
 adapter.on('stateChange', function (id, state) {
     const key = id.split('.');
     if (id === adapter.name + '.' + adapter.instance + '.apps.getInstalledApps'){
-        async function run(){let r = await getApps();adapter.log.info(r);}
-        run();
+        getApps();
     } 
     if (key[2] === 'apps' && id !== adapter.name + '.' + adapter.instance + '.apps.getInstalledApps'){
         const app = key[3].split('-'); 
-        async function run(){let r = await startApp(app[1]);adapter.log.info(r);}
-        run();
+        startApp(app[1]);
     } 
     if (key[3].toUpperCase() === 'SENDKEY'){
-        async function run(){let r = await sendKey(state.val);adapter.log.info(r);}
-        run();
+        endKey(state.val);
     } else if (key[2] === 'control') {
-        async function run(){let r = await sendKey('KEY_' + key[3].toUpperCase());adapter.log.info(r);}
-        run();
+        sendKey('KEY_' + key[3].toUpperCase());
     }
 });
 adapter.on('ready', function () {
@@ -434,7 +430,8 @@ async function sendKey(key) {
     try{
         await wsConnect();
         await wsSend({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}})
-        return 'sendKey: ' + key + ' successfully sent to tv';
+        adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
+        return;
         ;
     }
     catch (error){
@@ -446,7 +443,8 @@ async function sendKey(key) {
             continue;   
         }
         if ( x < 5) {x++;setTimeout(function() {continue;}, 1000);}
-        return 'Error while sendKey: ' + key + ' error: ' + error;
+        adapter.log.info('Error while sendKey: ' + key + ' error: ' + error); 
+        return error;
     }
     finally {
         await wsClose();
