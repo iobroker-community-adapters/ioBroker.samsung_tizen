@@ -86,14 +86,6 @@ function wsConnect(done) {
         }
     });
 };
-function wsClose(done) {
-    ws.close(done)
-    ws.on('error', function (e) {
-        adapter.log.info('websocket close error: ' + e);
-        done(e);
-    });
-    done(0)
-};
 function sendKey(key, x) {
     adapter.log.info(JSON.stringify(ws));
     wsConnect(function(err) {
