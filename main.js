@@ -27,6 +27,9 @@ adapter.on('stateChange', async function (id, state) {
 });
 
 adapter.on('ready', function () {
+main()
+});
+function main() {
     objects.set();
     adapter.subscribeStates('control.*');
     adapter.subscribeStates('settings.*');
@@ -36,4 +39,4 @@ adapter.on('ready', function () {
 
     adapter.log.info(adapter.name + '.' + adapter.instance + ' NIGHTLY started with config : ' + JSON.stringify(adapter.config));
 
-});
+}
