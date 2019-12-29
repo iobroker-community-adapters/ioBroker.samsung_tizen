@@ -119,7 +119,6 @@ function sendKey(key, x) {
             if (ws.readyState === 1){
                 ws.close();
             }
-            done(0)
           }
         });
 };
