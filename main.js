@@ -76,7 +76,7 @@ function wsConnect(done) {
         done(new Error(error));
       });
     ws.on('error', function (e) {
-        adapter.log.info('conn error ' + error);
+        adapter.log.info('conn error ' + e);
         done(e);
     });
     ws.on('message', function incoming(data) {
@@ -89,7 +89,7 @@ function wsConnect(done) {
 function wsClose(done) {
     ws.close(done)
     ws.on('error', function (e) {
-        adapter.log.info('conn error ' + error);
+        adapter.log.info('websocket close error: ' + e);
         done(e);
     });
     done(0)
@@ -112,7 +112,7 @@ function sendKey(key, x) {
                     x++;             
                     adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' retry '+ x + '/5 will be executed'); 
                     sendKey(key, x);
-                }, 1000);
+                }, 2000);
     
             }
             if ( x > 4) {
