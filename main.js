@@ -26,6 +26,12 @@ adapter.on('ready', function () {
 main()
 });
 function main() {
+    const objects = [
+        {object:"apps.getInstalledApps",name:"getInstalledApps"},
+        {object:"control.power",name:"on/off"},
+        {object:"control.up",name:"up"},
+        {object:"",name:""},
+        {object:"",name:""},];
     adapter.setObject('apps.getInstalledApps', {
         type: 'state',
         common: {
@@ -390,6 +396,7 @@ function getPowerOnState(){
     }, parseFloat(adapter.config.pollingInterval) * 1000)
 }
 async function wsConnect() {
+    adapter.log.info( 'ws connect ');
     let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
     if (parseFloat(adapter.config.token) > 0) {wsUrl = wsUrl + '&token=' + token;}
     adapter.log.info('open connection: ' + wsUrl );
@@ -398,6 +405,7 @@ async function wsConnect() {
         ws.on('message', function incoming(data) {
             data = JSON.parse(data);
             if(data.event == "ms.channel.connect") {
+                adapter.log.info( 'ws connected ');
                 return 'connected';
             }
         });
@@ -407,6 +415,7 @@ async function wsConnect() {
     }
 };
 async function wsSend(msg) {
+    adapter.log.info( 'ws send '+ msg);
     try {
         ws.send(JSON.stringify(msg));
         ws.on('message', function incoming(data) {
@@ -418,6 +427,8 @@ async function wsSend(msg) {
     }
 };
 async function wsClose() {
+    adapter.log.info( 'ws close');
+
     try {
         ws.close()
     } 
@@ -426,6 +437,7 @@ async function wsClose() {
     }
 };
 async function sendKey(key, x) {
+    adapter.log.info( 'sendKey started: ' + key + ' x: '+x);
     try{
         await wsConnect();
         await wsSend({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}})
