@@ -115,15 +115,7 @@ async function wsConnect() {
     }
 };
 async function wsSend(msg) {
-    try {
-        ws.send(JSON.stringify(msg));
-        ws.on('message', function incoming(data) {
-            return JSON.parse(data);
-          });
-    } 
-    catch(error){
-        return error;
-    }
+
 };
 async function wsClose() {
     try {
@@ -137,9 +129,17 @@ async function sendKey(key, x) {
     try{
         await wsConnect();
         setTimeout(function() {
-            wsSend({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}})
-            adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
-            wsClose();
+            try {
+                ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
+                ws.on('message', function incoming(data) {
+                    adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
+                    wsClose();
+                    return;
+                });
+            } 
+            catch(error){
+                return error;
+            }
             return;
         }, 1500);
     }
@@ -150,9 +150,9 @@ async function sendKey(key, x) {
                 adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' retry 1/5 will be executed'); 
                 adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
                 wol.wake(adapter.config.macAddress);
-                x++;
-                sendKey(key, x);
             };
+            x++;
+            sendKey(key, x);
         }
         if ( x < 5) {
             setTimeout(function() {x++;             
@@ -171,21 +171,30 @@ async function getApps(x) {
     try{
         await wsConnect();
         setTimeout(async function() {
-            let data = await wsSend({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}})
-            adapter.log.info(data);
-            data = JSON.parse(data);
-            for(let i = 0; i <= data.data.data.length; i++){
-                adapter.setObject('apps.start_'+data.data.data[i].name, {
-                    type: 'state',
-                    common: {
-                        name: data.data.data[i].appId,
-                        type: 'boolean',
-                        role: 'button'
-                    },
-                    native: {}
+            try {
+                ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
+                ws.on('message', function incoming(data) {
+                    adapter.log.info(data);
+                    data = JSON.parse(data);
+                    for(let i = 0; i <= data.data.data.length; i++){
+                        adapter.setObject('apps.start_'+data.data.data[i].name, {
+                            type: 'state',
+                            common: {
+                                name: data.data.data[i].appId,
+                                type: 'boolean',
+                                role: 'button'
+                            },
+                            native: {}
+                        });
+                    }
+                    adapter.log.info('getInstalledApps successfully sent to tv')
+                    wsClose();
+                    return;
                 });
+            } 
+            catch(error){
+                return error;
             }
-            adapter.log.info('getInstalledApps successfully sent to tv')
         },1000)
         return;
     }
@@ -196,9 +205,9 @@ async function getApps(x) {
                 adapter.log.info('Error while getInstalledApps, error: ' + error + ' retry 1/5 will be executed'); 
                 adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
                 wol.wake(adapter.config.macAddress);
-                x++;
-                getApps(x);
             };
+            x++;
+            getApps(x);
         }
         if ( x < 5) {
             setTimeout(function() {x++;             
