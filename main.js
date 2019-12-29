@@ -398,7 +398,7 @@ function getPowerOnState(){
 async function wsConnect() {
     adapter.log.info( 'ws connect ');
     let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
-    if (parseFloat(adapter.config.token) > 0) {wsUrl = wsUrl + '&token=' + parseFloat(adapter.config.token}
+    if (parseFloat(adapter.config.token) > 0) {wsUrl = wsUrl + '&token=' + adapter.config.token}
     adapter.log.info('open connection: ' + wsUrl );
     try {
         ws = new WebSocket(wsUrl, {rejectUnauthorized : false});
