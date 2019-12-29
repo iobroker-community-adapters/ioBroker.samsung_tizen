@@ -2,7 +2,7 @@
 const utils =    require('./lib/utils.js');
 const adapter = utils.adapter('samsungTizen');
 const req = require('request-promise');
-//const wsfunction =    require('./lib/wsfunction.js');
+const wsfunction =    require('./lib/wsfunction.js');
 //const objects =    require('./lib/objects.js');
 
 
