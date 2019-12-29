@@ -425,8 +425,7 @@ async function wsClose() {
         return error;
     }
 };
-async function sendKey(key) {
-    let x = 0;
+async function sendKey(key, x) {
     try{
         await wsConnect();
         await wsSend({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}})
@@ -437,14 +436,24 @@ async function sendKey(key) {
     catch (error){
         if ( x == 0 ){
             if(parseFloat(adapter.config.macAddress) > 0){
+                adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' retry 1/5 will be executed'); 
                 adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
                 wol.wake(adapter.config.macAddress);
+                x++;
+                sendKey(key, x);
             };
-            continue;   
         }
-        if ( x < 5) {x++;setTimeout(function() {continue;}, 1000);}
-        adapter.log.info('Error while sendKey: ' + key + ' error: ' + error); 
-        return error;
+        if ( x < 5) {
+            setTimeout(function() {x++;             
+            adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' retry '+ x+1 + '/5 will be executed'); 
+            sendKey(key, x);}, 1000);
+
+        }
+        if ( x >= 5) {
+            adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' maximum retry reached'); 
+            return error;        
+        }
+
     }
     finally {
         await wsClose();
