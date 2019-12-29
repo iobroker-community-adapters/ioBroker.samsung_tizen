@@ -398,7 +398,7 @@ function getPowerOnState(){
 async function wsConnect() {
     adapter.log.info( 'ws connect ');
     let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
-    if (parseFloat(adapter.config.token) > 0) {wsUrl = wsUrl + '&token=' + token;}
+    if (parseFloat(adapter.config.token) > 0) {wsUrl = wsUrl + '&token=' + parseFloat(adapter.config.token}
     adapter.log.info('open connection: ' + wsUrl );
     try {
         ws = new WebSocket(wsUrl, {rejectUnauthorized : false});
@@ -458,12 +458,12 @@ async function sendKey(key, x) {
         }
         if ( x < 5) {
             setTimeout(function() {x++;             
-            adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' retry '+ x+1 + '/5 will be executed'); 
+            adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' retry '+ x + '/5 will be executed'); 
             sendKey(key, x);}, 1000);
 
         }
         if ( x >= 5) {
-            adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' maximum retry reached'); 
+            adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' maximum retries reached'); 
             return error;        
         }
 
