@@ -63,7 +63,7 @@ take the token from the returned json response
 MAC Address of your Samsung TV, will be used for WakeOnLAN. 
 Does only work if your TV is connected per wire and not wireless.
 If your TV is wireless connected it can only powered on from shortStandby.
-
+wakeOnLan can be deactiveted with value "0"
 ### TV state polling (experimental)
 
 Work on my 2018 model( NU Series7 )

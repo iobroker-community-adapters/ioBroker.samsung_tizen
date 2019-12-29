@@ -37,4 +37,3 @@ adapter.on('ready', function () {
     adapter.log.info(adapter.name + '.' + adapter.instance + ' NIGHTLY started with config : ' + JSON.stringify(adapter.config));
 
 });
-
