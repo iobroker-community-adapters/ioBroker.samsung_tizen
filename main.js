@@ -119,7 +119,7 @@ function sendKey(key, x) {
                 adapter.log.info('Error while sendKey: ' + key + ' error: ' + err + ' maximum retries reached'); 
                 done(err);        
             }
-        } else {
+        } if (!err) {
             ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
             ws.on('message', function incoming(data) {
                 adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
