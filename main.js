@@ -443,6 +443,7 @@ async function sendKey(key, x) {
         if (conn === true) {
             await wsSend({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}})
             adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
+            await wsClose();
             return;
         };
     }
@@ -467,9 +468,6 @@ async function sendKey(key, x) {
             adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' maximum retries reached'); 
             return error;        
         }
-
-    }
-    finally {
         await wsClose();
     }
 };
