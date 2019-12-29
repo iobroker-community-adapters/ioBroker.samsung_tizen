@@ -17,9 +17,9 @@ adapter.on('stateChange', function (id, state) {
         startApp(app[1]);
     } 
     if (key[3].toUpperCase() === 'SENDKEY'){
-        endKey(state.val);
+        sendKey(state.val, 0);
     } else if (key[2] === 'control') {
-        sendKey('KEY_' + key[3].toUpperCase());
+        sendKey('KEY_' + key[3].toUpperCase(), 0);
     }
 });
 adapter.on('ready', function () {
@@ -446,6 +446,7 @@ async function sendKey(key, x) {
         ;
     }
     catch (error){
+        adapter.log.info(error);
         if ( x == 0 ){
             if(parseFloat(adapter.config.macAddress) > 0){
                 adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' retry 1/5 will be executed'); 
