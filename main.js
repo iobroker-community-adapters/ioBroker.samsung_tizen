@@ -406,7 +406,7 @@ async function wsConnect() {
             data = JSON.parse(data);
             if(data.event == "ms.channel.connect") {
                 adapter.log.info( 'ws connected ');
-                return 'connected';
+                return true;
             }
         });
     } 
@@ -439,11 +439,12 @@ async function wsClose() {
 async function sendKey(key, x) {
     adapter.log.info( 'sendKey started: ' + key + ' x: '+x);
     try{
-        await wsConnect();
-        await wsSend({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}})
-        adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
-        return;
-        ;
+        let conn = await wsConnect();
+        if (conn === true) {
+            await wsSend({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}})
+            adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
+            return;
+        };
     }
     catch (error){
         adapter.log.info(error);
