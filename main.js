@@ -10,11 +10,11 @@ let ws;
 adapter.on('stateChange', function (id, state) {
     const key = id.split('.');
     if (id === adapter.name + '.' + adapter.instance + '.apps.getInstalledApps'){
-        getApps();
+        getApps(0);
     } 
     if (key[2] === 'apps' && id !== adapter.name + '.' + adapter.instance + '.apps.getInstalledApps'){
         const app = key[3].split('-'); 
-        startApp(app[1]);
+        startApp(app[1], 0);
     } 
     if (key[3].toUpperCase() === 'SENDKEY'){
         sendKey(state.val, 0);
@@ -29,352 +29,54 @@ function main() {
     const objects = [
         {object:"apps.getInstalledApps",name:"getInstalledApps"},
         {object:"control.power",name:"on/off"},
-        {object:"control.up",name:"up"},
-        {object:"",name:""},
-        {object:"",name:""},];
-    adapter.setObject('apps.getInstalledApps', {
-        type: 'state',
-        common: {
-            name: 'getInstalledApps',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.power', {
-        type: 'state',
-        common: {
-            name: 'on/off',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.up', {
-        type: 'state',
-        common: {
-            name: 'up',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.down', {
-        type: 'state',
-        common: {
-            name: 'down',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.left', {
-        type: 'state',
-        common: {
-            name: 'left',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.right', {
-        type: 'state',
-        common: {
-            name: 'right',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.chup', {
-        type: 'state',
-        common: {
-            name: 'channel up',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.chdown', {
-        type: 'state',
-        common: {
-            name: 'channel down',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.ch_list', {
-        type: 'state',
-        common: {
-            name: 'channel list',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.enter', {
-        type: 'state',
-        common: {
-            name: 'enter',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.return', {
-        type: 'state',
-        common: {
-            name: 'return',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.menu', {
-        type: 'state',
-        common: {
-            name: 'menu',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.source', {
-        type: 'state',
-        common: {
-            name: 'source',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.guide', {
-        type: 'state',
-        common: {
-            name: 'guide',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.tools', {
-        type: 'state',
-        common: {
-            name: 'tools',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.info', {
-        type: 'state',
-        common: {
-            name: 'info',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.red', {
-        type: 'state',
-        common: {
-            name: 'red',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.blue', {
-        type: 'state',
-        common: {
-            name: 'blue',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.green', {
-        type: 'state',
-        common: {
-            name: 'green',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.yellow', {
-        type: 'state',
-        common: {
-            name: 'yellow',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.volup', {
-        type: 'state',
-        common: {
-            name: 'volume up',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.voldown', {
-        type: 'state',
-        common: {
-            name: 'volume down',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.mute', {
-        type: 'state',
-        common: {
-            name: 'volume mute',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.0', {
-        type: 'state',
-        common: {
-            name: 'key 0',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.1', {
-        type: 'state',
-        common: {
-            name: 'key 1',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.2', {
-        type: 'state',
-        common: {
-            name: 'key  2',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.3', {
-        type: 'state',
-        common: {
-            name: 'key 3',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.4', {
-        type: 'state',
-        common: {
-            name: 'key 4',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.5', {
-        type: 'state',
-        common: {
-            name: 'key 5',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.6', {
-        type: 'state',
-        common: {
-            name: 'key 6',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.7', {
-        type: 'state',
-        common: {
-            name: 'key 7',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.8', {
-        type: 'state',
-        common: {
-            name: 'key 8',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.9', {
-        type: 'state',
-        common: {
-            name: 'key 9',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.dtv', {
-        type: 'state',
-        common: {
-            name: 'tv source',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.hdmi', {
-        type: 'state',
-        common: {
-            name: 'hdmi source',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.contents', {
-        type: 'state',
-        common: {
-            name: 'smart hub',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
-    adapter.setObject('control.sendKey', {
-        type: 'state',
-        common: {
-            name: 'sendKey',
-            type: 'string',
-            role: 'state'
-        },
-        native: {}
-    });
-	
-    adapter.setObject('powerOn', {
-        type: 'state',
-        common: {
-            name: 'power state of TV',
-            type: 'boolean',
-            role: 'state'
-        },
-        native: {}
-    });   
+        {object:"control.up",name:"arrow up"},
+        {object:"control.down",name:"arrow down"},
+        {object:"control.left",name:"arrow left"},
+        {object:"control.right",name:"arrow right"},
+        {object:"control.chup",name:"channel up"},
+        {object:"control.chdown",name:"chhannel down"},
+        {object:"control.ch_list",name:"channel list"},
+        {object:"control.enter",name:"enter"},
+        {object:"control.return",name:"return"},
+        {object:"control.menu",name:"menu"},
+        {object:"control.source",name:"source"},
+        {object:"control.guide",name:"guide"},
+        {object:"control.tools",name:"tools"},
+        {object:"control.info",name:"info"},
+        {object:"control.red",name:"red"},
+        {object:"control.blue",name:"blue"},
+        {object:"control.green",name:"green"},
+        {object:"control.yellow",name:"yellow"},
+        {object:"control.volup",name:"volume up"},
+        {object:"control.voldown",name:"volume down"},
+        {object:"control.mute",name:"volume mute"},
+        {object:"control.0",name:"0"},
+        {object:"control.1",name:"1"},
+        {object:"control.2",name:"2"},
+        {object:"control.3",name:"3"},
+        {object:"control.4",name:"4"},
+        {object:"control.5",name:"5"},
+        {object:"control.6",name:"6"},
+        {object:"control.7",name:"7"},
+        {object:"control.8",name:"8"},
+        {object:"control.9",name:"9"},
+        {object:"control.dtv",name:"dtv"},
+        {object:"control.hdmi",name:"hdmi"},
+        {object:"control.contents",name:"contents"},
+        {object:"control.sendKey",name:"sendKey manually"},
+        {object:"powerOn",name:"power state of TV"}];
+
+        for(let i = 0; i <= objects; i++){
+            adapter.setObject(objects[i].name, {
+                type: 'state',
+                common: {
+                    name: objects.appId,
+                    type: 'boolean',
+                    role: 'button'
+                },
+                native: {}
+            });
+        }
     if (parseFloat(adapter.config.pollingInterval) > 0){getPowerOnState();}
     adapter.subscribeStates('control.*');
     adapter.subscribeStates('apps.*');
@@ -439,7 +141,7 @@ async function sendKey(key, x) {
             adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
             wsClose();
             return;
-        }, 1000);
+        }, 1500);
     }
     catch (error){
         adapter.log.info(error);
@@ -468,7 +170,7 @@ async function sendKey(key, x) {
 async function getApps(x) {
     try{
         await wsConnect();
-        setTimeout(function() {
+        setTimeout(async function() {
             let data = await wsSend({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}})
             adapter.log.info(data);
             data = JSON.parse(data);
