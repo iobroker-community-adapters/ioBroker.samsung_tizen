@@ -100,7 +100,7 @@ function sendKey(key, x) {
             adapter.log.info(err);
             if ( x < 1 ){
                 if(parseFloat(adapter.config.macAddress) > 0){
-                    adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' retry 1/5 will be executed'); 
+                    adapter.log.info('Error while sendKey: ' + key + ' error: ' + err + ' retry 1/5 will be executed'); 
                     adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
                     wol.wake(adapter.config.macAddress);
                 };
@@ -110,13 +110,13 @@ function sendKey(key, x) {
             if ( x < 5) {
                 setTimeout(function() {
                     x++;             
-                    adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' retry '+ x + '/5 will be executed'); 
+                    adapter.log.info('Error while sendKey: ' + key + ' error: ' + err + ' retry '+ x + '/5 will be executed'); 
                     sendKey(key, x);
                 }, 2000);
     
             }
             if ( x > 4) {
-                adapter.log.info('Error while sendKey: ' + key + ' error: ' + error + ' maximum retries reached'); 
+                adapter.log.info('Error while sendKey: ' + key + ' error: ' + err + ' maximum retries reached'); 
                 done(err);        
             }
         } else {
