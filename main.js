@@ -95,6 +95,7 @@ function wsClose(done) {
     done(0)
 };
 function sendKey(key, x) {
+    adapter.log.info(JSON.stringify(ws));
     wsConnect(function(err) {
         if (err){
             adapter.log.info(err);
@@ -123,13 +124,15 @@ function sendKey(key, x) {
             ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
             adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
             adapter.log.info(JSON.stringify(ws));
-            wsClose(function(e){
-                if (e){
-                adapter.log.info( 'websocket connection cannot be closed');
-                } else {
-                adapter.log.info( 'websocket connection closed');
-                }
-            });
+            if (ws.readyState === 1){
+                wsClose(function(e){
+                    if (e){
+                    adapter.log.info( 'websocket connection cannot be closed');
+                    } else {
+                    adapter.log.info( 'websocket connection closed');
+                    }
+                });
+            }
             done(0)
           }
         });
