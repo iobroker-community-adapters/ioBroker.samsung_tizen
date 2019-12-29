@@ -11,9 +11,6 @@ main()
 });
 function main() {
     adapter.log.info(adapter.name + '.' + adapter.instance + ' NIGHTLY started with config : ' + JSON.stringify(adapter.config));
-    objects.set();
-    if (parseFloat(adapter.config.pollingInterval) > 0){polling.powerOnState();}
-    adapter.subscribeStates('control.*');
-    adapter.subscribeStates('apps.*');
+    
     adapter.log.info(adapter.name + '.' + adapter.instance + ' NIGHTLY started with config : ' + JSON.stringify(adapter.config));
 }
