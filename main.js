@@ -123,6 +123,7 @@ function sendKey(key, x) {
             ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
             ws.on('message', function incoming(data) {
                 adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
+                adapter.log.info(ws);
                 wsClose(function(e){
                     if (e){
                     adapter.log.info( 'websocket connection cannot be closed');
