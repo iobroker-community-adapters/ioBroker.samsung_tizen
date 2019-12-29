@@ -2,30 +2,30 @@
 const utils =    require('./lib/utils.js');
 const adapter = utils.adapter('samsungTizen');
 const req = require('request-promise');
-const wsfunction =    require('./lib/wsfunction.js');
-//const objects =    require('./lib/objects.js');
+const wol = require('wake_on_lan');
+const WebSocket = require('ws');
 
+let ws;
 
-/*adapter.on('stateChange', async function (id, state) {
+adapter.on('stateChange', async function (id, state) {
     const key = id.split('.');
     if (id === adapter.name + '.' + adapter.instance + '.apps.getInstalledApps'){
-        let response = await wsfunction.getApps();
+        let response = await getApps();
         adapter.log.info(response);
     } 
     if (key[2] === 'apps' && id !== adapter.name + '.' + adapter.instance + '.apps.getInstalledApps'){
         const app = key[3].split('-'); 
-        let response = await wsfunction.startApp(app[1]);
+        let response = await startApp(app[1]);
         adapter.log.info(response);
         } 
     if (key[3].toUpperCase() === 'SENDKEY'){
-        let response = await wsfunction.sendKey(state.val);
+        let response = await sendKey(state.val);
         adapter.log.info(response);
     } else if (key[2] === 'control') {
-        let response = await wsfunction.sendKey('KEY_' + key[3].toUpperCase());
+        let response = await sendKey('KEY_' + key[3].toUpperCase());
         adapter.log.info(response);
     }
-});*/
-
+});
 adapter.on('ready', function () {
 main()
 });
@@ -394,3 +394,126 @@ function getPowerOnState(){
         })
     }, parseFloat(adapter.config.pollingInterval) * 1000)
 }
+async function wsConnect() {
+    let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
+    if (parseFloat(adapter.config.token) > 0) {wsUrl = wsUrl + '&token=' + token;}
+    adapter.log.info('open connection: ' + wsUrl );
+    try {
+        ws = new WebSocket(wsUrl, {rejectUnauthorized : false});
+        ws.on('message', function incoming(data) {
+            data = JSON.parse(data);
+            if(data.event == "ms.channel.connect") {
+                return 'connected';
+            }
+        });
+    } 
+    catch(error){
+        return error;
+    }
+};
+async function wsSend(msg) {
+    try {
+        ws.send(JSON.stringify(msg));
+        ws.on('message', function incoming(data) {
+            return JSON.parse(data);
+          });
+    } 
+    catch(error){
+        return error;
+    }
+};
+async function wsClose() {
+    try {
+        ws.close()
+    } 
+    catch(error){
+        return error;
+    }
+};
+async function sendKey(key) {
+    let x = 0;
+    try{
+        await wsConnect();
+        await wsSend({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}})
+        return 'sendKey: ' + key + ' successfully sent to tv';
+        ;
+    }
+    catch (error){
+        if ( x == 0 ){
+            if(parseFloat(adapter.config.macAddress) > 0){
+                adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
+                wol.wake(adapter.config.macAddress);
+            };
+            continue;   
+        }
+        if ( x < 5) {x++;setTimeout(function() {continue;}, 1000);}
+        return 'Error while sendKey: ' + key + ' error: ' + error;
+    }
+    finally {
+        await wsClose();
+    }
+};
+async function getApps() {
+    let x = 0;
+    try{
+        await wsConnect();
+        let data = await wsSend({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}})
+        data = JSON.parse(data);
+        for(let i = 0; i <= data.data.data.length; i++){
+            adapter.setObject('apps.start_'+data.data.data[i].name, {
+                type: 'state',
+                common: {
+                    name: data.data.data[i].appId,
+                    type: 'boolean',
+                    role: 'button'
+                },
+                native: {}
+            });
+        }
+        return 'getInstalledApps successfully sent to tv';
+    }
+    catch (error){
+        if ( x == 0 ){
+            if(parseFloat(adapter.config.macAddress) > 0){
+                adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
+                wol.wake(adapter.config.macAddress);
+            };
+            continue;   
+        }
+        if ( x < 5) {x++;setTimeout(function() {continue;}, 1000);}
+        return 'Error while getInstalledApps, error: ' + error;
+    }
+    finally {
+        await wsconn.close();
+    }
+};
+async function startApp(app) {
+    adapter.log.info(app)
+    let x = 0;
+    try{
+        await wsConnect();
+        let data = await wsSend({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}})
+        data = JSON.parse(data);
+        for(let i = 0; i <= data.data.data.length; i++){
+            if( app === data.data.data[i].name){
+                wsSend({"method":"ms.channel.emit","params":{"event": "ed.apps.launch", "to":"host", "data" :{ "action_type" : data.data.data[i].app_type == 2 ? 'DEEP_LINK' : 'NATIVE_LAUNCH',"appId":data.data.data[i].appId}}});
+                return 'app: ' +  app + ' successfully started';
+            }
+            return 'app: ' +  app + ' cannot be started';
+        }
+    }
+    catch (error){
+        if ( x == 0 ){
+            if(parseFloat(adapter.config.macAddress) > 0){
+                adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
+                wol.wake(adapter.config.macAddress);
+            };
+            continue;   
+        }
+        if ( x < 5) {x++;setTimeout(function() {continue;}, 1000);}
+        return 'Error while startApp: ' + app + ', error: ' + error;
+    }
+    finally {
+        await wsClose();
+    }
+};
