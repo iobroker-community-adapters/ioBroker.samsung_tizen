@@ -125,13 +125,7 @@ function sendKey(key, x) {
             adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
             adapter.log.info(JSON.stringify(ws));
             if (ws.readyState === 1){
-                wsClose(function(e){
-                    if (e){
-                    adapter.log.info( 'websocket connection cannot be closed');
-                    } else {
-                    adapter.log.info( 'websocket connection closed');
-                    }
-                });
+                ws.close();
             }
             done(0)
           }
