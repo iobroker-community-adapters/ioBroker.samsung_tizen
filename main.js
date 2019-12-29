@@ -13,7 +13,8 @@ adapter.on('stateChange', function (id, state) {
         getApps(0);
     } 
     if (key[2] === 'apps' && id !== adapter.name + '.' + adapter.instance + '.apps.getInstalledApps'){
-        const app = key[3].split('-'); 
+        const app = key[3].split('_'); 
+        adapter.log.info(app)
         startApp(app[1], 0);
     } 
     if (key[3].toUpperCase() === 'SENDKEY'){
@@ -27,8 +28,8 @@ main()
 });
 function main() {
     const objects = [{object:"apps.getInstalledApps",name:"getInstalledApps"},{object:"control.power",name:"on/off"},{object:"control.up",name:"arrow up"},{object:"control.down",name:"arrow down"},{object:"control.left",name:"arrow left"},{object:"control.right",name:"arrow right"},{object:"control.chup",name:"channel up"},{object:"control.chdown",name:"chhannel down"},{object:"control.ch_list",name:"channel list"},{object:"control.enter",name:"enter"},{object:"control.return",name:"return"},{object:"control.menu",name:"menu"},{object:"control.source",name:"source"},{object:"control.guide",name:"guide"},{object:"control.tools",name:"tools"},{object:"control.info",name:"info"},{object:"control.red",name:"red"},{object:"control.blue",name:"blue"},{object:"control.green",name:"green"},{object:"control.yellow",name:"yellow"},{object:"control.volup",name:"volume up"},{object:"control.voldown",name:"volume down"},{object:"control.mute",name:"volume mute"},{object:"control.0",name:"0"},{object:"control.1",name:"1"},{object:"control.2",name:"2"},{object:"control.3",name:"3"},{object:"control.4",name:"4"},{object:"control.5",name:"5"},{object:"control.6",name:"6"},{object:"control.7",name:"7"},{object:"control.8",name:"8"},{object:"control.9",name:"9"},{object:"control.dtv",name:"dtv"},{object:"control.hdmi",name:"hdmi"},{object:"control.contents",name:"contents"},{object:"control.sendKey",name:"sendKey manually"},{object:"powerOn",name:"power state of TV"}];
-
-        for(let i = 0; i <= objects; i++){
+    adapter.log.info(objects.length)
+        for(let i = 0; i < objects.length; i++){
             adapter.setObject(objects[i].name, {
                 type: 'state',
                 common: {
@@ -135,7 +136,7 @@ async function getApps(x) {
                 ws.on('message', function incoming(data) {
                     adapter.log.info(data);
                     data = JSON.parse(data);
-                    for(let i = 0; i <= data.data.data.length; i++){
+                    for(let i = 0; i < data.data.data.length; i++){
                         adapter.setObject('apps.start_'+data.data.data[i].name, {
                             type: 'state',
                             common: {
@@ -182,7 +183,7 @@ async function getApps(x) {
     }
 };
 async function startApp(app, x) {
-    adapter.log.info(app)
+    adapter.log.info('appname: ' + app)
     try{
         await wsConnect();
         setTimeout(async function() {
@@ -192,7 +193,7 @@ async function startApp(app, x) {
                     adapter.log.info(data);
                     data = JSON.parse(data);
                     if (data.event === 'ed.installedApp.get'){
-                        for(let i = 0; i <= data.data.data.length; i++){
+                        for(let i = 0; i < data.data.data.length; i++){
                             if( app === data.data.data[i].name){
                                 ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.apps.launch", "to":"host", "data" :{ "action_type" : data.data.data[i].app_type == 2 ? 'DEEP_LINK' : 'NATIVE_LAUNCH',"appId":data.data.data[i].appId}}}));
                                 wsClose();
