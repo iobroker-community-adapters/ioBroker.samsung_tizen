@@ -439,12 +439,13 @@ async function wsClose() {
 async function sendKey(key, x) {
     adapter.log.info( 'sendKey started: ' + key + ' x: '+x);
     try{
-        await wsConnect();
-        await wsSend({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}})
-        adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
-        await wsClose();
-        return;
-        
+        let conn = await wsConnect();
+        if (conn) {
+            await wsSend({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}})
+            adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
+            await wsClose();
+            return;
+        };
     }
     catch (error){
         adapter.log.info(error);
