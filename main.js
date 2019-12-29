@@ -396,7 +396,6 @@ function getPowerOnState(){
     }, parseFloat(adapter.config.pollingInterval) * 1000)
 }
 async function wsConnect() {
-    adapter.log.info( 'ws connect ');
     let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
     if (parseFloat(adapter.config.token) > 0) {wsUrl = wsUrl + '&token=' + adapter.config.token}
     adapter.log.info('open connection: ' + wsUrl );
@@ -405,7 +404,6 @@ async function wsConnect() {
         ws.on('message', function incoming(data) {
             data = JSON.parse(data);
             if(data.event == "ms.channel.connect") {
-                adapter.log.info( 'ws connected ');
                 return true;
             }
         });
@@ -415,7 +413,6 @@ async function wsConnect() {
     }
 };
 async function wsSend(msg) {
-    adapter.log.info( 'ws send '+ JSON.stringify(msg));
     try {
         ws.send(JSON.stringify(msg));
         ws.on('message', function incoming(data) {
@@ -427,8 +424,6 @@ async function wsSend(msg) {
     }
 };
 async function wsClose() {
-    adapter.log.info( 'ws close');
-
     try {
         ws.close()
     } 
@@ -437,7 +432,6 @@ async function wsClose() {
     }
 };
 async function sendKey(key, x) {
-    adapter.log.info( 'sendKey started: ' + key + ' x: '+x);
     try{
         await wsConnect();
         setTimeout(function() {
@@ -471,38 +465,50 @@ async function sendKey(key, x) {
         await wsClose();
     }
 };
-async function getApps() {
-    let x = 0;
+async function getApps(x) {
     try{
         await wsConnect();
-        let data = await wsSend({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}})
-        data = JSON.parse(data);
-        for(let i = 0; i <= data.data.data.length; i++){
-            adapter.setObject('apps.start_'+data.data.data[i].name, {
-                type: 'state',
-                common: {
-                    name: data.data.data[i].appId,
-                    type: 'boolean',
-                    role: 'button'
-                },
-                native: {}
-            });
-        }
-        return 'getInstalledApps successfully sent to tv';
+        setTimeout(function() {
+            let data = await wsSend({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}})
+            adapter.log.info(data);
+            data = JSON.parse(data);
+            for(let i = 0; i <= data.data.data.length; i++){
+                adapter.setObject('apps.start_'+data.data.data[i].name, {
+                    type: 'state',
+                    common: {
+                        name: data.data.data[i].appId,
+                        type: 'boolean',
+                        role: 'button'
+                    },
+                    native: {}
+                });
+            }
+            adapter.log.info('getInstalledApps successfully sent to tv')
+        },1000)
+        return;
     }
     catch (error){
+        adapter.log.info(error);
         if ( x == 0 ){
             if(parseFloat(adapter.config.macAddress) > 0){
+                adapter.log.info('Error while getInstalledApps, error: ' + error + ' retry 1/5 will be executed'); 
                 adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
                 wol.wake(adapter.config.macAddress);
+                x++;
+                getApps(x);
             };
-            continue;   
         }
-        if ( x < 5) {x++;setTimeout(function() {continue;}, 1000);}
-        return 'Error while getInstalledApps, error: ' + error;
-    }
-    finally {
-        await wsconn.close();
+        if ( x < 5) {
+            setTimeout(function() {x++;             
+            adapter.log.info('Error while getInstalledApps, error: ' + error + ' retry '+ x + '/5 will be executed'); 
+            getApps(x);}, 1000);
+
+        }
+        if ( x >= 5) {
+            adapter.log.info('Error while getInstalledApps, error: ' + error + ' maximum retries reached'); 
+            return error;        
+        }
+        await wsClose();
     }
 };
 async function startApp(app) {
