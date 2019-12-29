@@ -441,9 +441,9 @@ async function sendKey(key, x) {
     try{
         await wsConnect();
         setTimeout(function() {
-            await wsSend({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}})
+            wsSend({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}})
             adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
-            await wsClose();
+            wsClose();
             return;
         }, 1000);
     }
