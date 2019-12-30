@@ -1,7 +1,7 @@
 "use strict";
 const utils =    require(__dirname + '/lib/utils');
 const adapter = utils.adapter('samsungTizen');
-const req = require('request-promise');
+const isPortReachable = require('is-port-reachable');
 const wol = require('wake_on_lan');
 const WebSocket = require('ws');
 
@@ -55,17 +55,19 @@ function getPowerOnState(){
         native: {}
     });  
     setInterval(function(){
-        req({uri:'http://' + adapter.config.ipAddress + ':' + adapter.config.pollingEndpoint, timeout:10000})
-        .then(()=> {
+        (async () => {
+            if(await isPortReachable(adapter.config.pollingPort, {host: adapter.config.ipAddress})){
                 adapter.setState('powerOn', true, true, function (err) {
                     if (err) adapter.log.error(err);
                 });
-        })
-        .catch(error => {       	   
+            };
+            if(await !isPortReachable(adapter.config.pollingPort, {host: adapter.config.ipAddress})){
                 adapter.setState('powerOn', false, true, function (err) {
                     if (err) adapter.log.error(err);
                 });
-        })
+            };
+        })();
+
     }, parseFloat(adapter.config.pollingInterval) * 1000)
 }
 function wsConnect(done) {
@@ -87,7 +89,6 @@ function wsConnect(done) {
     });
 };
 function sendKey(key, x) {
-    adapter.log.info(JSON.stringify(ws));
     wsConnect(function(err) {
         if (err){
             adapter.log.info(err);
@@ -96,9 +97,10 @@ function sendKey(key, x) {
                     adapter.log.info('Error while sendKey: ' + key + ' error: ' + err + ' retry 1/5 will be executed'); 
                     adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
                     wol.wake(adapter.config.macAddress);
+                    if (key === 'KEY_POWER') { adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv'); }
+                    if (key !== 'KEY_POWER') { x++; sendKey(key, x); } 
                 };
-                x++;
-                sendKey(key, x);
+                if(parseFloat(adapter.config.macAddress) === 0){ x++; sendKey(key, x);}
             }
             if ( x < 5) {
                 setTimeout(function() {
@@ -112,120 +114,122 @@ function sendKey(key, x) {
                 adapter.log.info('Error while sendKey: ' + key + ' error: ' + err + ' maximum retries reached'); 
                 done(err);        
             }
+            if (ws !== null){
+                adapter.log.info(JSON.stringify(ws));
+                ws.close();
+            }
         } if (!err) {
             ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
             adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
-            adapter.log.info(JSON.stringify(ws));
             if (ws !== null){
+                adapter.log.info(JSON.stringify(ws));
                 ws.close();
             }
           }
         });
 };
 async function getApps(x) {
-    try{
-        await wsConnect();
-        setTimeout(async function() {
-            try {
-                ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
-                ws.on('message', function incoming(data) {
-                    adapter.log.info(data);
-                    data = JSON.parse(data);
-                    for(let i = 0; i < data.data.data.length; i++){
-                        adapter.setObject('apps.start_'+data.data.data[i].name, {
-                            type: 'state',
-                            common: {
-                                name: data.data.data[i].appId,
-                                type: 'boolean',
-                                role: 'button'
-                            },
-                            native: {}
-                        });
-                    }
-                    adapter.log.info('getInstalledApps successfully sent to tv')
-                    wsClose();
-                    return;
-                });
-            } 
-            catch(error){
-                return error;
+    wsConnect(function(err) {
+        if (err){
+            adapter.log.info(err);
+            if ( x < 1 ){
+                if(parseFloat(adapter.config.macAddress) > 0){
+                    adapter.log.info('Error while getInstalledApps, error: ' + err + ' retry 1/5 will be executed'); 
+                    adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
+                    wol.wake(adapter.config.macAddress);
+                };
+                x++; getApps(x)
             }
-        },1000)
-        return;
-    }
-    catch (error){
-        adapter.log.info(error);
-        if ( x == 0 ){
-            if(parseFloat(adapter.config.macAddress) > 0){
-                adapter.log.info('Error while getInstalledApps, error: ' + error + ' retry 1/5 will be executed'); 
-                adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
-                wol.wake(adapter.config.macAddress);
-            };
-            x++;
-            getApps(x);
-        }
-        if ( x < 5) {
-            setTimeout(function() {x++;             
-            adapter.log.info('Error while getInstalledApps, error: ' + error + ' retry '+ x + '/5 will be executed'); 
-            getApps(x);}, 1000);
+            if ( x < 5) {
+                setTimeout(function() {
+                    x++;             
+                    adapter.log.info('Error while getInstalledApps: ' + key + ' error: ' + err + ' retry '+ x + '/5 will be executed'); 
+                    getApps(x);
+                }, 2000);
+    
+            }
+            if ( x > 4) {
+                adapter.log.info('Error while getInstalledApps error: ' + err + ' maximum retries reached'); 
+                done(err);        
+            }
+            if (ws !== null){
+                adapter.log.info(JSON.stringify(ws));
+                ws.close();
+            }
+        } if (!err) {
+            ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
+            ws.on('message', function incoming(data) {
+                adapter.log.info(data);
+                data = JSON.parse(data);
+                for(let i = 0; i < data.data.data.length; i++){
+                    adapter.setObject('apps.start_'+data.data.data[i].name, {
+                        type: 'state',
+                        common: {
+                            name: data.data.data[i].appId,
+                            type: 'boolean',
+                            role: 'button'
+                        },
+                        native: {}
+                    });
+                }
+                adapter.log.info('getInstalledApps successfully sent to tv')
+                if (ws !== null){
+                    adapter.log.info(JSON.stringify(ws));
+                    ws.close();
+                }
+            })
+        };
 
-        }
-        if ( x >= 5) {
-            adapter.log.info('Error while getInstalledApps, error: ' + error + ' maximum retries reached'); 
-            return error;        
-        }
-        await wsClose();
-    }
+    });
 };
-async function startApp(app, x) {
+async function startApp(app,x) {
     adapter.log.info('appname: ' + app)
-    try{
-        await wsConnect();
-        setTimeout(async function() {
-            try {
-                ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
-                ws.on('message', function incoming(data) {
-                    adapter.log.info(data);
-                    data = JSON.parse(data);
-                    if (data.event === 'ed.installedApp.get'){
-                        for(let i = 0; i < data.data.data.length; i++){
-                            if( app === data.data.data[i].name){
-                                ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.apps.launch", "to":"host", "data" :{ "action_type" : data.data.data[i].app_type == 2 ? 'DEEP_LINK' : 'NATIVE_LAUNCH',"appId":data.data.data[i].appId}}}));
-                                wsClose();
-                                return 'app: ' +  app + ' successfully started';
-                            }
-                            return 'app: ' +  app + ' cannot be started';
-                        }
-                    }
-                    return;
-                });
-            } 
-            catch(error){
-                return error;
+    wsConnect(function(err) {
+        if (err){
+            adapter.log.info(err);
+            if ( x < 1 ){
+                if(parseFloat(adapter.config.macAddress) > 0){
+                    adapter.log.info('Error while startApp:' + app+ ', error: ' + err + ' retry 1/5 will be executed'); 
+                    adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
+                    wol.wake(adapter.config.macAddress);
+                };
+                x++; startApp(app,x);
             }
+            if ( x < 5) {
+                setTimeout(function() {
+                    x++;             
+                    adapter.log.info('Error while startApp:' + app+ ', error: ' + err + ' retry '+ x + '/5 will be executed'); 
+                    startApp(app,x);
+                }, 2000);
+    
+            }
+            if ( x > 4) {
+                adapter.log.info('Error while startApp:' + app+ ', error: ' + err + ' maximum retries reached'); 
+                done(err);        
+            }
+            if (ws !== null){
+                adapter.log.info(JSON.stringify(ws));
+                ws.close();
+            }
+        } if (!err) {
+            ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
+            ws.on('message', function incoming(data) {
+                adapter.log.info(data);
+                data = JSON.parse(data);
+                if (data.event === 'ed.installedApp.get'){
+                    for(let i = 0; i < data.data.data.length; i++){
+                        if( app === data.data.data[i].name){
+                            ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.apps.launch", "to":"host", "data" :{ "action_type" : data.data.data[i].app_type == 2 ? 'DEEP_LINK' : 'NATIVE_LAUNCH',"appId":data.data.data[i].appId}}}));
+                            adapter.log.info('app: ' +  app + ' successfully started');
+                            if (ws !== null){
+                                adapter.log.info(JSON.stringify(ws));
+                                ws.close();
+                            }
+                        }
+                        adapter.log.info('app: ' +  app + ' cannot be started');
+                    }
+                }
+            });
+          }
         });
-    }
-    catch (error){
-        adapter.log.info(error);
-        if ( x == 0 ){
-            if(parseFloat(adapter.config.macAddress) > 0){
-                adapter.log.info('Error while getInstalledApps, error: ' + error + ' retry 1/5 will be executed'); 
-                adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
-                wol.wake(adapter.config.macAddress);
-            };
-            x++;
-            startApp(app, x);
-        }
-        if ( x < 5) {
-            setTimeout(function() {x++;             
-            adapter.log.info('Error while getInstalledApps, error: ' + error + ' retry '+ x + '/5 will be executed'); 
-            startApp(app, x);}, 1000);
-
-        }
-        if ( x >= 5) {
-            adapter.log.info('Error while getInstalledApps, error: ' + error + ' maximum retries reached'); 
-            return error;        
-        }
-        await wsClose();
-    }
 };
