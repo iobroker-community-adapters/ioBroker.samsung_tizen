@@ -19,6 +19,9 @@ adapter.on('stateChange', function (id, state) {
     } 
     if (key[3].toUpperCase() === 'SENDKEY'){
         sendKey(state.val, 0);
+    } 
+    if (key[3].toUpperCase() === 'SENDCOMMAND'){
+        sendCmd(state.val, 0);
     } else if (key[2] === 'control') {
         sendKey('KEY_' + key[3].toUpperCase(), 0);
     }
@@ -128,7 +131,47 @@ function sendKey(key, x) {
           }
         });
 };
-async function getApps(x) {
+function sendCmd(cmd, x) {
+    cmd = cmd.split(';')
+    wsConnect(function(err) {
+        if (err){
+            adapter.log.info(err);
+            if ( x < 1 ){
+                if(parseFloat(adapter.config.macAddress) > 0){
+                    adapter.log.info('Error while sendCommand: ' + cmd + ' error: ' + err + ' retry 1/5 will be executed'); 
+                    adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
+                    wol.wake(adapter.config.macAddress);
+                    x++; sendCmd(key, x);
+                };
+                if(parseFloat(adapter.config.macAddress) === 0){ x++; sendCmd(cmd, x);}
+            }
+            if ( x < 5) {
+                setTimeout(function() {
+                    x++;             
+                    adapter.log.info('Error while sendCommand: ' + cmd + ' error: ' + err + ' retry '+ x + '/5 will be executed'); 
+                    sendCmd(key, x);
+                }, 2000);
+    
+            }
+            if ( x > 4) {
+                adapter.log.info('Error while sendCommand: ' + cmd + ' error: ' + err + ' maximum retries reached'); 
+                done(err);        
+            }
+            if (ws !== null){
+                adapter.log.info(JSON.stringify(ws));
+                ws.close();
+            }
+        } if (!err) {
+            ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
+            adapter.log.info( 'sendCommand: ' + cmd + ' successfully sent to tv');
+            if (ws !== null){
+                adapter.log.info(JSON.stringify(ws));
+                ws.close();
+            }
+          }
+        });
+};
+function getApps(x) {
     wsConnect(function(err) {
         if (err){
             adapter.log.info(err);
@@ -182,7 +225,7 @@ async function getApps(x) {
 
     });
 };
-async function startApp(app,x) {
+function startApp(app,x) {
     adapter.log.info('appname: ' + app)
     wsConnect(function(err) {
         if (err){
