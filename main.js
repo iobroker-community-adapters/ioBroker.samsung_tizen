@@ -142,6 +142,7 @@ function sendCmd(cmd, x) {
                     adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
                     wol.wake(adapter.config.macAddress);
                     x++; sendCmd(key, x);
+                    //TODO: power on if x+1
                 };
                 if(parseFloat(adapter.config.macAddress) === 0){ x++; sendCmd(cmd, x);}
             }
