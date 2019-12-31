@@ -59,16 +59,10 @@ function getPowerOnState(){
     });  
     setInterval(function(){
         (async () => {
-            if(await isPortReachable(adapter.config.pollingPort, {host: adapter.config.ipAddress})){
-                adapter.setState('powerOn', true, true, function (err) {
-                    if (err) adapter.log.error(err);
-                });
-            };
-            if(await !isPortReachable(adapter.config.pollingPort, {host: adapter.config.ipAddress})){
-                adapter.setState('powerOn', false, true, function (err) {
-                    if (err) adapter.log.error(err);
-                });
-            };
+            let response = await isPortReachable(adapter.config.pollingPort, {host: adapter.config.ipAddress});
+            adapter.setState('powerOn', response, true, function (err) {
+                if (err) adapter.log.error(err);
+            });
         })();
 
     }, parseFloat(adapter.config.pollingInterval) * 1000)
@@ -120,6 +114,7 @@ function sendKey(key, x) {
             if (ws !== null){
                 adapter.log.info(JSON.stringify(ws));
                 ws.close();
+                adapter.log.info('websocket connection closed');
             }
         } if (!err) {
             ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
@@ -127,6 +122,7 @@ function sendKey(key, x) {
             if (ws !== null){
                 adapter.log.info(JSON.stringify(ws));
                 ws.close();
+                adapter.log.info('websocket connection closed');
             }
           }
         });
@@ -161,6 +157,7 @@ function sendCmd(cmd, x) {
             if (ws !== null){
                 adapter.log.info(JSON.stringify(ws));
                 ws.close();
+                adapter.log.info('websocket connection closed');
             }
         } if (!err) {
             ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
@@ -168,6 +165,8 @@ function sendCmd(cmd, x) {
             if (ws !== null){
                 adapter.log.info(JSON.stringify(ws));
                 ws.close();
+                adapter.log.info('websocket connection closed');
+
             }
           }
         });
@@ -199,6 +198,7 @@ function getApps(x) {
             if (ws !== null){
                 adapter.log.info(JSON.stringify(ws));
                 ws.close();
+                adapter.log.info('websocket connection closed');
             }
         } if (!err) {
             ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
@@ -220,6 +220,7 @@ function getApps(x) {
                 if (ws !== null){
                     adapter.log.info(JSON.stringify(ws));
                     ws.close();
+                    adapter.log.info('websocket connection closed');
                 }
             })
         };
@@ -254,6 +255,8 @@ function startApp(app,x) {
             if (ws !== null){
                 adapter.log.info(JSON.stringify(ws));
                 ws.close();
+                adapter.log.info('websocket connection closed');
+
             }
         } if (!err) {
             ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
@@ -268,6 +271,7 @@ function startApp(app,x) {
                             if (ws !== null){
                                 adapter.log.info(JSON.stringify(ws));
                                 ws.close();
+                                adapter.log.info('websocket connection closed');
                             }
                         }
                         adapter.log.info('app: ' +  app + ' cannot be started');
