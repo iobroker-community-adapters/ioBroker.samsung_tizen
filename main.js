@@ -45,7 +45,7 @@ function main() {
         type: 'state',
         common: {
             name: 'sendKey manually',
-            type: 'boolean',
+            type: 'string',
             role: 'state'
         },
         native: {}
@@ -54,7 +54,7 @@ function main() {
         type: 'state',
         common: {
             name: 'send multiple keys seperated with ";"',
-            type: 'boolean',
+            type: 'string',
             role: 'state'
         },
         native: {}
