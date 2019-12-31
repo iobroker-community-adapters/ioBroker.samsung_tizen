@@ -20,7 +20,7 @@ adapter.on('stateChange', function (id, state) {
         sendKey(state.val, 0);
     } 
     if (key[3].toUpperCase() === 'SENDCMD'){
-        sendCmd(state.val, 0);
+        sendCmd(state.val.split(','), 0);
     } else if (key[2] === 'control') {
         sendKey('KEY_' + key[3].toUpperCase(), 0);
     }
@@ -53,7 +53,7 @@ function main() {
     adapter.setObject('control.sendCmd', {
         type: 'state',
         common: {
-            name: 'send multiple keys seperated with ";"',
+            name: 'send multiple keys seperated with ","',
             type: 'string',
             role: 'state'
         },
@@ -149,7 +149,6 @@ function sendKey(key, x) {
         });
 };
 function sendCmd(cmd, x) {
-    cmd = cmd.split(';')
     wsConnect(function(err) {
         if (err){
             wserror('sendCommand', cmd, err, x, function(error){
