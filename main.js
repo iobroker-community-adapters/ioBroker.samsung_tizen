@@ -225,7 +225,7 @@ function startApp(app,x) {
                 if (data.event === 'ed.installedApp.get'){
                     for(let i = 0; i < data.data.data.length; i++){
                         if( app === data.data.data[i].name){
-                            ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.apps.launch", "to":"host", "data" :{ "action_type" : data.data.data[i].app_type == 4 ? 'NATIVE_LAUNCH' : 'DEEP_LINK',"appId":data.data.data[i].appId}}}));
+                            ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.apps.launch", "to":"host", "data" :{ "action_type" : data.data.data[i].app_type === 1||2 ? 'DEEP_LINK' : 'NATIVE_LAUNCH',"appId":data.data.data[i].appId}}}));
                             adapter.log.info('app: ' +  app + ' successfully started');
                             if (ws !== null){
                                 ws.close();
