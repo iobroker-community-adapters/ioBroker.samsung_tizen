@@ -85,38 +85,42 @@ function wsConnect(done) {
         }
     });
 };
-function wserror(func, action, key, x, done){
-
+function wserror(func, action, err, x, done){
+    if (ws !== null){
+        ws.close();
+        adapter.log.info('websocket connection closed');
+    }
+    if ( x < 1 ){
+        if(parseFloat(adapter.config.macAddress) > 0){
+            adapter.log.info('Error while: ' + func + ', action: ' + action + ' error: ' + err + ' retry 1/5 will be executed'); 
+            adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
+            wol.wake(adapter.config.macAddress);
+            done(0);
+        };
+        if(parseFloat(adapter.config.macAddress) === 0){ done(0)}
+    }
+    else if ( x < 5) {
+        setTimeout(function() {
+            x++;             
+            adapter.log.info('Error while: ' + func + ', action: ' + action + '  error: ' + err + ' retry '+ x + '/5 will be executed'); 
+            done(0);
+        }, 2000);
+    }
+    else if ( x > 4) {
+        adapter.log.info('Error while: ' + func + ', action: ' + action + ' error: ' + err + ' maximum retries reached'); 
+        done(new Error('Error while: ' + func + ', action: ' + action + ' error: ' + err + ' maximum retries reached'));            
+    }
 }
 function sendKey(key, x) {
     wsConnect(function(err) {
         if (err){
             adapter.log.info(err);
-            if ( x < 1 ){
-                if(parseFloat(adapter.config.macAddress) > 0){
-                    adapter.log.info('Error while sendKey: ' + key + ' error: ' + err + ' retry 1/5 will be executed'); 
-                    adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
-                    wol.wake(adapter.config.macAddress);
-                    if (key === 'KEY_POWER') { x++; adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv'); }
-                    else if (key !== 'KEY_POWER') { x++; sendKey(key, x); } 
-                };
-                if(parseFloat(adapter.config.macAddress) === 0){ x++; sendKey(key, x);}
-            }
-            if ( x < 5) {
-                setTimeout(function() {
-                    x++;             
-                    adapter.log.info('Error while sendKey: ' + key + ' error: ' + err + ' retry '+ x + '/5 will be executed'); 
-                    sendKey(key, x);
-                }, 2000);
-    
-            }
-            if ( x > 4) {
-                adapter.log.info('Error while sendKey: ' + key + ' error: ' + err + ' maximum retries reached');             }
-            if (ws !== null){
-                adapter.log.info(JSON.stringify(ws));
-                ws.close();
-                adapter.log.info('websocket connection closed');
-            }
+            wserror('sendKey', key, err, x, function(error){
+                if(!error){
+                    x++;
+                    if (key !== 'KEY_POWER'){sendKey(key,x)};
+                }
+            })
         } if (!err) {
             ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
             adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
@@ -132,73 +136,36 @@ function sendCmd(cmd, x) {
     cmd = cmd.split(';')
     wsConnect(function(err) {
         if (err){
-            adapter.log.info(err);
-            if ( x < 1 ){
-                if(parseFloat(adapter.config.macAddress) > 0){
-                    adapter.log.info('Error while sendCommand: ' + cmd + ' error: ' + err + ' retry 1/5 will be executed'); 
-                    adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
-                    wol.wake(adapter.config.macAddress);
-                    x++; sendCmd(key, x);
-                    //TODO: power on if x+1
-                };
-                if(parseFloat(adapter.config.macAddress) === 0){ x++; sendCmd(cmd, x);}
-            }
-            if ( x < 5) {
-                setTimeout(function() {
-                    x++;             
-                    adapter.log.info('Error while sendCommand: ' + cmd + ' error: ' + err + ' retry '+ x + '/5 will be executed'); 
-                    sendCmd(key, x);
-                }, 2000);
-    
-            }
-            if ( x > 4) {
-                adapter.log.info('Error while sendCommand: ' + cmd + ' error: ' + err + ' maximum retries reached'); 
-            }
-            if (ws !== null){
-                adapter.log.info(JSON.stringify(ws));
-                ws.close();
-                adapter.log.info('websocket connection closed');
-            }
+            wserror('sendCommand', cmd, err, x, function(error){
+                if(!error){
+                    x++;
+                    sendCmd(cmd,x);
+                }
+            })
         } if (!err) {
-            ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
+            for(let i = 0; i < cmd.length; i++){
+                if (ws !== null){
+                    ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":cmd[i],"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
+                    adapter.log.info( 'sendKey: ' + cmd[i] + ' successfully sent to tv');
+                }
+            };
             adapter.log.info( 'sendCommand: ' + cmd + ' successfully sent to tv');
             if (ws !== null){
-                adapter.log.info(JSON.stringify(ws));
                 ws.close();
                 adapter.log.info('websocket connection closed');
-
-            }
+            };
           }
         });
 };
 function getApps(x) {
     wsConnect(function(err) {
         if (err){
-            adapter.log.info(err);
-            if ( x < 1 ){
-                if(parseFloat(adapter.config.macAddress) > 0){
-                    adapter.log.info('Error while getInstalledApps, error: ' + err + ' retry 1/5 will be executed'); 
-                    adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
-                    wol.wake(adapter.config.macAddress);
-                };
-                x++; getApps(x)
-            }
-            if ( x < 5) {
-                setTimeout(function() {
-                    x++;             
-                    adapter.log.info('Error while getInstalledApps: ' + key + ' error: ' + err + ' retry '+ x + '/5 will be executed'); 
+            wserror('getInstalledApps', 'get', err, x, function(error){
+                if(!error){
+                    x++;
                     getApps(x);
-                }, 2000);
-    
-            }
-            if ( x > 4) {
-                adapter.log.info('Error while getInstalledApps error: ' + err + ' maximum retries reached'); 
-            }
-            if (ws !== null){
-                adapter.log.info(JSON.stringify(ws));
-                ws.close();
-                adapter.log.info('websocket connection closed');
-            }
+                }
+            })
         } if (!err) {
             ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
             ws.on('message', function incoming(data) {
@@ -227,53 +194,29 @@ function getApps(x) {
     });
 };
 function startApp(app,x) {
-    adapter.log.info('appname: ' + app)
     wsConnect(function(err) {
         if (err){
-            adapter.log.info(err);
-            if ( x < 1 ){
-                if(parseFloat(adapter.config.macAddress) > 0){
-                    adapter.log.info('Error while startApp:' + app+ ', error: ' + err + ' retry 1/5 will be executed'); 
-                    adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
-                    wol.wake(adapter.config.macAddress);
-                };
-                x++; startApp(app,x);
-            }
-            if ( x < 5) {
-                setTimeout(function() {
-                    x++;             
-                    adapter.log.info('Error while startApp:' + app+ ', error: ' + err + ' retry '+ x + '/5 will be executed'); 
+            wserror('startApp', app, err, x, function(error){
+                if(!error){
+                    x++;
                     startApp(app,x);
-                }, 2000);
-    
-            }
-            if ( x > 4) {
-                adapter.log.info('Error while startApp:' + app+ ', error: ' + err + ' maximum retries reached'); 
-            }
-            if (ws !== null){
-                adapter.log.info(JSON.stringify(ws));
-                ws.close();
-                adapter.log.info('websocket connection closed');
-
-            }
+                }
+            })
         } if (!err) {
             ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
             ws.on('message', function incoming(data) {
-                adapter.log.info(data);
                 data = JSON.parse(data);
                 if (data.event === 'ed.installedApp.get'){
                     for(let i = 0; i < data.data.data.length; i++){
                         if( app === data.data.data[i].name){
-                            ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.apps.launch", "to":"host", "data" :{ "action_type" : data.data.data[i].app_type == 2 ? 'DEEP_LINK' : 'NATIVE_LAUNCH',"appId":data.data.data[i].appId}}}));
+                            ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.apps.launch", "to":"host", "data" :{ "action_type" : data.data.data[i].app_type == 4 ? 'NATIVE_LAUNCH' : 'DEEP_LINK',"appId":data.data.data[i].appId}}}));
                             adapter.log.info('app: ' +  app + ' successfully started');
                             if (ws !== null){
-                                adapter.log.info(JSON.stringify(ws));
                                 ws.close();
                                 adapter.log.info('websocket connection closed');
                             }
                         }
                     }
-                    adapter.log.info('app: ' +  app + ' cannot be started');
                 }
             });
           }
