@@ -108,9 +108,7 @@ function sendKey(key, x) {
     
             }
             if ( x > 4) {
-                adapter.log.info('Error while sendKey: ' + key + ' error: ' + err + ' maximum retries reached'); 
-                done(err);        
-            }
+                adapter.log.info('Error while sendKey: ' + key + ' error: ' + err + ' maximum retries reached');             }
             if (ws !== null){
                 adapter.log.info(JSON.stringify(ws));
                 ws.close();
@@ -152,7 +150,6 @@ function sendCmd(cmd, x) {
             }
             if ( x > 4) {
                 adapter.log.info('Error while sendCommand: ' + cmd + ' error: ' + err + ' maximum retries reached'); 
-                done(err);        
             }
             if (ws !== null){
                 adapter.log.info(JSON.stringify(ws));
@@ -193,7 +190,6 @@ function getApps(x) {
             }
             if ( x > 4) {
                 adapter.log.info('Error while getInstalledApps error: ' + err + ' maximum retries reached'); 
-                done(err);        
             }
             if (ws !== null){
                 adapter.log.info(JSON.stringify(ws));
@@ -250,7 +246,6 @@ function startApp(app,x) {
             }
             if ( x > 4) {
                 adapter.log.info('Error while startApp:' + app+ ', error: ' + err + ' maximum retries reached'); 
-                done(err);        
             }
             if (ws !== null){
                 adapter.log.info(JSON.stringify(ws));
