@@ -85,6 +85,9 @@ function wsConnect(done) {
         }
     });
 };
+function wserror(func, action, key, x, done){
+
+}
 function sendKey(key, x) {
     wsConnect(function(err) {
         if (err){
@@ -95,7 +98,7 @@ function sendKey(key, x) {
                     adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
                     wol.wake(adapter.config.macAddress);
                     if (key === 'KEY_POWER') { x++; adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv'); }
-                    if (key !== 'KEY_POWER') { x++; sendKey(key, x); } 
+                    else if (key !== 'KEY_POWER') { x++; sendKey(key, x); } 
                 };
                 if(parseFloat(adapter.config.macAddress) === 0){ x++; sendKey(key, x);}
             }
@@ -269,8 +272,8 @@ function startApp(app,x) {
                                 adapter.log.info('websocket connection closed');
                             }
                         }
-                        adapter.log.info('app: ' +  app + ' cannot be started');
                     }
+                    adapter.log.info('app: ' +  app + ' cannot be started');
                 }
             });
           }
