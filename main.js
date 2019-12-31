@@ -94,7 +94,7 @@ function sendKey(key, x) {
                     adapter.log.info('Error while sendKey: ' + key + ' error: ' + err + ' retry 1/5 will be executed'); 
                     adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
                     wol.wake(adapter.config.macAddress);
-                    if (key === 'KEY_POWER') { adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv'); }
+                    if (key === 'KEY_POWER') { x++; adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv'); }
                     if (key !== 'KEY_POWER') { x++; sendKey(key, x); } 
                 };
                 if(parseFloat(adapter.config.macAddress) === 0){ x++; sendKey(key, x);}
