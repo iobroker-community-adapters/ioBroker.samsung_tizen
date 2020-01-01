@@ -75,7 +75,7 @@ Work on my 2018 model( NU Series7 )
 ### Polling Port
 a port to get the power state 
 default: 9110
-known available ports: 9110, 9197
+known available ports: 9110, 9119, 9197 
 ### Polling Interval 
 how often the poll request shall be sent
 default: 60 seconds
