@@ -42,8 +42,8 @@ Port for the websocket connection to your TV.
 
 Token for a secure connection to your TV. Should be used only if it does not work without token.
 can be deactivated with value "0"
-#### How to get a token 
-
+<details><summary>How to get a token </summary>
+<p>
 Install "wscat" on the device where ioBroker is running with following command:
 ```sh
 npm install wscat
@@ -57,6 +57,9 @@ take the token from the returned json response
 ```json
 {"name":"aW9Ccm9rZXI="},"connectTime":1575818900205,"deviceName":"aW9Ccm9rZXI=","id":"12345678-797c-45b0-b0f1-233535918548","isHost":false}],"id":"12345678-797c-45b0-b0f1-233535918548","token":"10916644"},"event":"ms.channel.connect"}
 ```
+
+</p>
+</details>
 
 ### MAC Address
 
@@ -83,6 +86,7 @@ can be deactivated with value "0"
 ##How to use
 
 ###Control
+
 #### Send a single key
 to send a single key click the button under e.g. samsungTizen.0.control.KEY_MUTE
 
@@ -95,6 +99,7 @@ to send multiple key in a single command use the samsungTizen.0.control.sendCmd 
 enter keys separated with "," e.g. KEY_POWER,KEY_HDMI,KEY_VOLUP.
 
 ###APPS
+
 #### Load installed Apps
 to load the installed Apps click on samsungTizen.0.apps.getInstalledApps button.
 After that, a separate object with the name start_app_name is created for each installed app.
