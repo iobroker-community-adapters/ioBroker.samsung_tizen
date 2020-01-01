@@ -3,11 +3,19 @@
         "name":                     "samsungTizen",
         "version":                  "0.0.4",
 	    "news": {
-			"0.0.4": {
-			  "en": "alpha version",
-			  "de": "Alphaversion"
-			  
-			}
+            "0.0.4": {
+                "en": "change from polling endpoint to port only, add function to start apps",
+                "de": "Änderung von Polling Endpunkt zu Port, es können jetzt auch Apps gestartet werden"
+                
+              },
+			"0.0.3": {
+			  "en": "all parameters are configureable now, power state can be polled and control buttons added",
+			  "de": "Alle Parameter sind konfigurierbar, Power Status kann geholt werden und Fernbedienungs Buttons wurden hinzugefügt"
+            },
+            "0.0.2": {
+                "en": "alpha version",
+                "de": "Alphaversion"
+              }
 		},
         "title":                    "Samsung TizenOS TVs",
         "desc":                     {
@@ -18,6 +26,7 @@
         "mode":                     "daemon",
         "icon":                     "samsung.png",
         "enabled":                  true,
+        "license":                  "MIT",
 		"extIcon":                  "https://raw.githubusercontent.com/dahuby/ioBroker.samsungTizen/master/admin/samsung.png",
 		"keywords":                 ["samsung", "home"],
         "readme":                   "https://github.com/dahuby/ioBroker.samsungTizen/blob/master/README.md",
