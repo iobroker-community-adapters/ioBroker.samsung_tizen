@@ -6,7 +6,9 @@ This adapter is to control samsung tvs with tizenOS (>=2016).
   
 [How to Install](#install)  
 [Configuration](#config)  
+[How to Use](#use)  
 <a name="install"/>
+
 ## How to install
 
 open iobroker admin in a browser window and go to the adapters tab
@@ -22,28 +24,21 @@ open iobroker admin in a browser window and go to the adapters tab
 6. configure the adapter 
 ![install4](images/install4.png)
 
-<a name="install"/>
+<a name="config"/>
+
 ## Configuration
 
 How to configure this adapter
-
 ### Protocol
-
 Protocol for the websocket connection to your TV.
 possible values are http or wss, on newer devices use wss
-
 ### IP Address 
-
 IP Address of your Samsung TV
-
 ### Port
-
 Port for the websocket connection to your TV.
 8001 unsecure port
 8002 secure port
-
 ### Token 
-
 Token for a secure connection to your TV. Should be used only if it does not work without token.
 can be deactivated with value "0"
 <details><summary>How to get a token </summary>
@@ -71,30 +66,26 @@ take the token from the returned json response
 </details>
 
 ### MAC Address
-
 MAC Address of your Samsung TV, will be used for WakeOnLAN. 
 Does only work if your TV is connected per wire and not wireless.
 If your TV is wireless connected it can only powered on from shortStandby.
 wakeOnLan can be deactivated with value "0"
 ### TV state polling
-
 Work on my 2018 model( NU Series7 )
-
-#### Polling Port
-
+### Polling Port
 a port to get the power state 
 default: 9110
 known available ports: 9110, 9197
-
-#### Polling Interval 
-
+### Polling Interval 
 how often the poll request shall be sent
 default: 60 seconds
 can be deactivated with value "0"
 
+<a name="use"/>
+
 ## How to use
 
-###Control
+### Control
 
 #### Send a single key
 to send a single key click the button under e.g. samsungTizen.0.control.KEY_MUTE
