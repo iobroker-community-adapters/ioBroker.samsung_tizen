@@ -3,7 +3,10 @@
 =====================
 
 This adapter is to control samsung tvs with tizenOS (>=2016).
-
+  
+[How to Install](#install)  
+[Configuration](#config)  
+<a name="install"/>
 ## How to install
 
 open iobroker admin in a browser window and go to the adapters tab
@@ -19,6 +22,7 @@ open iobroker admin in a browser window and go to the adapters tab
 6. configure the adapter 
 ![install4](images/install4.png)
 
+<a name="install"/>
 ## Configuration
 
 How to configure this adapter
@@ -45,15 +49,20 @@ can be deactivated with value "0"
 <details><summary>How to get a token </summary>
 <p>
 Install "wscat" on the device where ioBroker is running with following command:
+
 ```sh
 npm install wscat
 ```
+
 Turn TV on and query the token via websocket connection 
+
 ```sh
 wscat -n -c wss://tvIp:8002/api/v2/channels/samsung.remote.control?name=aW9Ccm9rZXI=
 ```
+
 a pop up appears on your TV that must be accepted.
 take the token from the returned json response
+
 ```json
 {"name":"aW9Ccm9rZXI="},"connectTime":1575818900205,"deviceName":"aW9Ccm9rZXI=","id":"12345678-797c-45b0-b0f1-233535918548","isHost":false}],"id":"12345678-797c-45b0-b0f1-233535918548","token":"10916644"},"event":"ms.channel.connect"}
 ```
@@ -83,7 +92,7 @@ how often the poll request shall be sent
 default: 60 seconds
 can be deactivated with value "0"
 
-##How to use
+## How to use
 
 ###Control
 
@@ -98,7 +107,7 @@ Enter the key what you want to send e.g. KEY_POWER.
 to send multiple key in a single command use the samsungTizen.0.control.sendCmd object.
 enter keys separated with "," e.g. KEY_POWER,KEY_HDMI,KEY_VOLUP.
 
-###APPS
+### APPS
 
 #### Load installed Apps
 to load the installed Apps click on samsungTizen.0.apps.getInstalledApps button.
