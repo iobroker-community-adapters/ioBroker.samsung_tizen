@@ -4,12 +4,12 @@
 
 This adapter is to control samsung tvs with tizenOS (>=2016).
   
-[How to Install](#install)  
+[Installation](#install)  
 [Configuration](#config)  
-[How to Use](#use)  
+[Usage](#use)  
 <a name="install"/>
 
-## How to install
+## Installation
 
 open iobroker admin in a browser window and go to the adapters tab
 
@@ -83,7 +83,7 @@ can be deactivated with value "0"
 
 <a name="use"/>
 
-## How to use
+## Usage
 
 ### Control
 
