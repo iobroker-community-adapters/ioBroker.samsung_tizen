@@ -64,7 +64,7 @@ function main() {
     if (parseFloat(adapter.config.pollingInterval) > 0){getPowerOnState();};
     adapter.subscribeStates('control.*');
     adapter.subscribeStates('apps.*');
-    adapter.log.info(adapter.name + '.' + adapter.instance + ' NIGHTLY started with config : ' + JSON.stringify(adapter.config));
+    adapter.log.info(adapter.name + '.' + adapter.instance + ' release 0.0.4 started with config : ' + JSON.stringify(adapter.config));
 }
 function getPowerOnState(){
     adapter.setObject('powerOn', {
