@@ -143,7 +143,6 @@ function sendKey(key, x) {
             ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
             adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
             if (ws !== null){
-                adapter.log.info(JSON.stringify(ws));
                 ws.close();
                 adapter.log.info('websocket connection closed');
             }
@@ -186,7 +185,6 @@ function getApps(x) {
         } if (!err) {
             ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
             ws.on('message', function incoming(data) {
-                adapter.log.info(data);
                 data = JSON.parse(data);
                 for(let i = 0; i < data.data.data.length; i++){
                     adapter.setObject('apps.start_'+data.data.data[i].name, {
@@ -201,7 +199,6 @@ function getApps(x) {
                 }
                 adapter.log.info('getInstalledApps successfully sent to tv')
                 if (ws !== null){
-                    adapter.log.info(JSON.stringify(ws));
                     ws.close();
                     adapter.log.info('websocket connection closed');
                 }
