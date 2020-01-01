@@ -40,7 +40,7 @@ Port for the websocket connection to your TV.
 
 ### Token 
 
-Token for a secure connection to your TV. 
+Token for a secure connection to your TV. Should be used only if it does not work without token.
 can be deactivated with value "0"
 #### How to get a token 
 
