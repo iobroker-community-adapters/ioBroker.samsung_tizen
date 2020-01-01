@@ -41,7 +41,7 @@ Port for the websocket connection to your TV.
 ### Token 
 
 Token for a secure connection to your TV. 
-can be deactiveted with value "0"
+can be deactivated with value "0"
 #### How to get a token 
 
 Install "wscat" on the device where ioBroker is running with following command:
@@ -63,18 +63,46 @@ take the token from the returned json response
 MAC Address of your Samsung TV, will be used for WakeOnLAN. 
 Does only work if your TV is connected per wire and not wireless.
 If your TV is wireless connected it can only powered on from shortStandby.
-wakeOnLan can be deactiveted with value "0"
-### TV state polling (experimental)
+wakeOnLan can be deactivated with value "0"
+### TV state polling
 
 Work on my 2018 model( NU Series7 )
 
-#### Polling Endpoint
+#### Polling Port
 
-a http endpoint to poll the state 
-default: 9110/ip_control
+a port to get the power state 
+default: 9110
+known available ports: 9110, 9197
 
 #### Polling Interval 
 
 how often the poll request shall be sent
 default: 60 seconds
-can be deactiveted with value "0"
+can be deactivated with value "0"
+
+##How to use
+
+###Control
+#### Send a single key
+to send a single key click the button under e.g. samsungTizen.0.control.KEY_MUTE
+
+#### Send a key for a not defined button
+you can send a custom (not defined) key with the samsungTizen.0.control.sendKey object.
+Enter the key what you want to send e.g. KEY_POWER.
+
+#### Send multiple keys in a single command 
+to send multiple key in a single command use the samsungTizen.0.control.sendCmd object.
+enter keys separated with "," e.g. KEY_POWER,KEY_HDMI,KEY_VOLUP.
+
+###APPS
+#### Load installed Apps
+to load the installed Apps click on samsungTizen.0.apps.getInstalledApps button.
+After that, a separate object with the name start_app_name is created for each installed app.
+
+#### Start App
+you can start an app with a click on the samsungTizen.0.apps.start_app_name object.
+
+### Power State 
+
+if you have the power state polling configured as mentioned above, you get the under samsungTizen.0.powerOn the state true if your tv is on or false if it is off.
+

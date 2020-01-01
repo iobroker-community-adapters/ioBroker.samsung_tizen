@@ -1,9 +1,5 @@
-Gruntfile.js
-tasks
 node_modules
-.idea
+.vscode
 .git
 /node_modules
-test
-.travis.yml
-appveyor.yml
+
