@@ -91,12 +91,17 @@ can be deactivated with value "0"
 to send a single key click the button under e.g. samsungTizen.0.control.KEY_MUTE
 
 #### Send a key for a not defined button
-you can send a custom (not defined) key with the samsungTizen.0.control.sendKey object.
+you can send a custom (not defined) key with the samsungTizen.0.control.sendCmd object.
 Enter the key what you want to send e.g. KEY_POWER.
 
 #### Send multiple keys in a single command 
 to send multiple key in a single command use the samsungTizen.0.control.sendCmd object.
 enter keys separated with "," e.g. KEY_POWER,KEY_HDMI,KEY_VOLUP.
+
+#### Create macros for commands
+
+Go to samsungTizen.0.command here you can find an example macro and you can create your own macros.
+How to create a new macro
 
 ### APPS
 
@@ -111,3 +116,10 @@ you can start an app with a click on the samsungTizen.0.apps.start_app_name obje
 
 if you have the power state polling configured as mentioned above, you get the under samsungTizen.0.powerOn the state true if your tv is on or false if it is off.
 
+Copyright (c) 2020 dahuby>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

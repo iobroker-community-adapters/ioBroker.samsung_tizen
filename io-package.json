@@ -1,12 +1,15 @@
 {
     "common": {
         "name":                     "samsungTizen",
-        "version":                  "0.0.4",
+        "version":                  "0.0.5",
 	    "news": {
+            "0.0.5": {
+                "en": "command macros added, sendKey removed because same function with sendCmd",
+                "de": "Command Macros hinzugefügt, sendKey entfernt da sendCmd die gleiche Funktion hat"
+              },
             "0.0.4": {
                 "en": "change from polling endpoint to port only, add function to start apps",
                 "de": "Änderung von Polling Endpunkt zu Port, es können jetzt auch Apps gestartet werden"
-                
               },
 			"0.0.3": {
 			  "en": "all parameters are configureable now, power state can be polled and control buttons added",
