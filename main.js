@@ -18,7 +18,14 @@ adapter.on('stateChange', function (id, state) {
         startApp(app[1], 0);
     } 
     if (key[2] === 'command'){
-        sendCmd(key[3].split(','), 0);
+        adapter.getForeignObject(id, function (err, obj) {
+            if (err) {
+                adapter.log.error(err);
+            } else {
+                adapter.log.info(JSON.stringify(obj));
+            }
+        });
+        //sendCmd(key[3].split(','), 0);
     } 
     if (key[3].toUpperCase() === 'SENDCMD'){
         sendCmd(state.val.split(','), 0);
@@ -42,10 +49,10 @@ function main() {
             native: {}
         });    
     };
-    adapter.setObject('command.KEY_VOLUP,KEY_VOLUP,KEY_VOLUP,KEY_HDMI,KEY_1,KEY_3', {
+    adapter.setObject('command.example', {
         type: 'state',
         common: {
-            name: 'example command',
+            name: 'KEY_VOLUP,KEY_VOLUP,KEY_VOLUP,KEY_HDMI,KEY_1,KEY_3',
             type: 'boolean',
             role: 'button'
         },
@@ -173,6 +180,9 @@ function sendCmd(cmd, x) {
           }
         });
 };
+function commandButton(cmd){
+
+}
 function getApps(x) {
     wsConnect(function(err) {
         if (err){
