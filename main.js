@@ -65,7 +65,7 @@ function main() {
     adapter.subscribeStates('apps.*');
     adapter.subscribeStates('command.*');
     adapter.subscribeStates('config.*');
-    adapter.log.info(adapter.name + '.' + adapter.instance + ' release 0.0.5 started with config : ' + JSON.stringify(adapter.config));
+    adapter.log.info(adapter.name + '.' + adapter.instance + ' release 0.0.6 started with config : ' + JSON.stringify(adapter.config));
 }
 function getPowerOnState(){
     adapter.setObject('powerOn', {
@@ -185,23 +185,24 @@ function sendCmd(cmd, x) {
                 }
             })
         } if (!err) {
-            for(let i = 0; i < cmd.length;){
+            let i = 0;
+            if (i < cmd.length){
                 delay(function(e){
                     if(!e){
                         if (ws !== null){
                             ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":cmd[i],"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
                             adapter.log.info( 'sendKey: ' + cmd[i] + ' successfully sent to tv');
-                            i++;
+                            i++
+                            if (i == cmd.length-1){
+                                adapter.log.info( 'sendCommand: ' + cmd + ' successfully sent to tv');
+                                if (ws !== null){
+                                    ws.close();
+                                    adapter.log.info('websocket connection closed');
+                                };
+                            }
                         };
                     };
                 });
-                if (i == cmd.length){
-                    adapter.log.info( 'sendCommand: ' + cmd + ' successfully sent to tv');
-                    if (ws !== null){
-                        ws.close();
-                        adapter.log.info('websocket connection closed');
-                    };
-                }
             };
 
           }
