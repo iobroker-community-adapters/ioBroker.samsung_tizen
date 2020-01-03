@@ -22,10 +22,9 @@ adapter.on('stateChange', function (id, state) {
             if (err) {
                 adapter.log.error(err);
             } else {
-                adapter.log.info(JSON.stringify(obj));
+                sendCmd(obj.common.name.split(','), 0);
             }
         });
-        //sendCmd(key[3].split(','), 0);
     } 
     if (key[3].toUpperCase() === 'SENDCMD'){
         sendCmd(state.val.split(','), 0);
