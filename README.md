@@ -137,8 +137,8 @@ enter keys separated with "," e.g. KEY_POWER,KEY_HDMI,KEY_VOLUP.
 
 #### Create macros for commands
 
-Go to samsungTizen.0.command here you can find an example macro and you can create your own macros.
-How to create a new macro
+Go to samsungTizen.0.command here you can find example macros and you can create your own macros.
+<a name="use_cmd">How to create a new macro</a>
 
 <a name="use_apps"/>
 
