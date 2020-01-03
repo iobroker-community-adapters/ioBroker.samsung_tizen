@@ -201,7 +201,7 @@ function sendCmd(cmd, x) {
                                             ws.close();
                                             adapter.log.info('websocket connection closed');
                                         };
-                                    }, parseFloat(adapter.config.cmdDelay))
+                                    }, parseFloat(adapter.config.cmdDelay)*2)
 
                                 };
                                 loop(i)
