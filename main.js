@@ -140,7 +140,6 @@ function getToken() {
         adapter.log.info(e);
     });
     ws.on('message', function incoming(data) {
-        adapter.log.info(data);
         data = JSON.parse(data);
         if(data.event == "ms.channel.connect") {
             adapter.log.info('getToken done, token: ' + data.data.token);
