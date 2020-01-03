@@ -195,11 +195,14 @@ function sendCmd(cmd, x) {
                                 adapter.log.info( 'sendKey: ' + cmd[i] + ' successfully sent to tv');
                                 i++;
                                 if (i === cmd.length-1){
-                                    adapter.log.info( 'sendCommand: ' + cmd + ' successfully sent to tv');
-                                    if (ws !== null){
-                                        ws.close();
-                                        adapter.log.info('websocket connection closed');
-                                    };
+                                    setTimeout(function() {            
+                                        adapter.log.info( 'sendCommand: ' + cmd + ' successfully sent to tv');
+                                        if (ws !== null){
+                                            ws.close();
+                                            adapter.log.info('websocket connection closed');
+                                        };
+                                    }, parseFloat(adapter.config.cmdDelay))
+
                                 };
                                 loop(i)
                             };
