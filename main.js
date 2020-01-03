@@ -194,14 +194,14 @@ function sendCmd(cmd, x) {
                                 ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":cmd[i],"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
                                 adapter.log.info( 'sendKey: ' + cmd[i] + ' successfully sent to tv');
                                 i++;
-                                if (i === cmd.length-1){
+                                if (i === cmd.length){
                                     setTimeout(function() {            
                                         adapter.log.info( 'sendCommand: ' + cmd + ' successfully sent to tv');
                                         if (ws !== null){
                                             ws.close();
                                             adapter.log.info('websocket connection closed');
                                         };
-                                    }, parseFloat(adapter.config.cmdDelay)*2)
+                                    }, parseFloat(adapter.config.cmdDelay))
 
                                 };
                                 loop(i)
