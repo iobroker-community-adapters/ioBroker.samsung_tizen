@@ -48,15 +48,6 @@ function main() {
             native: {}
         });    
     };
-    adapter.setObject('command.example', {
-        type: 'state',
-        common: {
-            name: 'KEY_VOLUP,KEY_VOLUP,KEY_VOLUP,KEY_HDMI,KEY_1,KEY_3',
-            type: 'boolean',
-            role: 'button'
-        },
-        native: {}
-    });
     adapter.setObject('control.sendCmd', {
         type: 'state',
         common: {
