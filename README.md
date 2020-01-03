@@ -24,7 +24,7 @@ This adapter is to control samsung tvs with tizenOS (>=2016).
 
 open iobroker admin go to the adapters tab and install the adapter from a custom source.
 
-<details><summary>Detailed Installation </summary>
+<details><summary></summary>
 <p>
 
 1. click on the github icon (install from custom URL)
@@ -183,7 +183,7 @@ There are few example commands but you can also create your own macros.
 
 ## 4. License
 
-Copyright (c) 2020 dahuby>
+Copyright (c) 2020 dahuby
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
