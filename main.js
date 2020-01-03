@@ -185,12 +185,13 @@ function sendCmd(cmd, x) {
                 }
             })
         } if (!err) {
-            for(let i = 0; i < cmd.length; i++){
+            for(let i = 0; i < cmd.length;){
                 delay(function(e){
                     if(!e){
                         if (ws !== null){
                             ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":cmd[i],"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
                             adapter.log.info( 'sendKey: ' + cmd[i] + ' successfully sent to tv');
+                            i++;
                         };
                     };
                 });
