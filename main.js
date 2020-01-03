@@ -27,7 +27,7 @@ adapter.on('stateChange', function (id, state) {
         });
     } 
     if (key[2] === 'config' && key[3] === 'getToken'){
-        getToken(done);
+        getToken();
     } 
     if (key[3].toUpperCase() === 'SENDCMD'){
         sendCmd(state.val.split(','), 0);
@@ -130,7 +130,7 @@ function wserror(func, action, err, x, done){
         done(new Error('Error while: ' + func + ', action: ' + action + ' error: ' + err + ' maximum retries reached'));            
     }
 }
-function getToken(done) {
+function getToken() {
     let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
     adapter.log.info('open connection: ' + wsUrl );
     ws = new WebSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
