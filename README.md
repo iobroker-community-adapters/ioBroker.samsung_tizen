@@ -17,9 +17,10 @@ This adapter is to control samsung tvs with tizenOS (>=2016).
 3.2. [Apps](#use_apps)  
 3.3. [Commands](#use_cmd)  
 4. [License](#license)  
+
 <a name="install"/>
 
-## Installation
+## 1. Installation
 
 open iobroker admin go to the adapters tab and install the adapter from a custom source.
 
@@ -44,31 +45,31 @@ open iobroker admin go to the adapters tab and install the adapter from a custom
 
 <a name="config"/>
 
-## Configuration
+## 2. Configuration
 
 How to configure this adapter
 
 <a name="config_protocol"/>
 
-### Protocol
+### 2.1. Protocol
 Protocol for the websocket connection to your TV.
 possible values are http or wss, on newer devices use wss
 
 <a name="config_ip"/>
 
-### IP Address 
+### 2.2. IP Address 
 IP Address of your Samsung TV
 
 <a name="config_port"/>
 
-### Port
+### 2.3. Port
 Port for the websocket connection to your TV.
 8001 unsecure port
 8002 secure port
 
 <a name="config_token"/>
 
-### Token 
+### 2.4. Token 
 Token for a secure connection to your TV. Should be used only if it does not work without token.
 can be deactivated with value "0"
 <details><summary>How to get a token </summary>
@@ -97,7 +98,7 @@ take the token from the returned json response
 
 <a name="config_mac"/>
 
-### MAC Address
+### 2.5. MAC Address
 MAC Address of your Samsung TV, will be used for WakeOnLAN. 
 Does only work if your TV is connected per wire and not wireless.
 If your TV is wireless connected it can only powered on from shortStandby.
@@ -105,24 +106,23 @@ wakeOnLan can be deactivated with value "0"
 
 <a name="config_state"/>
 
-### TV state polling
-Work on my 2018 model( NU Series7 )
-### Polling Port
+### 2.6. TV state polling
+#### Polling Port
 a port to get the power state 
 default: 9110
 known available ports: 9110, 9119, 9197 
-### Polling Interval 
+#### Polling Interval 
 how often the poll request shall be sent
 default: 60 seconds
 can be deactivated with value "0"
 
 <a name="use"/>
 
-## Usage
+## 3. Usage
 
 <a name="use_ctrl"/>
 
-### Control
+### 3.1. Control
 
 #### Send a single key
 to send a single key click the button under e.g. samsungTizen.0.control.KEY_MUTE
@@ -142,7 +142,7 @@ How to create a new macro
 
 <a name="use_apps"/>
 
-### APPS
+### 3.2. APPS
 
 #### Load installed Apps
 to load the installed Apps click on samsungTizen.0.apps.getInstalledApps button.
@@ -157,7 +157,7 @@ if you have the power state polling configured as mentioned above, you get the u
 
 <a name="use_cmd"/>
 
-### Commands
+### 3.3. Commands
 
 Commands can be manually sent via the samsungTizen.0.control.sendCmd object as mentioned in <a name="use_ctrl">Control</a> or over a custom created objects under samsungTizen.0.command .
 There are few example commands but you can also create your own macros.
@@ -181,7 +181,7 @@ There are few example commands but you can also create your own macros.
 
 <a name="license"/>
 
-## License
+## 4. License
 
 Copyright (c) 2020 dahuby>
 
