@@ -1,5 +1,5 @@
 {
-  "name": "iobroker.samsungTizen",
+  "name": "iobroker.samsung_tizen",
   "version": "0.0.6",
   "description": "ioBroker adapter to control samsung tizenOs tvs(mj >= 2016)",
   "author": {
