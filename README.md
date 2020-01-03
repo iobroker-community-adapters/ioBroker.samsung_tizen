@@ -40,7 +40,8 @@ open iobroker admin go to the adapters tab and install the adapter from a custom
 </details>
 
 ## 2. Configuration
-How to configure this adapter
+How to configure this adapter. 
+First check your TV settings, switch on the TV and go to Settings / General / External Device Manager / Device Connection Manager there the access notification should be activated to "first time only"
 
 ### 2.1. Protocol
 Protocol for the websocket connection to your TV.
@@ -56,7 +57,7 @@ Port for the websocket connection to your TV.
 
 ### 2.4. Token 
 Token for a secure connection to your TV. 
-Save the adapter with token = 0 and go to the iobroker admin adapters tab.
+Save the adapter with token = 0 and go to the iobroker admin object tab.
 Then go to samsungTizen.0.config.getToken object and click the button.
 If all works fine a new object samsungTizen.0.config.token should appear with id samsungTizen.0.config.token and the name is your token - copy the name (e.g. 123456789) and go back to the adapter config and paste it in the token field.
 can be deactivated with value "0"
