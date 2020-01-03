@@ -4,24 +4,22 @@
 
 This adapter is to control samsung tvs with tizenOS (>=2016).
   
-1. [Installation](#install)  
-2. [Configuration](#config)  
-2.1. [Protocol](#config_protocol)  
-2.2. [IP Adress](#config_ip)  
-2.3. [Port](#config_port)  
-2.4. [Token](#config_token)  
-2.5. [Mac Adress](#config_mac)  
-2.6. [TV State Polling](#config_state)  
-3. [Usage](#use)  
-3.1. [Constrol](#use_ctrl)  
-3.2. [Apps](#use_apps)  
-3.3. [Commands](#use_cmd)  
-4. [License](#license)  
-
-<a name="install"/>
+1. [Installation](#1-installation)  
+2. [Configuration](#2-Configuration)  
+2.1. [Protocol](#21-protocol)  
+2.2. [IP Adress](#22-ip-address)  
+2.3. [Port](#23-port)  
+2.4. [Token](#24-token)  
+2.5. [Mac Adress](#25-mac-adress)  
+2.6. [TV State Polling](#26-tv-state-polling)  
+2.7. [Command Delay](#27-command-delay)  
+3. [Usage](#3-usage)  
+3.1. [Control](#31-control)  
+3.2. [Apps](#32-apps)  
+3.3. [Commands](#33-commands)  
+4. [License](#4-License)  
 
 ## 1. Installation
-
 open iobroker admin go to the adapters tab and install the adapter from a custom source.
 
 <details><summary></summary>
@@ -41,38 +39,29 @@ open iobroker admin go to the adapters tab and install the adapter from a custom
 </p>
 </details>
 
-
-
-<a name="config"/>
-
 ## 2. Configuration
-
 How to configure this adapter
-
-<a name="config_protocol"/>
 
 ### 2.1. Protocol
 Protocol for the websocket connection to your TV.
 possible values are http or wss, on newer devices use wss
 
-<a name="config_ip"/>
-
 ### 2.2. IP Address 
 IP Address of your Samsung TV
-
-<a name="config_port"/>
 
 ### 2.3. Port
 Port for the websocket connection to your TV.
 8001 unsecure port
 8002 secure port
 
-<a name="config_token"/>
-
 ### 2.4. Token 
-Token for a secure connection to your TV. Should be used only if it does not work without token.
+Token for a secure connection to your TV. 
+Save the adapter with token = 0 and go to the iobroker admin adapters tab.
+Then go to samsungTizen.0.config.getToken object and click the button.
+If all works fine a new object samsungTizen.0.config.token should appear with id samsungTizen.0.config.token and the name is your token - copy the name (e.g. 123456789) and go back to the adapter config and paste it in the token field.
 can be deactivated with value "0"
-<details><summary>How to get a token </summary>
+
+<details><summary>How to get a token manually</summary>
 <p>
 Install "wscat" on the device where ioBroker is running with following command:
 
@@ -96,15 +85,11 @@ take the token from the returned json response
 </p>
 </details>
 
-<a name="config_mac"/>
-
 ### 2.5. MAC Address
 MAC Address of your Samsung TV, will be used for WakeOnLAN. 
 Does only work if your TV is connected per wire and not wireless.
 If your TV is wireless connected it can only powered on from shortStandby.
 wakeOnLan can be deactivated with value "0"
-
-<a name="config_state"/>
 
 ### 2.6. TV state polling
 #### Polling Port
@@ -116,11 +101,10 @@ how often the poll request shall be sent
 default: 60 seconds
 can be deactivated with value "0"
 
-<a name="use"/>
+### 2.7. Command Delay
+delay in milliseconds between the commands sent via the samsungTizen.0.control.sendCmd object. 
 
 ## 3. Usage
-
-<a name="use_ctrl"/>
 
 ### 3.1. Control
 
@@ -140,8 +124,6 @@ enter keys separated with "," e.g. KEY_POWER,KEY_HDMI,KEY_VOLUP.
 Go to samsungTizen.0.command here you can find example macros and you can create your own macros.
 <a name="use_cmd">How to create a new macro</a>
 
-<a name="use_apps"/>
-
 ### 3.2. APPS
 
 #### Load installed Apps
@@ -154,8 +136,6 @@ you can start an app with a click on the samsungTizen.0.apps.start_app_name obje
 ### Power State 
 
 if you have the power state polling configured as mentioned above, you get the under samsungTizen.0.powerOn the state true if your tv is on or false if it is off.
-
-<a name="use_cmd"/>
 
 ### 3.3. Commands
 
@@ -178,8 +158,6 @@ There are few example commands but you can also create your own macros.
 ![cmd4](images/cmd4.png)
 </p>
 </details>
-
-<a name="license"/>
 
 ## 4. License
 

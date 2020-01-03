@@ -26,6 +26,9 @@ adapter.on('stateChange', function (id, state) {
             }
         });
     } 
+    if (key[2] === 'config' && key[3] === 'getToken'){
+        getToken(done);
+    } 
     if (key[3].toUpperCase() === 'SENDCMD'){
         sendCmd(state.val.split(','), 0);
     } else if (key[2] === 'control') {
@@ -61,6 +64,7 @@ function main() {
     adapter.subscribeStates('control.*');
     adapter.subscribeStates('apps.*');
     adapter.subscribeStates('command.*');
+    adapter.subscribeStates('config.*');
     adapter.log.info(adapter.name + '.' + adapter.instance + ' release 0.0.5 started with config : ' + JSON.stringify(adapter.config));
 }
 function getPowerOnState(){
@@ -126,6 +130,32 @@ function wserror(func, action, err, x, done){
         done(new Error('Error while: ' + func + ', action: ' + action + ' error: ' + err + ' maximum retries reached'));            
     }
 }
+function getToken(done) {
+    let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
+    adapter.log.info('open connection: ' + wsUrl );
+    ws = new WebSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
+        adapter.log.info(new Error(error));
+      });
+    ws.on('error', function (e) {
+        adapter.log.info(e);
+    });
+    ws.on('message', function incoming(data) {
+        adapter.log.info(data);
+        data = JSON.parse(data);
+        if(data.event == "ms.channel.connect") {
+            adapter.log.info('getToken done, token: ' + data.token);
+            adapter.setObject('config.token', {
+                type: 'state',
+                common: {
+                    name: data.token,
+                    type: 'string',
+                    role: 'state'
+                },
+                native: {}
+            });
+        }
+    });
+};
 function sendKey(key, x) {
     wsConnect(function(err) {
         if (err){
@@ -157,10 +187,14 @@ function sendCmd(cmd, x) {
             })
         } if (!err) {
             for(let i = 0; i < cmd.length; i++){
-                if (ws !== null){
-                    ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":cmd[i],"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
-                    adapter.log.info( 'sendKey: ' + cmd[i] + ' successfully sent to tv');
-                }
+                delay(function(e){
+                    if(!e){
+                        if (ws !== null){
+                            ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":cmd[i],"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
+                            adapter.log.info( 'sendKey: ' + cmd[i] + ' successfully sent to tv');
+                        };
+                    };
+                });
             };
             adapter.log.info( 'sendCommand: ' + cmd + ' successfully sent to tv');
             if (ws !== null){
@@ -170,9 +204,11 @@ function sendCmd(cmd, x) {
           }
         });
 };
-function commandButton(cmd){
-
-}
+function delay(done){
+    setTimeout(function() {            
+        done(0);
+    }, adapter.config.cmdDelay);
+};
 function getApps(x) {
     wsConnect(function(err) {
         if (err){

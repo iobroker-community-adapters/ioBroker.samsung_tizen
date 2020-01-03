@@ -1,55 +1,35 @@
 <html>
 
-<!-- these 4 files always have to be included -->
 <link rel="stylesheet" type="text/css" href="../../lib/css/themes/jquery-ui/redmond/jquery-ui.min.css"/>
 <script type="text/javascript" src="../../lib/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
 <script type="text/javascript" src="../../lib/js/jquery-ui-1.10.3.full.min.js"></script>
 
-
-<!-- optional: use jqGrid
-<link rel="stylesheet" type="text/css" href="../../lib/css/jqGrid/ui.jqgrid-4.5.4.css"/>
-<script type="text/javascript" src="../../lib/js/jqGrid/jquery.jqGrid-4.5.4.min.js"></script>
-<script type="text/javascript" src="../../lib/js/jqGrid/i18n/grid.locale-all.js"></script>
--->
-
-<!-- optional: use multiselect
-<link rel="stylesheet" type="text/css" href="../../lib/css/jquery.multiselect-1.13.css"/>
-<script type="text/javascript" src="../../lib/js/jquery.multiselect-1.13.min.js"></script>
--->
-
-<!-- these two file always have to be included -->
 <link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
 <script type="text/javascript" src="../../js/translate.js"></script>
 <script type="text/javascript" src="../../js/adapter-settings.js"></script>
 
 
-<!-- you have to define 2 functions in the global scope: -->
 <script type="text/javascript">
 
-    // Dictionary (systemDictionary is global variable from adapter-settings.js)
     systemDictionary = {
         "samsung tizen adapter settings": {"de": "Samsung Tizen Adapter"},
-	"protocol":                    {"en": "protocol", "de": "Protokoll"},
+	    "protocol":                    {"en": "protocol", "de": "Protokoll"},
         "ipAddress":                    {"en": "ip address", "de": "IP Adresse"},
-	"port":                    {"en": "port", "de": "Port"},
-	"token":                    {"en": "token", "de": "Token"},
-	"pollingPort":                    {"en": "polling port", "de": "Polling Port"},
-	"pollingInterval":                    {"en": "polling interval", "de": "Polling Intervall"},
+	    "port":                    {"en": "port", "de": "Port"},
+	    "token":                    {"en": "token", "de": "Token"},
+	    "pollingPort":                    {"en": "polling port", "de": "Polling Port"},
+	    "pollingInterval":                    {"en": "polling interval", "de": "Polling Intervall"},
         "macAddress":                    {"en": "mac address", "de": "MAC Adresse"},
+        "cmdDelay":                    {"en": "Command Delay", "de": "Command Verzögerung"},
         "on save adapter restarts with new config immediately": {
             "de": "Beim Speichern der Einstellungen wird der Adapter sofort neu gestartet.",
             "ru": "Сразу после сохранения настроек драйвер перезапуститься с новыми значениями"
         },
-	"TV state polling(experimental):": {"de": "TV Statusabfrage(experementell):"},
-	"(0 to deactivate)": {"de": "(0 zum deaktivieren)"}
+	    "(0 to deactivate)": {"de": "(0 zum deaktivieren)"}
     };
-
-    // the function loadSettings has to exist ...
     function load(settings, onChange) {
-        // example: select elements with id=key and class=value and insert value
         for (var key in settings) {
-            // example: select elements with id=key and class=value and insert value
             if ($('#' + key + '.value').attr('type') == 'checkbox') {
                 $('#' + key + '.value').prop('checked', settings[key]).change(function () {
 					onChange();
@@ -62,14 +42,9 @@
 				});
             }
         }
-        // Signal to admin, that no changes yet
         onChange(false);
     }
-
-    // ... and the function save has to exist.
-    // you have to make sure the callback is called with the settings object as first param!
-    function save(callback) {
-        // example: select elements with class=value and build settings object
+function save(callback) {
         var obj = {};
         $('.value').each(function () {
             var $this = $(this);
@@ -79,7 +54,6 @@
     }
 </script>
 
-<!-- you have to put your config page in a div with id adapter-container -->
 <div id="adapter-container">
 
     <table><tr>
@@ -94,6 +68,7 @@
         <span class="translate">macAddress</span> <input class="value" id="macAddress"/><span class="translate">(0 to deactivate)</span><br>	
         <span class="translate">pollingPort</span> <input class="value" id="pollingPort"/><br>
         <span class="translate">pollingInterval</span> <input class="value" id="pollingInterval"/>in s <span class="translate">(0 to deactivate)</span><br>
+        <span class="translate">cmdDelay</span> <input class="value" id="cmdDelay"/>in ms<br>
     </p>
         <p class="translate">on save adapter restarts with new config immediately</p>
 </div>

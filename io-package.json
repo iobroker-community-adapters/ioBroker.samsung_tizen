@@ -1,12 +1,16 @@
 {
     "common": {
         "name":                     "samsungTizen",
-        "version":                  "0.0.5",
+        "version":                  "0.0.6",
 	    "news": {
-            "0.0.5": {
-                "en": "command macros added, sendKey removed because same function with sendCmd",
-                "de": "Command Macros hinzugefügt, sendKey entfernt da sendCmd die gleiche Funktion hat"
+            "0.0.6": {
+                "en": "remoteKeys, sendCmd delay, config getToken added, readme modified",
+                "de": "Fernbedienungsknöpfe, sendCmd Verzögerung, getToken hinzugefügt"
               },
+            "0.0.5": {
+            "en": "command macros added, sendKey removed because same function with sendCmd",
+            "de": "Command Macros hinzugefügt, sendKey entfernt da sendCmd die gleiche Funktion hat"
+            },
             "0.0.4": {
                 "en": "change from polling endpoint to port only, add function to start apps",
                 "de": "Änderung von Polling Endpunkt zu Port, es können jetzt auch Apps gestartet werden"
@@ -22,8 +26,8 @@
 		},
         "title":                    "Samsung TizenOS TVs",
         "desc":                     {
-				 "en": "ioBroker adapter to control samsung tizenOS tv",
-				 "de": "ioBroker Adapter zur Steuerung der Samsung Tizen OS TVs"
+				 "en": "ioBroker adapter to control samsung tizenOS tvs (mj >= 2016)",
+				 "de": "ioBroker Adapter zur Steuerung der Samsung Tizen OS TVs(mj >= 2016)"
 		},
         "platform":                 "Javascript/Node.js",
         "mode":                     "daemon",
@@ -41,8 +45,9 @@
         "protocol": "wss",
         "ipAddress": "192.168.0.1",
         "port": "8002",
-        "token": "123456789",
+        "token": "0",
         "macAddress": "ab:12:cd:34:ef:56",
+        "cmdDelay": "1000",
         "pollingPort": "9110",
         "pollingInterval": "60"
 	
