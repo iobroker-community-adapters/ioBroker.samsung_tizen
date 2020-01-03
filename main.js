@@ -185,6 +185,7 @@ function sendCmd(cmd, x) {
                 }
             })
         } if (!err) {
+            loop(0);
             function loop(i){
                 if (i < cmd.length){
                     delay(function(e){
