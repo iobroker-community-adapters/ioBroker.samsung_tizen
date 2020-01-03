@@ -4,14 +4,27 @@
 
 This adapter is to control samsung tvs with tizenOS (>=2016).
   
-[Installation](#install)  
-[Configuration](#config)  
-[Usage](#use)  
+1. [Installation](#install)  
+2. [Configuration](#config)  
+2.1. [Protocol](#config_protocol)  
+2.2. [IP Adress](#config_ip)  
+2.3. [Port](#config_port)  
+2.4. [Token](#config_token)  
+2.5. [Mac Adress](#config_mac)  
+2.6. [TV State Polling](#config_state)  
+3. [Usage](#use)  
+3.1. [Constrol](#use_ctrl)  
+3.2. [Apps](#use_apps)  
+3.3. [Commands](#use_cmd)  
+4. [License](#license)  
 <a name="install"/>
 
 ## Installation
 
-open iobroker admin in a browser window and go to the adapters tab
+open iobroker admin go to the adapters tab and install the adapter from a custom source.
+
+<details><summary>Detailed Installation </summary>
+<p>
 
 1. click on the github icon (install from custom URL)
 ![install1](images/install1.png)
@@ -24,20 +37,37 @@ open iobroker admin in a browser window and go to the adapters tab
 6. configure the adapter 
 ![install4](images/install4.png)
 
+</p>
+</details>
+
+
+
 <a name="config"/>
 
 ## Configuration
 
 How to configure this adapter
+
+<a name="config_protocol"/>
+
 ### Protocol
 Protocol for the websocket connection to your TV.
 possible values are http or wss, on newer devices use wss
+
+<a name="config_ip"/>
+
 ### IP Address 
 IP Address of your Samsung TV
+
+<a name="config_port"/>
+
 ### Port
 Port for the websocket connection to your TV.
 8001 unsecure port
 8002 secure port
+
+<a name="config_token"/>
+
 ### Token 
 Token for a secure connection to your TV. Should be used only if it does not work without token.
 can be deactivated with value "0"
@@ -65,11 +95,16 @@ take the token from the returned json response
 </p>
 </details>
 
+<a name="config_mac"/>
+
 ### MAC Address
 MAC Address of your Samsung TV, will be used for WakeOnLAN. 
 Does only work if your TV is connected per wire and not wireless.
 If your TV is wireless connected it can only powered on from shortStandby.
 wakeOnLan can be deactivated with value "0"
+
+<a name="config_state"/>
+
 ### TV state polling
 Work on my 2018 model( NU Series7 )
 ### Polling Port
@@ -84,6 +119,8 @@ can be deactivated with value "0"
 <a name="use"/>
 
 ## Usage
+
+<a name="use_ctrl"/>
 
 ### Control
 
@@ -103,6 +140,8 @@ enter keys separated with "," e.g. KEY_POWER,KEY_HDMI,KEY_VOLUP.
 Go to samsungTizen.0.command here you can find an example macro and you can create your own macros.
 How to create a new macro
 
+<a name="use_apps"/>
+
 ### APPS
 
 #### Load installed Apps
@@ -115,6 +154,34 @@ you can start an app with a click on the samsungTizen.0.apps.start_app_name obje
 ### Power State 
 
 if you have the power state polling configured as mentioned above, you get the under samsungTizen.0.powerOn the state true if your tv is on or false if it is off.
+
+<a name="use_cmd"/>
+
+### Commands
+
+Commands can be manually sent via the samsungTizen.0.control.sendCmd object as mentioned in <a name="use_ctrl">Control</a> or over a custom created objects under samsungTizen.0.command .
+There are few example commands but you can also create your own macros.
+<details><summary>How to create a command macro </summary>
+<p>
+
+1. go to adapters and open samsungTizen.0.command
+2. click on the + icon to create a new object
+![cmd1](images/cmd1.png)
+3. check that the parent object is samsungTizen.0.command
+4. enter a new name for your command and check that type is datapoint and stateType = boolean.
+![cmd2](images/cmd2.png)
+5. under name enter the keys what you want to send.
+6. role must be button 
+7. and save
+![cmd3](images/cmd3.png)
+8. then you can send your command with the newly created object
+![cmd4](images/cmd4.png)
+</p>
+</details>
+
+<a name="license"/>
+
+## License
 
 Copyright (c) 2020 dahuby>
 
