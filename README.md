@@ -22,7 +22,7 @@ This adapter is to control samsung tvs with tizenOS (>=2016).
 ## 1. Installation
 open iobroker admin go to the adapters tab and install the adapter from a custom source.
 
-<details><summary></summary>
+<details><summary>detailed installation</summary>
 <p>
 
 1. click on the github icon (install from custom URL)
