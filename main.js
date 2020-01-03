@@ -143,11 +143,11 @@ function getToken() {
         adapter.log.info(data);
         data = JSON.parse(data);
         if(data.event == "ms.channel.connect") {
-            adapter.log.info('getToken done, token: ' + data.token);
+            adapter.log.info('getToken done, token: ' + data.data.token);
             adapter.setObject('config.token', {
                 type: 'state',
                 common: {
-                    name: data.token,
+                    name: data.data.token,
                     type: 'string',
                     role: 'state'
                 },
