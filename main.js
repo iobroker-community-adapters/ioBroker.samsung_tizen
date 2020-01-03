@@ -194,19 +194,22 @@ function sendCmd(cmd, x) {
                         };
                     };
                 });
+                if (i == cmd.length){
+                    adapter.log.info( 'sendCommand: ' + cmd + ' successfully sent to tv');
+                    if (ws !== null){
+                        ws.close();
+                        adapter.log.info('websocket connection closed');
+                    };
+                }
             };
-            adapter.log.info( 'sendCommand: ' + cmd + ' successfully sent to tv');
-            if (ws !== null){
-                ws.close();
-                adapter.log.info('websocket connection closed');
-            };
+
           }
         });
 };
 function delay(done){
     setTimeout(function() {            
         done(0);
-    }, adapter.config.cmdDelay);
+    }, parseFloat(adapter.config.cmdDelay));
 };
 function getApps(x) {
     wsConnect(function(err) {
