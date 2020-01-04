@@ -1,8 +1,12 @@
 {
     "common": {
-        "name":                     "samsungTizen",
-        "version":                  "0.0.7",
+        "name":                     "samsung_tizen",
+        "version":                  "0.0.8",
 	    "news": {
+            "0.0.8": {
+                "en": "package renamed to samsung_tizen",
+                "de": "package umbennant auf samsung_tizen"
+              },
             "0.0.7": {
                 "en": "package.json modified(devDependencies) removed",
                 "de": "package.json geändert(devDependencies) entfernt"
