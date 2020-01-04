@@ -1,15 +1,19 @@
 {
     "common": {
         "name":                     "samsungTizen",
-        "version":                  "0.0.6",
+        "version":                  "0.0.7",
 	    "news": {
+            "0.0.7": {
+                "en": "package.json modified(devDependencies) removed",
+                "de": "package.json geändert(devDependencies) entfernt"
+              },
             "0.0.6": {
                 "en": "remoteKeys, sendCmd delay, config getToken added, readme modified",
                 "de": "Fernbedienungsknöpfe, sendCmd Verzögerung, getToken hinzugefügt"
               },
             "0.0.5": {
-            "en": "command macros added, sendKey removed because same function with sendCmd",
-            "de": "Command Macros hinzugefügt, sendKey entfernt da sendCmd die gleiche Funktion hat"
+                "en": "command macros added, sendKey removed because same function with sendCmd",
+                "de": "Command Macros hinzugefügt, sendKey entfernt da sendCmd die gleiche Funktion hat"
             },
             "0.0.4": {
                 "en": "change from polling endpoint to port only, add function to start apps",
