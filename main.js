@@ -33,7 +33,7 @@ adapter.on('stateChange', function (id, state) {
         sendCmd(state.val.split(','), 0);
     }
     if (key[3].toUpperCase() === 'KEY_POWERON'||key[3].toUpperCase() === 'KEY_POWEROFF'){
-        onoff(key[3].toUpperCase(), function(err){ if (err){adapter.log.info(err);};});
+        onoff(key[3].toUpperCase());
     } else if (key[2] === 'control') {
         sendKey(key[3].toUpperCase(), 0);
     }
@@ -295,6 +295,7 @@ function startApp(app,x) {
         });
 };
 async function getPowerStateInstant(){
+            adapter.log.info('get instant power state')
             let response = await isPortReachable(adapter.config.pollingPort, {host: adapter.config.ipAddress});
             adapter.setState('powerOn', response, true, function (err) {
                 if (err) adapter.log.error(err);
