@@ -68,7 +68,7 @@ function main() {
     adapter.subscribeStates('apps.*');
     adapter.subscribeStates('command.*');
     adapter.subscribeStates('config.*');
-    adapter.log.info(adapter.name + '.' + adapter.instance + ' release 0.0.9 started with config : ' + JSON.stringify(adapter.config));
+    adapter.log.info(adapter.name + '.' + adapter.instance + ' release 0.0.10 started with config : ' + JSON.stringify(adapter.config));
 }
 function getPowerOnState(){
     adapter.setObject('powerOn', {
