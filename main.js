@@ -107,8 +107,7 @@ function wsConnect(done) {
                 done(0);
             }
         });
-    }
-    if (typeof ws !== 'undefined' || ws !== null){
+    } else if (typeof ws !== 'undefined' || ws !== null){
         adapter.log.info(JSON.stringify(ws));
         done(0);
     }
