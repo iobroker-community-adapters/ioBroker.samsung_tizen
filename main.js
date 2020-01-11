@@ -33,7 +33,7 @@ adapter.on('stateChange', function (id, state) {
         sendCmd(state.val.split(','), 0);
     }
     if (key[3].toUpperCase() === 'KEY_POWERON'||key[3].toUpperCase() === 'KEY_POWEROFF'){
-        onoff(key[3].toUpperCase(), 0);
+        onoff(key[3].toUpperCase(), function(err){ if (err){adapter.log.info(err);};});
     } else if (key[2] === 'control') {
         sendKey(key[3].toUpperCase(), 0);
     }
@@ -108,7 +108,6 @@ function wsConnect(done) {
             }
         });
     } else if (ws.readyState > 0){
-        adapter.log.info(JSON.stringify(ws));
         done(0);
     }
 };
@@ -196,8 +195,7 @@ function sendCmd(cmd, x) {
                         if(!e){
                             if (ws.readyState > 0){
                                 if (cmd[i]=== 'KEY_POWERON'||cmd[i]=== 'KEY_POWEROFF'){ 
-                                    onoff(cmd[i],
-                                        done(function(er){
+                                    onoff(cmd[i],function(er){
                                             if(!er){
                                                 i++;
                                                 if (i === cmd.length){
@@ -206,7 +204,6 @@ function sendCmd(cmd, x) {
                                                 loop(i)
                                             }
                                         })
-                                    )
                                 }
                                 else if(cmd[i] !== 'KEY_POWERON'||cmd[i] !== 'KEY_POWEROFF'){
                                     ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":cmd[i],"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
@@ -226,6 +223,7 @@ function sendCmd(cmd, x) {
         });
 };
 function onoff(key, done) {
+    adapter.log.info('onoff ' + key)
     if (key === 'KEY_POWERON'){
         getPowerStateInstant(function(err) {
             if (err){ sendCmd('KEY_POWER',0)}
