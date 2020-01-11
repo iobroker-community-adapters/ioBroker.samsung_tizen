@@ -91,7 +91,7 @@ function getPowerOnState(){
     }, parseFloat(adapter.config.pollingInterval) * 1000)
 }
 function wsConnect(done) {
-    adapter.log.info(ws);
+    adapter.log.info(JSON.stringify(ws));
     if (typeof ws === 'undefined' || ws.readyState === 0){
         let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
         if (parseFloat(adapter.config.token) > 0) {wsUrl = wsUrl + '&token=' + adapter.config.token}
