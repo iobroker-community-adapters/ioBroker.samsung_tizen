@@ -91,11 +91,7 @@ function getPowerOnState(){
     }, parseFloat(adapter.config.pollingInterval) * 1000)
 }
 function wsConnect(done) {
-    if (ws !== null){
-        adapter.log.info(ws);
-        done(0);
-    }
-    if (ws === null){
+    if (ws == null){
         let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
         if (parseFloat(adapter.config.token) > 0) {wsUrl = wsUrl + '&token=' + adapter.config.token}
         adapter.log.info('open connection: ' + wsUrl );
@@ -111,6 +107,10 @@ function wsConnect(done) {
                 done(0);
             }
         });
+    }
+    if (ws != null){
+        adapter.log.info(ws);
+        done(0);
     }
 };
 function wserror(func, action, err, x, done){
