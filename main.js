@@ -195,15 +195,12 @@ function sendCmd(cmd, x) {
                         if(!e){
                             if (ws.readyState > 0){
                                 if (cmd[i]=== 'KEY_POWERON'||cmd[i]=== 'KEY_POWEROFF'){ 
-                                    onoff(cmd[i],function(er){
-                                            if(!er){
-                                                i++;
-                                                if (i === cmd.length){
-                                                    adapter.log.info( 'sendCommand: ' + cmd + ' successfully sent to tv');
-                                                };
-                                                loop(i)
-                                            }
-                                        })
+                                    onoff(cmd[i])
+                                    i++;
+                                    if (i === cmd.length){
+                                        adapter.log.info( 'sendCommand: ' + cmd + ' successfully sent to tv');
+                                    };
+                                    loop(i)
                                 }
                                 else if(cmd[i] !== 'KEY_POWERON'||cmd[i] !== 'KEY_POWEROFF'){
                                     ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":cmd[i],"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
@@ -222,8 +219,7 @@ function sendCmd(cmd, x) {
           }
         });
 };
-function onoff(key, done) {
-    async () => {
+async function onoff(key) {
         adapter.log.info('onoff ' + key)
         if (key === 'KEY_POWERON'){
             let res = await getPowerStateInstant() 
@@ -237,7 +233,6 @@ function onoff(key, done) {
             if(!res){ adapter.log.info('TV is already off')}
             done(0)
         }
-    }
 };
 function delay(done){
     setTimeout(function() {            
