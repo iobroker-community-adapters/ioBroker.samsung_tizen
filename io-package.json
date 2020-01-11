@@ -1,8 +1,12 @@
 {
     "common": {
-        "name":                     "samsungTizen",
-        "version":                  "0.0.8",
+        "name":                     "samsung_tizen",
+        "version":                  "0.0.9",
 	    "news": {
+            "0.0.9": {
+                "en": "ws always connected, powerOnOff function with polling added",
+                "de": "ws verbindung bleibt offen, powerOnOff Funktion hinzugefügt"
+              },
             "0.0.8": {
                 "en": "package renamed to samsung_tizen",
                 "de": "package umbennant auf samsung_tizen"

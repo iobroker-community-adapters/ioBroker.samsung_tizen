@@ -1,7 +1,7 @@
 "use strict";
 const utils =    require(__dirname + '/lib/utils');
 const keys =    require(__dirname + '/lib/remotekeys');
-const adapter = utils.adapter('samsungTizen');
+const adapter = utils.adapter('samsung_tizen');
 const isPortReachable = require('is-port-reachable');
 const wol = require('wake_on_lan');
 const WebSocket = require('ws');
@@ -31,6 +31,9 @@ adapter.on('stateChange', function (id, state) {
     } 
     if (key[3].toUpperCase() === 'SENDCMD'){
         sendCmd(state.val.split(','), 0);
+    }
+    if (key[3].toUpperCase() === 'KEY_POWERON'||key[3].toUpperCase() === 'KEY_POWEROFF'){
+        onoff(key[3].toUpperCase(), 0);
     } else if (key[2] === 'control') {
         sendKey(key[3].toUpperCase(), 0);
     }
@@ -65,7 +68,7 @@ function main() {
     adapter.subscribeStates('apps.*');
     adapter.subscribeStates('command.*');
     adapter.subscribeStates('config.*');
-    adapter.log.info(adapter.name + '.' + adapter.instance + ' release 0.0.8 started with config : ' + JSON.stringify(adapter.config));
+    adapter.log.info(adapter.name + '.' + adapter.instance + ' release 0.0.9 started with config : ' + JSON.stringify(adapter.config));
 }
 function getPowerOnState(){
     adapter.setObject('powerOn', {
@@ -88,21 +91,26 @@ function getPowerOnState(){
     }, parseFloat(adapter.config.pollingInterval) * 1000)
 }
 function wsConnect(done) {
-    let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
-    if (parseFloat(adapter.config.token) > 0) {wsUrl = wsUrl + '&token=' + adapter.config.token}
-    adapter.log.info('open connection: ' + wsUrl );
-    ws = new WebSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
-        done(new Error(error));
-      });
-    ws.on('error', function (e) {
-        done(e);
-    });
-    ws.on('message', function incoming(data) {
-        data = JSON.parse(data);
-        if(data.event == "ms.channel.connect") {
-            done(0);
-        }
-    });
+    if (ws !== null){
+        done(0);
+    }
+    if (ws === null){
+        let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
+        if (parseFloat(adapter.config.token) > 0) {wsUrl = wsUrl + '&token=' + adapter.config.token}
+        adapter.log.info('open connection: ' + wsUrl );
+        ws = new WebSocket(wsUrl, {rejectUnauthorized : false}, function(error) {
+            done(new Error(error));
+        });
+        ws.on('error', function (e) {
+            done(e);
+        });
+        ws.on('message', function incoming(data) {
+            data = JSON.parse(data);
+            if(data.event == "ms.channel.connect") {
+                done(0);
+            }
+        });
+    }
 };
 function wserror(func, action, err, x, done){
     if (ws !== null){
@@ -168,10 +176,6 @@ function sendKey(key, x) {
         } if (!err) {
             ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":key,"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
             adapter.log.info( 'sendKey: ' + key + ' successfully sent to tv');
-            if (ws !== null){
-                ws.close();
-                adapter.log.info('websocket connection closed');
-            }
           }
         });
 };
@@ -191,20 +195,28 @@ function sendCmd(cmd, x) {
                     delay(function(e){
                         if(!e){
                             if (ws !== null){
-                                ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":cmd[i],"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
-                                adapter.log.info( 'sendKey: ' + cmd[i] + ' successfully sent to tv');
-                                i++;
-                                if (i === cmd.length){
-                                    setTimeout(function() {            
+                                if (cmd[i]=== 'KEY_POWERON'||cmd[i]=== 'KEY_POWEROFF'){ 
+                                    onoff(cmd[i],
+                                        done(function(er){
+                                            if(!er){
+                                                i++;
+                                                if (i === cmd.length){
+                                                    adapter.log.info( 'sendCommand: ' + cmd + ' successfully sent to tv');
+                                                };
+                                                loop(i)
+                                            }
+                                        })
+                                    )
+                                }
+                                else if(cmd[i] !== 'KEY_POWERON'||cmd[i] !== 'KEY_POWEROFF'){
+                                    ws.send(JSON.stringify({"method":"ms.remote.control","params":{"Cmd":"Click","DataOfCmd":cmd[i],"Option":"false","TypeOfRemote":"SendRemoteKey"}}));
+                                    adapter.log.info( 'sendKey: ' + cmd[i] + ' successfully sent to tv');
+                                    i++;
+                                    if (i === cmd.length){
                                         adapter.log.info( 'sendCommand: ' + cmd + ' successfully sent to tv');
-                                        if (ws !== null){
-                                            ws.close();
-                                            adapter.log.info('websocket connection closed');
-                                        };
-                                    }, parseFloat(adapter.config.cmdDelay))
-
+                                    };
+                                    loop(i)
                                 };
-                                loop(i)
                             };
                         };
                     });
@@ -212,6 +224,22 @@ function sendCmd(cmd, x) {
             }
           }
         });
+};
+function onoff(key, done) {
+    if (key === 'KEY_POWERON'){
+        getPowerStateInstant(function(err) {
+            if (err){ sendCmd('KEY_POWER',0)}
+            if(!err){ adapter.log.info('TV is already on')}
+            done(0)
+        })
+    }
+    if (key === 'KEY_POWEROFF'){
+        getPowerStateInstant(function(err) {
+            if (!err){ sendCmd('KEY_POWER',0)}
+            if(err){ adapter.log.info('TV is already off')}
+            done(0)
+        })
+    }
 };
 function delay(done){
     setTimeout(function() {            
@@ -243,10 +271,6 @@ function getApps(x) {
                     });
                 }
                 adapter.log.info('getInstalledApps successfully sent to tv')
-                if (ws !== null){
-                    ws.close();
-                    adapter.log.info('websocket connection closed');
-                }
             })
         };
 
@@ -270,10 +294,6 @@ function startApp(app,x) {
                         if( app === data.data.data[i].name){
                             ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.apps.launch", "to":"host", "data" :{ "action_type" : data.data.data[i].app_type === 1||2 ? 'DEEP_LINK' : 'NATIVE_LAUNCH',"appId":data.data.data[i].appId}}}));
                             adapter.log.info('app: ' +  app + ' successfully started');
-                            if (ws !== null){
-                                ws.close();
-                                adapter.log.info('websocket connection closed');
-                            }
                         }
                     }
                 }
@@ -281,3 +301,12 @@ function startApp(app,x) {
           }
         });
 };
+function getPowerStateInstant(done){
+        async () => {
+            let response = await isPortReachable(adapter.config.pollingPort, {host: adapter.config.ipAddress});
+            adapter.setState('powerOn', response, true, function (err) {
+                if (err) adapter.log.error(err);
+            });
+            if (response) {done(0)} else if(!response){done(new Error('TV not reachable'))}
+        };
+}

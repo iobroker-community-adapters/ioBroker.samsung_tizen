@@ -1,5 +1,5 @@
 ![Logo](admin/samsung.png)
-# ioBroker.samsungTizen
+# ioBroker.samsung_tizen
 =====================
 
 This adapter is to control samsung tvs with tizenOS (>=2016).
@@ -58,8 +58,8 @@ Port for the websocket connection to your TV.
 ### 2.4. Token 
 Token for a secure connection to your TV. 
 Save the adapter with token = 0 and go to the iobroker admin object tab.
-Then go to samsungTizen.0.config.getToken object and click the button.
-If all works fine a new object samsungTizen.0.config.token should appear with id samsungTizen.0.config.token and the name is your token - copy the name (e.g. 123456789) and go back to the adapter config and paste it in the token field.
+Then go to samsung_tizen.0.config.getToken object and click the button.
+If all works fine a new object samsung_tizen.0.config.token should appear with id samsung_tizen.0.config.token and the name is your token - copy the name (e.g. 123456789) and go back to the adapter config and paste it in the token field.
 can be deactivated with value "0"
 
 <details><summary>How to get a token manually</summary>
@@ -103,52 +103,52 @@ default: 60 seconds
 can be deactivated with value "0"
 
 ### 2.7. Command Delay
-delay in milliseconds between the commands sent via the samsungTizen.0.control.sendCmd object. 
+delay in milliseconds between the commands sent via the samsung_tizen.0.control.sendCmd object. 
 
 ## 3. Usage
 
 ### 3.1. Control
 
 #### Send a single key
-to send a single key click the button under e.g. samsungTizen.0.control.KEY_MUTE
+to send a single key click the button under e.g. samsung_tizen.0.control.KEY_MUTE
 
 #### Send a key for a not defined button
-you can send a custom (not defined) key with the samsungTizen.0.control.sendCmd object.
+you can send a custom (not defined) key with the samsung_tizen.0.control.sendCmd object.
 Enter the key what you want to send e.g. KEY_POWER.
 
 #### Send multiple keys in a single command 
-to send multiple key in a single command use the samsungTizen.0.control.sendCmd object.
+to send multiple key in a single command use the samsung_tizen.0.control.sendCmd object.
 enter keys separated with "," e.g. KEY_POWER,KEY_HDMI,KEY_VOLUP.
 
 #### Create macros for commands
 
-Go to samsungTizen.0.command here you can find example macros and you can create your own macros.
+Go to samsung_tizen.0.command here you can find example macros and you can create your own macros.
 <a name="use_cmd">How to create a new macro</a>
 
 ### 3.2. APPS
 
 #### Load installed Apps
-to load the installed Apps click on samsungTizen.0.apps.getInstalledApps button.
+to load the installed Apps click on samsung_tizen.0.apps.getInstalledApps button.
 After that, a separate object with the name start_app_name is created for each installed app.
 
 #### Start App
-you can start an app with a click on the samsungTizen.0.apps.start_app_name object.
+you can start an app with a click on the samsung_tizen.0.apps.start_app_name object.
 
 ### Power State 
 
-if you have the power state polling configured as mentioned above, you get the under samsungTizen.0.powerOn the state true if your tv is on or false if it is off.
+if you have the power state polling configured as mentioned above, you get the under samsung_tizen.0.powerOn the state true if your tv is on or false if it is off.
 
 ### 3.3. Commands
 
-Commands can be manually sent via the samsungTizen.0.control.sendCmd object as mentioned in <a name="use_ctrl">Control</a> or over a custom created objects under samsungTizen.0.command .
+Commands can be manually sent via the samsung_tizen.0.control.sendCmd object as mentioned in <a name="use_ctrl">Control</a> or over a custom created objects under samsung_tizen.0.command .
 There are few example commands but you can also create your own macros.
 <details><summary>How to create a command macro </summary>
 <p>
 
-1. go to adapters and open samsungTizen.0.command
+1. go to adapters and open samsung_tizen.0.command
 2. click on the + icon to create a new object
 ![cmd1](images/cmd1.png)
-3. check that the parent object is samsungTizen.0.command
+3. check that the parent object is samsung_tizen.0.command
 4. enter a new name for your command and check that type is datapoint and stateType = boolean.
 ![cmd2](images/cmd2.png)
 5. under name enter the keys what you want to send.
