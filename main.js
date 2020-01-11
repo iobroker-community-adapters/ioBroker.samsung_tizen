@@ -220,16 +220,15 @@ function sendCmd(cmd, x) {
         });
 };
 async function onoff(key) {
-        adapter.log.info('onoff ' + key)
         if (key === 'KEY_POWERON'){
             let res = await getPowerStateInstant() 
-            if (!res){ sendCmd('KEY_POWER',0)}
+            if (!res){ sendKey('KEY_POWER',0)}
             if(res){ adapter.log.info('TV is already on')}
             done(0)
         }
         if (key === 'KEY_POWEROFF'){
             let res = await getPowerStateInstant() 
-            if (res){ sendCmd('KEY_POWER',0)}
+            if (res){ sendKey('KEY_POWER',0)}
             if(!res){ adapter.log.info('TV is already off')}
             done(0)
         }
@@ -295,7 +294,6 @@ function startApp(app,x) {
         });
 };
 async function getPowerStateInstant(){
-            adapter.log.info('get instant power state')
             let response = await isPortReachable(adapter.config.pollingPort, {host: adapter.config.ipAddress});
             adapter.setState('powerOn', response, true, function (err) {
                 if (err) adapter.log.error(err);
