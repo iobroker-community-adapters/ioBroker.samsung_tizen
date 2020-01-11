@@ -223,20 +223,20 @@ function sendCmd(cmd, x) {
         });
 };
 function onoff(key, done) {
-    adapter.log.info('onoff ' + key)
-    if (key === 'KEY_POWERON'){
-        getPowerStateInstant(function(err) {
-            if (err){ sendCmd('KEY_POWER',0)}
-            if(!err){ adapter.log.info('TV is already on')}
+    async () => {
+        adapter.log.info('onoff ' + key)
+        if (key === 'KEY_POWERON'){
+            let res = await getPowerStateInstant() 
+            if (!res){ sendCmd('KEY_POWER',0)}
+            if(res){ adapter.log.info('TV is already on')}
             done(0)
-        })
-    }
-    if (key === 'KEY_POWEROFF'){
-        getPowerStateInstant(function(err) {
-            if (!err){ sendCmd('KEY_POWER',0)}
-            if(err){ adapter.log.info('TV is already off')}
+        }
+        if (key === 'KEY_POWEROFF'){
+            let res = await getPowerStateInstant() 
+            if (res){ sendCmd('KEY_POWER',0)}
+            if(!res){ adapter.log.info('TV is already off')}
             done(0)
-        })
+        }
     }
 };
 function delay(done){
@@ -299,12 +299,12 @@ function startApp(app,x) {
           }
         });
 };
-function getPowerStateInstant(done){
-        async () => {
+async function getPowerStateInstant(){
             let response = await isPortReachable(adapter.config.pollingPort, {host: adapter.config.ipAddress});
             adapter.setState('powerOn', response, true, function (err) {
                 if (err) adapter.log.error(err);
             });
-            if (response) {done(0)} else if(!response){done(new Error('TV not reachable'))}
-        };
+            if (response) {return true;} 
+            else if(!response){return false;}
+        
 }
