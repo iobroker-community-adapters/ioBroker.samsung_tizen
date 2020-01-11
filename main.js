@@ -91,7 +91,7 @@ function getPowerOnState(){
     }, parseFloat(adapter.config.pollingInterval) * 1000)
 }
 function wsConnect(done) {
-    if (ws == null){
+    if (typeof ws === 'undefined' || ws === null){
         let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
         if (parseFloat(adapter.config.token) > 0) {wsUrl = wsUrl + '&token=' + adapter.config.token}
         adapter.log.info('open connection: ' + wsUrl );
@@ -108,13 +108,13 @@ function wsConnect(done) {
             }
         });
     }
-    if (ws != null){
+    if (typeof ws !== 'undefined' || ws !== null){
         adapter.log.info(ws);
         done(0);
     }
 };
 function wserror(func, action, err, x, done){
-    if (ws !== null){
+    if (typeof ws !== 'undefined' || ws !== null){
         ws.close();
         adapter.log.info('websocket connection closed');
     }
@@ -195,7 +195,7 @@ function sendCmd(cmd, x) {
                 if (i < cmd.length){
                     delay(function(e){
                         if(!e){
-                            if (ws !== null){
+                            if (typeof ws !== 'undefined' || ws !== null){
                                 if (cmd[i]=== 'KEY_POWERON'||cmd[i]=== 'KEY_POWEROFF'){ 
                                     onoff(cmd[i],
                                         done(function(er){
