@@ -6,7 +6,7 @@ const isPortReachable = require('is-port-reachable');
 const wol = require('wake_on_lan');
 const WebSocket = require('ws');
 
-let ws
+let ws;
 
 adapter.on('stateChange', function (id, state) {
     const key = id.split('.');
@@ -92,6 +92,7 @@ function getPowerOnState(){
 }
 function wsConnect(done) {
     if (ws !== null){
+        adapter.log.info(ws);
         done(0);
     }
     if (ws === null){
