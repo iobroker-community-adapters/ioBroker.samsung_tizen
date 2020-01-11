@@ -92,7 +92,7 @@ function getPowerOnState(){
 }
 function wsConnect(done) {
     adapter.log.info(JSON.stringify(ws));
-    if (typeof ws === 'undefined' || ws.readyState === 0){
+    if (typeof ws === 'undefined' || ws.readyState !== 1 ){
         let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
         if (parseFloat(adapter.config.token) > 0) {wsUrl = wsUrl + '&token=' + adapter.config.token}
         adapter.log.info('open connection: ' + wsUrl );
@@ -108,7 +108,7 @@ function wsConnect(done) {
                 done(0);
             }
         });
-    } else if (ws.readyState > 0){
+    } else if (ws.readyState === 1){
         done(0);
     }
 };
@@ -223,7 +223,6 @@ function sendCmd(cmd, x) {
 async function onoff(key) {
         if (key === 'KEY_POWERON'){
             let res = await getPowerStateInstant() 
-            adapter.log.info('res: ' + res)
             if (!res){ sendKey('KEY_POWER',0)}
             if(res){ adapter.log.info('TV is already on')}
             done(0)
