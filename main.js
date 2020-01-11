@@ -225,13 +225,11 @@ async function onoff(key) {
             let res = await getPowerStateInstant() 
             if (!res){ sendKey('KEY_POWER',0)}
             if(res){ adapter.log.info('TV is already on')}
-            done(0)
         }
         if (key === 'KEY_POWEROFF'){
             let res = await getPowerStateInstant() 
             if (res){ sendKey('KEY_POWER',0)}
             if(!res){ adapter.log.info('TV is already off')}
-            done(0)
         }
 };
 function delay(done){
