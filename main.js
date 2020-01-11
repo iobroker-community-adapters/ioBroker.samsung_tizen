@@ -109,7 +109,7 @@ function wsConnect(done) {
         });
     }
     if (typeof ws !== 'undefined' || ws !== null){
-        adapter.log.info(ws);
+        adapter.log.info(JSON.stringify(ws));
         done(0);
     }
 };
