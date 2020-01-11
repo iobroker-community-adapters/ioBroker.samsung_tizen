@@ -68,7 +68,7 @@ function main() {
     adapter.subscribeStates('apps.*');
     adapter.subscribeStates('command.*');
     adapter.subscribeStates('config.*');
-    adapter.log.info(adapter.name + '.' + adapter.instance + ' release 0.0.10 started with config : ' + JSON.stringify(adapter.config));
+    adapter.log.info(adapter.name + '.' + adapter.instance + ' started with config : ' + JSON.stringify(adapter.config));
 }
 function getPowerOnState(){
     adapter.setObject('powerOn', {
@@ -91,7 +91,6 @@ function getPowerOnState(){
     }, parseFloat(adapter.config.pollingInterval) * 1000)
 }
 function wsConnect(done) {
-    adapter.log.info(JSON.stringify(ws));
     if (typeof ws === 'undefined' || ws.readyState !== 1 ){
         let wsUrl = adapter.config.protocol + '://' + adapter.config.ipAddress + ':' + adapter.config.port + '/api/v2/channels/samsung.remote.control?name=' + (new Buffer("ioBroker")).toString('base64');
         if (parseFloat(adapter.config.token) > 0) {wsUrl = wsUrl + '&token=' + adapter.config.token}
