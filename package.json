@@ -1,5 +1,5 @@
 {
-  "name": "samsung-tizen",
+  "name": "iobroker.samsung-tizen",
   "version": "0.0.11",
   "description": "ioBroker adapter to control samsung tizenOs tvs(mj>= 2016)",
   "author": {
@@ -12,7 +12,7 @@
     }
   ],
   "license": "MIT",
-  "homepage": "https://github.com/dahuby/samsung-tizen",
+  "homepage": "https://github.com/dahuby/iobroker.samsung-tizen",
   "keywords": [
     "ioBroker",
     "samsung",
@@ -22,7 +22,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dahuby/samsung-tizen"
+    "url": "https://github.com/dahuby/iobroker.samsung-tizen"
   },
   "dependencies": {
     "ws": "^7.2.2",
@@ -31,10 +31,9 @@
   },
   "main": "main.js",
   "scripts": {
-    "test": "node node_modules/mocha/bin/mocha"
   },
   "bugs": {
-    "url": "https://github.com/dahuby/samsung-tizen/issues"
+    "url": "https://github.com/dahuby/iobroker.samsung-tizen/issues"
   },
   "readmeFilename": "README.md"
 }

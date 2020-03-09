@@ -44,6 +44,7 @@ main()
 function main() {
     const objects = keys.keys;
     for(let i = 0; i < objects.length; i++){
+        console.log('for keys: ' + i)
         adapter.setObject(objects[i].object, {
             type: 'state',
             common: {

@@ -4,8 +4,8 @@
         "version":                  "0.0.11",
 	    "news": {
             "0.0.11": {
-              "en": "rename to samsung-tizen",
-              "de": "umbennat zu samsung-tizen"
+              "en": "rename to iobroker.samsung-tizen",
+              "de": "umbennat zu iobroker.samsung-tizen"
             },
             "0.0.10": {
                 "en": "bug fixing",
@@ -54,9 +54,9 @@
         "icon":                     "samsung.png",
         "enabled":                  true,
         "license":                  "MIT",
-		"extIcon":                  "https://raw.githubusercontent.com/dahuby/samsung-tizen/master/admin/samsung.png",
+		"extIcon":                  "https://raw.githubusercontent.com/dahuby/iobroker.samsung-tizen/master/admin/samsung.png",
 		"keywords":                 ["samsung", "home"],
-        "readme":                   "https://github.com/dahuby/samsung-tizen/blob/master/README.md",
+        "readme":                   "https://github.com/dahuby/iobroker.samsung-tizen/blob/master/README.md",
 		"loglevel":                 "info",
         "type":                     "multimedia"
         
