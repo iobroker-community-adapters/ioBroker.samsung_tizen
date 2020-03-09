@@ -187,6 +187,9 @@ function sendCmd(cmd, x) {
                 if(!error){
                     if (cmd[x]=== 'KEY_POWERON'){
                         cmd.splice(x, 1)
+                        if (x <= cmd.length){
+                            adapter.log.info( 'sendCommand: ' + cmd + ' successfully sent to tv');
+                        };
                     }
                     x++;
                     sendCmd(cmd,x);
