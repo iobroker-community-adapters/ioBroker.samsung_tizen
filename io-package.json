@@ -54,9 +54,9 @@
         "icon":                     "samsung.png",
         "enabled":                  true,
         "license":                  "MIT",
-		"extIcon":                  "https://raw.githubusercontent.com/dahuby/ioBroker.samsung-tizen/master/admin/samsung.png",
+		"extIcon":                  "https://raw.githubusercontent.com/dahuby/samsung-tizen/master/admin/samsung.png",
 		"keywords":                 ["samsung", "home"],
-        "readme":                   "https://github.com/dahuby/ioBroker.samsung-tizen/blob/master/README.md",
+        "readme":                   "https://github.com/dahuby/samsung-tizen/blob/master/README.md",
 		"loglevel":                 "info",
         "type":                     "multimedia"
         

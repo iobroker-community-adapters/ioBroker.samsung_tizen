@@ -1,5 +1,5 @@
 ![Logo](admin/samsung.png)
-# ioBroker.samsung-tizen
+# samsung-tizen
 =====================
 
 This adapter is to control samsung tvs with tizenOS (>=2016).
@@ -27,7 +27,7 @@ open iobroker admin go to the adapters tab and install the adapter from a custom
 
 1. click on the github icon (install from custom URL)
 ![install1](images/install1.png)
-2. enter this github URL https://github.com/dahuby/iobroker.samsung-tizen/tarball/master
+2. enter this github URL https://github.com/dahuby/samsung-tizen/tarball/master
 3. click on install
 ![install2](images/install2.png)
 4. go back to the adapters tab and search "Samsung Tizen"
