@@ -1,7 +1,7 @@
 "use strict";
 const utils =    require(__dirname + '/lib/utils');
 const keys =    require(__dirname + '/lib/remotekeys');
-const adapter = utils.adapter('samsung_tizen');
+const adapter = utils.adapter('samsung-tizen');
 const isPortReachable = require('is-port-reachable');
 const wol = require('wake_on_lan');
 const WebSocket = require('ws');
