@@ -25,9 +25,8 @@
     "url": "https://github.com/dahuby/samsung-tizen"
   },
   "dependencies": {
-    "ws": "^2.0.0",
+    "ws": "^7.2.2",
     "wake_on_lan": "^1.0.0",
-    "request": "^2.88.0",
     "is-port-reachable": "^3.0.0"
   },
   "main": "main.js",
