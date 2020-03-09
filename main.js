@@ -1,7 +1,7 @@
 "use strict";
 const utils =    require(__dirname + '/lib/utils');
 const keys =    require(__dirname + '/lib/remotekeys');
-const adapter = utils.adapter('samsung-tizen');
+const adapter = utils.adapter('samsung_tizen');
 const isPortReachable = require('is-port-reachable');
 const wol = require('wake_on_lan');
 const WebSocket = require('ws');
@@ -44,7 +44,6 @@ main()
 function main() {
     const objects = keys.keys;
     for(let i = 0; i < objects.length; i++){
-        console.log('for keys: ' + i)
         adapter.setObject(objects[i].object, {
             type: 'state',
             common: {
@@ -103,9 +102,11 @@ function wsConnect(done) {
             done(e);
         });
         ws.on('message', function incoming(data) {
-            data = JSON.parse(data);
-            if(data.event == "ms.channel.connect") {
-                done(0);
+            if(data.includes('event')){
+                data = JSON.parse(data);
+                if(data.event == "ms.channel.connect") {
+                    done(0);
+                }
             }
         });
     } else if (ws.readyState === 1){
@@ -117,8 +118,8 @@ function wserror(func, action, err, x, done){
         ws.close();
         adapter.log.info('websocket connection closed');
     }
-    if ( x < 1 ){
-        if(parseFloat(adapter.config.macAddress) > 0){
+    if ( x == 0 ){
+        if(adapter.config.macAddress !== '0'){
             adapter.log.info('Error while: ' + func + ', action: ' + action + ' error: ' + err + ' retry 1/5 will be executed'); 
             adapter.log.info('Will now try to switch TV with MAC: ' + adapter.config.macAddress + ' on');
             wol.wake(adapter.config.macAddress);
@@ -184,6 +185,9 @@ function sendCmd(cmd, x) {
         if (err){
             wserror('sendCommand', cmd, err, x, function(error){
                 if(!error){
+                    if (cmd[x]=== 'KEY_POWERON'){
+                        cmd.splice(x, 1)
+                    }
                     x++;
                     sendCmd(cmd,x);
                 }
@@ -297,7 +301,6 @@ async function getPowerStateInstant(){
             adapter.setState('powerOn', response, true, function (err) {
                 if (err) adapter.log.error(err);
             });
-            if (response) {return true;} 
-            else if(!response){return false;}
+            return response
         
 }
