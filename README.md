@@ -160,11 +160,15 @@ There are few example commands but you can also create your own macros.
 </p>
 </details>
 
+## Credits
+
+The first generation of this adapter has been developed by Stefan0875 (https://github.com/Stefan0875) which has been adapted and maintined by highpressure (https://github.com/Highpressure) and finaly dahuby (https://github.com/dahuby). Thanks a lot for their work and grantig a publich license.
+
 ## License
 
 MIT License 
 
-Copyright (c) 2023 mcm1957 <mcm57@gmx.at>
+Copyright (c) 2023 iobroker-community-adapters <mcm57@gmx.at>
 Copyright (c) 2020 dahuby
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
