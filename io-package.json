@@ -1,115 +1,104 @@
 {
-    "common": {
-        "name": "samsung_tizen",
-        "version": "0.0.12",
-	    "news": {
-            "0.0.12": {
-              "en": "wol bug fix",
-              "de": "wol bug fix"
-            },
-            "0.0.11": {
-              "en": "rename to iobroker.samsung_tizen",
-              "de": "umbennat zu iobroker.samsung_tizen"
-            },
-            "0.0.10": {
-                "en": "bug fixing",
-                "de": "bug fixing"
-              },
-            "0.0.9": {
-                "en": "ws always connected, powerOnOff function with polling added",
-                "de": "ws verbindung bleibt offen, powerOnOff Funktion hinzugefügt"
-              },
-            "0.0.8": {
-                "en": "package renamed to samsung_tizen",
-                "de": "package umbennant auf samsung_tizen"
-              },
-            "0.0.7": {
-                "en": "package.json modified(devDependencies) removed",
-                "de": "package.json geändert(devDependencies) entfernt"
-              },
-            "0.0.6": {
-                "en": "remoteKeys, sendCmd delay, config getToken added, readme modified",
-                "de": "Fernbedienungsknöpfe, sendCmd Verzögerung, getToken hinzugefügt"
-              },
-            "0.0.5": {
-                "en": "command macros added, sendKey removed because same function with sendCmd",
-                "de": "Command Macros hinzugefügt, sendKey entfernt da sendCmd die gleiche Funktion hat"
-            },
-            "0.0.4": {
-                "en": "change from polling endpoint to port only, add function to start apps",
-                "de": "Änderung von Polling Endpunkt zu Port, es können jetzt auch Apps gestartet werden"
-              },
-			"0.0.3": {
-			  "en": "all parameters are configureable now, power state can be polled and control buttons added",
-			  "de": "Alle Parameter sind konfigurierbar, Power Status kann geholt werden und Fernbedienungs Buttons wurden hinzugefügt"
-            },
-            "0.0.2": {
-                "en": "alpha version",
-                "de": "Alphaversion"
-              }
-		},
-        "titleLang": {
-            "en": "Samsung TizenOS TVs\n",
-            "de": "Samsung TizenOS TVs\n",
-            "ru": "Samsung ТизенОС ТВ\n",
-            "pt": "Samsung TizenOS TVs\n",
-            "nl": "Samsung TizenOS TV\n",
-            "fr": "Samsung TizenOS TV\n",
-            "it": "Samsung TizenOS TVs\n",
-            "es": "Samsung TizenOS TVs\n",
-            "pl": "Samsung TizenOS TV\n",
-            "uk": "Samsung ТізенOS Телевізори\n",
-            "zh-cn": "Samsung TizenOS 电视\n"
-        },
-        "desc": {
-            "en": "Samsung TizenOS TV adapter to control samsung tizenOS tvs (modellyear >= 2016)",
-            "de": "Samsung TizenOS TV Adapter zur Steuerung von Samsung tizenOS TVs (Modelljahr >= 2016)",
-            "ru": "Samsung TizenOS TV адаптер для управления Samsung tizenOS tvs (modellyear >= 2016)",
-            "pt": "Adaptador de TV Samsung TizenOS para controlar tvs samsung tizenOS (modellyear >= 2016)",
-            "nl": "Samsung TizenOS TV-adapter om samsungzenos TV TV TV TV te controleren",
-            "fr": "Samsung TizenOS adaptateur TV pour contrôler samsung tizenOS tvs (modellyear ACIA= 2016)",
-            "it": "Adattatore TV Samsung TizenOS per il controllo di samsung tizenOS tvs (modellyear >= 2016)",
-            "es": "Adaptador de TV Samsung TizenOS para controlar las televisiones samsung tizenOS (modellyear ю= 2016)",
-            "pl": "Samsung TizenOS TV adapter kontrolujący samsung tizenOS tvs (modelowo >= 2016)",
-            "uk": "Samsung TizenOS TV адаптер для управління samsung tizenOS tvs (модельляр >= 2016)",
-            "zh-cn": "Samsung TizenOSTV适应器,以控制Osmsung tizenOS tvs (Modell年-2016年)"
-        },
-        "authors": [
-            "DaHuby <michael.hubeny@me.com>",
-            "mcm1957 <mcm57@gmx.at>"
-        ],
-		"keywords": [
-            "samsung", 
-            "samsung tv",
-            "tizen"
-        ],
-        "license": "MIT",
-        "platform": "Javascript/Node.js",
-        "main": "main.js",
-        "icon": "samsung.png",
-        "enabled": true,
-		"extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.samsung_tizen/master/admin/samsung.png",
-        "readme": "https://github.com/iobroker-community-adapters/ioBroker.samsung_tizen/blob/master/README.md",
-		"loglevel": "info",
-        "mode": "daemon",
-        "type": "multimedia",
-        "compact": false,
-        "connectionType": "local",
-        "dataSource": "push"            
+  "common": {
+    "name": "samsung_tizen",
+    "version": "1.0.0-alpha.0",
+    "news": {
+      "1.0.0-alpha.0": {
+        "en": "Adapter requires node 16 or newer now.\nAdapter has been moved to iobroker-community-adapters organization.",
+        "de": "Adapter benötigt nun node 16 oder neuer.\nAdapter wurde zur iobroker-community-adapters Organisation verschoben.",
+        "ru": "Адаптер требует ноды 16 или новее теперь.\nАдаптер переехал в организацию iobroker-community-adapters.",
+        "pt": "Adaptador requer nó 16 ou mais recente agora.\nAdapter foi movido para iobroker-community-adapters organização.",
+        "nl": "Adapter vereist node 16 of Newer nu.\nAdapter is verplaatst naar iobroker-community-papters organisatie.",
+        "fr": "L'adaptateur nécessite 16 ans ou plus maintenant.\nL'adaptateur a été déplacé à l'organisation iobroker-community-adapters.",
+        "it": "Adattatore richiede nodo 16 o più nuovo ora.\nL'adattatore è stato trasferito all'organizzazione iobroker-community-adapters.",
+        "es": "Adaptador requiere nodo 16 o más nuevo ahora.\nEl adaptador ha sido trasladado a la organización de ibroker-community-adapters.",
+        "pl": "Adapter wymaga węzła 16 lub nowszego.\nAdapter przeniesiono do organizacji iobroker-community-adapter.",
+        "uk": "Адаптер вимагає вузла 16 або новіше зараз.\nПереміщено перехід на організацію iobroker-community-adapters.",
+        "zh-cn": "现在不需要16个或新的人员。.\n现已移到加勒比妓院。."
+      },
+      "0.0.12": {
+        "en": "wol bug fix",
+        "de": "wol bug fix"
+      },
+      "0.0.11": {
+        "en": "rename to iobroker.samsung_tizen",
+        "de": "umbennat zu iobroker.samsung_tizen"
+      },
+      "0.0.10": {
+        "en": "bug fixing",
+        "de": "bug fixing"
+      },
+      "0.0.9": {
+        "en": "ws always connected, powerOnOff function with polling added",
+        "de": "ws verbindung bleibt offen, powerOnOff Funktion hinzugefügt"
+      },
+      "0.0.8": {
+        "en": "package renamed to samsung_tizen",
+        "de": "package umbennant auf samsung_tizen"
+      },
+      "0.0.7": {
+        "en": "package.json modified(devDependencies) removed",
+        "de": "package.json geändert(devDependencies) entfernt"
+      }
     },
-    "native": {
-        "protocol": "wss",
-        "ipAddress": "192.168.0.1",
-        "port": "8002",
-        "token": "0",
-        "macAddress": "ab:12:cd:34:ef:56",
-        "cmdDelay": "1000",
-        "pollingPort": "9110",
-        "pollingInterval": "60"
-	
+    "titleLang": {
+      "en": "Samsung TizenOS TVs\n",
+      "de": "Samsung TizenOS TVs\n",
+      "ru": "Samsung ТизенОС ТВ\n",
+      "pt": "Samsung TizenOS TVs\n",
+      "nl": "Samsung TizenOS TV\n",
+      "fr": "Samsung TizenOS TV\n",
+      "it": "Samsung TizenOS TVs\n",
+      "es": "Samsung TizenOS TVs\n",
+      "pl": "Samsung TizenOS TV\n",
+      "uk": "Samsung ТізенOS Телевізори\n",
+      "zh-cn": "Samsung TizenOS 电视\n"
     },
-    "objects": [
-
-    ]
-    
+    "desc": {
+      "en": "Samsung TizenOS TV adapter to control samsung tizenOS tvs (modellyear >= 2016)",
+      "de": "Samsung TizenOS TV Adapter zur Steuerung von Samsung tizenOS TVs (Modelljahr >= 2016)",
+      "ru": "Samsung TizenOS TV адаптер для управления Samsung tizenOS tvs (modellyear >= 2016)",
+      "pt": "Adaptador de TV Samsung TizenOS para controlar tvs samsung tizenOS (modellyear >= 2016)",
+      "nl": "Samsung TizenOS TV-adapter om samsungzenos TV TV TV TV te controleren",
+      "fr": "Samsung TizenOS adaptateur TV pour contrôler samsung tizenOS tvs (modellyear ACIA= 2016)",
+      "it": "Adattatore TV Samsung TizenOS per il controllo di samsung tizenOS tvs (modellyear >= 2016)",
+      "es": "Adaptador de TV Samsung TizenOS para controlar las televisiones samsung tizenOS (modellyear ю= 2016)",
+      "pl": "Samsung TizenOS TV adapter kontrolujący samsung tizenOS tvs (modelowo >= 2016)",
+      "uk": "Samsung TizenOS TV адаптер для управління samsung tizenOS tvs (модельляр >= 2016)",
+      "zh-cn": "Samsung TizenOSTV适应器,以控制Osmsung tizenOS tvs (Modell年-2016年)"
+    },
+    "authors": [
+      "DaHuby <michael.hubeny@me.com>",
+      "mcm1957 <mcm57@gmx.at>"
+    ],
+    "keywords": [
+      "samsung",
+      "samsung tv",
+      "tizen"
+    ],
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "main": "main.js",
+    "icon": "samsung.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.samsung_tizen/master/admin/samsung.png",
+    "readme": "https://github.com/iobroker-community-adapters/ioBroker.samsung_tizen/blob/master/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "multimedia",
+    "compact": false,
+    "connectionType": "local",
+    "dataSource": "push"
+  },
+  "native": {
+    "protocol": "wss",
+    "ipAddress": "192.168.0.1",
+    "port": "8002",
+    "token": "0",
+    "macAddress": "ab:12:cd:34:ef:56",
+    "cmdDelay": "1000",
+    "pollingPort": "9110",
+    "pollingInterval": "60"
+  },
+  "objects": []
 }
