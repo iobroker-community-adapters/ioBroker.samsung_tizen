@@ -74,17 +74,28 @@
             "uk": "Samsung TizenOS TV адаптер для управління samsung tizenOS tvs (модельляр >= 2016)",
             "zh-cn": "Samsung TizenOSTV适应器,以控制Osmsung tizenOS tvs (Modell年-2016年)"
         },
-        "platform":                 "Javascript/Node.js",
-        "mode":                     "daemon",
-        "icon":                     "samsung.png",
-        "enabled":                  true,
-        "license":                  "MIT",
-		"extIcon":                  "https://raw.githubusercontent.com/dahuby/iobroker.samsung_tizen/master/admin/samsung.png",
-		"keywords":                 ["samsung", "home"],
-        "readme":                   "https://github.com/dahuby/iobroker.samsung_tizen/blob/master/README.md",
-		"loglevel":                 "info",
-        "type":                     "multimedia"
-        
+        "authors": [
+            "DaHuby <michael.hubeny@me.com>",
+            "mcm1957 <mcm57@gmx.at>"
+        ],
+		"keywords": [
+            "samsung", 
+            "samsung tv",
+            "tizen"
+        ],
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "main": "main.js",
+        "icon": "samsung.png",
+        "enabled": true,
+		"extIcon": "https://raw.githubusercontent.com/dahuby/iobroker.samsung_tizen/master/admin/samsung.png",
+        "readme": "https://github.com/dahuby/iobroker.samsung_tizen/blob/master/README.md",
+		"loglevel": "info",
+        "mode": "daemon",
+        "type": "multimedia",
+        "compact": false,
+        "connectionType": "local",
+        "dataSource": "push"            
     },
     "native": {
         "protocol": "wss",
