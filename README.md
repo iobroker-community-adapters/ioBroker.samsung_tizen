@@ -162,7 +162,7 @@ There are few example commands but you can also create your own macros.
 
 ## License
 
-MIT License
+MIT License 
 
 Copyright (c) 2023 mcm1957 <mcm57@gmx.at>
 Copyright (c) 2020 dahuby
