@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "samsung_tizen",
-    "version": "1.0.0-alpha.1",
+    "version": "1.0.0-alpha.2",
     "news": {
+      "1.0.0-alpha.2": {
+        "en": "Dependencies have been updated",
+        "de": "Abhängigkeiten wurden aktualisiert",
+        "ru": "В зависимости были обновлены",
+        "pt": "As dependências foram atualizadas",
+        "nl": "Afhankelijkheid",
+        "fr": "Les dépendances ont été mises à jour",
+        "it": "Le dipendenze sono state aggiornate",
+        "es": "Se han actualizado las dependencias",
+        "pl": "Zależności zostały zaktualizowane",
+        "uk": "Оновлено залежність",
+        "zh-cn": "已更新了属地"
+      },
       "1.0.0-alpha.1": {
         "en": "Adapter requires node 16 or newer now.\nAdapter has been moved to iobroker-community-adapters organization.",
         "de": "Adapter benötigt nun node 16 oder neuer.\nAdapter wurde zur iobroker-community-adapters Organisation verschoben.",

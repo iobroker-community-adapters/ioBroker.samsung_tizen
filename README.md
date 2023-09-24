@@ -170,7 +170,7 @@ The first generation of this adapter has been developed by Stefan0875 (https://g
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.0.0-alpha.2 (2023-09-24)
 
 - (mcm1957) Dependencies have been updated
 
