@@ -1,9 +1,9 @@
 {
   "common": {
     "name": "samsung_tizen",
-    "version": "1.0.0-alpha.0",
+    "version": "1.0.0-alpha.1",
     "news": {
-      "1.0.0-alpha.0": {
+      "1.0.0-alpha.1": {
         "en": "Adapter requires node 16 or newer now.\nAdapter has been moved to iobroker-community-adapters organization.",
         "de": "Adapter benötigt nun node 16 oder neuer.\nAdapter wurde zur iobroker-community-adapters Organisation verschoben.",
         "ru": "Адаптер требует ноды 16 или новее теперь.\nАдаптер переехал в организацию iobroker-community-adapters.",
@@ -35,10 +35,6 @@
       "0.0.8": {
         "en": "package renamed to samsung_tizen",
         "de": "package umbennant auf samsung_tizen"
-      },
-      "0.0.7": {
-        "en": "package.json modified(devDependencies) removed",
-        "de": "package.json geändert(devDependencies) entfernt"
       }
     },
     "titleLang": {
