@@ -170,9 +170,13 @@ The first generation of this adapter has been developed by Stefan0875 (https://g
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+
+- (mcm1957) Dependencies have been updated
+
 ### 1.0.0-alpha.1 (2023-09-24)
--   (mcm1957) Adapter requires node 16 or newer now.
--   (mcm1957) Adapter has been moved to iobroker-community-adapters organization.
+- (mcm1957) Adapter requires node 16 or newer now.
+- (mcm1957) Adapter has been moved to iobroker-community-adapters organization.
 
 ## License
 
