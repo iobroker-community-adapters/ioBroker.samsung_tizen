@@ -1,5 +1,6 @@
 "use strict";
-const utils =    require(__dirname + '/lib/utils');
+//const utils =    require(__dirname + '/lib/utils');
+const utils = require('@iobroker/adapter-core');
 const keys =    require(__dirname + '/lib/remotekeys');
 const adapter = utils.adapter('samsung_tizen');
 const isPortReachable = require('is-port-reachable');
