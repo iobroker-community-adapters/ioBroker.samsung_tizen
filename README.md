@@ -170,8 +170,7 @@ The first generation of this adapter has been developed by Stefan0875 (https://g
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### 1.0.0-alpha.0 (2023-09-24)
-
+### **WORK IN PROGRESS**
 -   (mcm1957) Adapter requires node 16 or newer now.
 -   (mcm1957) Adapter has been moved to iobroker-community-adapters organization.
 
