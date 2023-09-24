@@ -164,6 +164,17 @@ There are few example commands but you can also create your own macros.
 
 The first generation of this adapter has been developed by Stefan0875 (https://github.com/Stefan0875) which has been adapted and maintined by highpressure (https://github.com/Highpressure) and finaly dahuby (https://github.com/dahuby). Thanks a lot for their work and grantig a publich license.
 
+## Changelog
+
+<!--
+    Placeholder for the next version (at the beginning of the line):
+    ### **WORK IN PROGRESS**
+-->
+### **WORK IN PROGRESS**
+
+-   (mcm1957) Adapter requires node 16 or newer now.
+-   (mcm1957) Adapter has been moved to iobroker-community-adapters organization.
+
 ## License
 
 MIT License 
