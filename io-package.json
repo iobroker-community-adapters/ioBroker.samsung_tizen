@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "samsung_tizen",
-    "version": "1.0.0-alpha.2",
+    "version": "1.0.0",
     "news": {
+      "1.0.0": {
+        "en": "An official release has been created",
+        "de": "Eine offizielle Veröffentlichung wurde erstellt",
+        "ru": "Создан официальный релиз",
+        "pt": "Uma versão oficial foi criada",
+        "nl": "Een officiële vrijlating is gemaakt",
+        "fr": "Une libération officielle a été créée",
+        "it": "Un rilascio ufficiale è stato creato",
+        "es": "Se ha creado una versión oficial",
+        "pl": "Oficjalne wydanie zostało stworzone",
+        "uk": "Створено офіційне видання",
+        "zh-cn": "正式获释"
+      },
       "1.0.0-alpha.2": {
         "en": "Dependencies have been updated",
         "de": "Abhängigkeiten wurden aktualisiert",
@@ -44,10 +57,6 @@
       "0.0.9": {
         "en": "ws always connected, powerOnOff function with polling added",
         "de": "ws verbindung bleibt offen, powerOnOff Funktion hinzugefügt"
-      },
-      "0.0.8": {
-        "en": "package renamed to samsung_tizen",
-        "de": "package umbennant auf samsung_tizen"
       }
     },
     "titleLang": {
