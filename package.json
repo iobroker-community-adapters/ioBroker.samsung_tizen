@@ -33,7 +33,7 @@
     "node": ">= 16"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^3.0.4",
+    "@iobroker/adapter-core": "^3.0.6",
     "is-port-reachable": "^3.0.0",
     "wake_on_lan": "^1.0.0",
     "ws": "^7.2.2"
