@@ -94,7 +94,10 @@
       "samsung tv",
       "tizen"
     ],
-    "license": "MIT",
+    "licenseInformation": {
+      "license": "MIT",
+      "type": "free"
+    },
     "platform": "Javascript/Node.js",
     "main": "main.js",
     "icon": "samsung.png",
@@ -102,11 +105,22 @@
     "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.samsung_tizen/master/admin/samsung.png",
     "readme": "https://github.com/iobroker-community-adapters/ioBroker.samsung_tizen/blob/master/README.md",
     "loglevel": "info",
+    "tier": 2,
     "mode": "daemon",
     "type": "multimedia",
     "compact": false,
     "connectionType": "local",
-    "dataSource": "push"
+    "dataSource": "push",
+    "dependencies": [
+      {
+        "js-controller": ">=5.0.19"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=6.13.16"
+      }
+    ]
   },
   "native": {
     "protocol": "wss",
