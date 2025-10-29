@@ -1,6 +1,6 @@
 # ioBroker Adapter Development with GitHub Copilot
 
-**Version:** 0.4.0
+**Version:** 0.4.2
 **Template Source:** https://github.com/DrozmotiX/ioBroker-Copilot-Instructions
 
 This file contains instructions and best practices for GitHub Copilot when working on ioBroker adapter development.
@@ -212,6 +212,22 @@ async function checkTVAvailability() {
         this.log.error(`Error checking TV availability: ${error.message}`);
         return false;
     }
+}
+```
+
+### Adapter Error Patterns
+- Always catch and log errors appropriately
+- Use adapter log levels (error, warn, info, debug)
+- Provide meaningful, user-friendly error messages that help users understand what went wrong
+
+Example:
+```javascript
+try {
+  await this.someAsyncOperation();
+} catch (error) {
+  this.log.error(`Failed to perform operation: ${error.message}`);
+  // Handle error appropriately - don't just log and ignore
+  this.setState('info.connection', false, true);
 }
 ```
 
@@ -463,6 +479,127 @@ module.exports = {
     }
 };
 ```
+
+## README Updates
+
+### Required Sections
+When updating README.md files, ensure these sections are present and well-documented:
+
+1. **Installation** - Clear npm/ioBroker admin installation steps
+2. **Configuration** - Detailed explanation of all configuration options
+3. **Usage** - Examples of how to use the adapter
+4. **Changelog** - Keep updated using standard format (see CHANGELOG section)
+5. **License** - Always include license information
+
+### CHANGELOG Format
+The CHANGELOG should follow this format in README.md:
+
+```markdown
+## Changelog
+
+### **WORK IN PROGRESS**
+
+-   Did some changes
+-   Did some more changes
+
+## v0.1.0 (2023-01-01)
+Initial release
+```
+
+#### Workflow Process
+- **During Development**: All changes go under `## **WORK IN PROGRESS**`
+- **Before Release**: Move WORK IN PROGRESS changes to a new version section with release date
+- **Version Format**: Use `## v0.1.0 (YYYY-MM-DD)` for version headers
+- **Change Format**: Use bullet points with `-` prefix
+- **Optional Tags**: Add tags like `(DutchmanNL)`, `**FIXED**:`, `**NEW**:` for clarity
+
+#### Example with Tags
+```markdown
+## **WORK IN PROGRESS**
+
+- (DutchmanNL) **FIXED**: Adapter now properly validates login credentials instead of always showing "credentials missing" (fixes #25)
+- (DutchmanNL) **NEW**: Added support for device discovery to simplify initial setup
+```
+
+## Dependency Updates
+
+### Package Management
+- Always use `npm` for dependency management in ioBroker adapters
+- When working on new features in a repository with an existing package-lock.json file, use `npm ci` to install dependencies. Use `npm install` only when adding or updating dependencies.
+- Keep dependencies minimal and focused
+- Regularly update dependencies to patch security vulnerabilities
+- Test thoroughly after dependency updates
+
+### Dependency Hygiene
+- Remove unused dependencies
+- Prefer well-maintained packages with active communities
+- Check bundle size impact of new dependencies
+- Consider using built-in Node.js features when possible
+
+## JSON-Config Admin Instructions
+
+### Configuration Schema
+When creating admin configuration interfaces:
+
+- Use JSON-Config format for modern ioBroker admin interfaces
+- Place configuration in `admin/jsonConfig.json`
+- Provide clear labels and help texts
+- Group related settings logically
+- Include validation where appropriate
+- Use appropriate input types (text, number, checkbox, select, etc.)
+
+Example structure:
+```json
+{
+  "type": "panel",
+  "items": {
+    "ipAddress": {
+      "type": "text",
+      "label": "IP Address",
+      "sm": 12,
+      "md": 6,
+      "lg": 4
+    },
+    "port": {
+      "type": "number",
+      "label": "Port",
+      "min": 1,
+      "max": 65535,
+      "sm": 12,
+      "md": 6,
+      "lg": 4
+    }
+  }
+}
+```
+
+## Best Practices for Dependencies
+
+### HTTP Client Libraries
+- **Preferred:** Use native `fetch` API (Node.js 20+ required for adapters; built-in since Node.js 18)
+- **Avoid:** `axios` unless specific features are required (reduces bundle size)
+
+Example with fetch:
+```javascript
+async function getData() {
+  try {
+    const response = await fetch('https://api.example.com/data');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    this.log.error(`Failed to fetch data: ${error.message}`);
+    throw error;
+  }
+}
+```
+
+### When to Use External Libraries
+- Only when built-in functionality is insufficient
+- When library provides significant value (e.g., complex parsing, protocol implementation)
+- When maintaining compatibility with existing code that depends on it
 
 ## Code Style and Standards
 
