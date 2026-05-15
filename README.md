@@ -191,6 +191,8 @@ The first generation of this adapter has been developed by Stefan0875 (https://g
 - (mcm1957) Adapter requires node 16 or newer now.
 - (mcm1957) Adapter has been moved to iobroker-community-adapters organization.
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## License
 
 MIT License 
