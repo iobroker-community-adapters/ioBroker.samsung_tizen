@@ -83,7 +83,7 @@ function getPowerOnState(){
     });  
     setInterval(function(){
         (async () => {
-            let response = await isPortReachable(adapter.config.pollingPort, {host: adapter.config.ipAddress});
+            let response = await isPortReachable(parseFloat(adapter.config.pollingPort), {host: adapter.config.ipAddress});
             adapter.setState('powerOn', response, true, function (err) {
                 if (err) adapter.log.error(err);
             });
@@ -301,7 +301,7 @@ function startApp(app,x) {
         });
 };
 async function getPowerStateInstant(){
-            let response = await isPortReachable(adapter.config.pollingPort, {host: adapter.config.ipAddress});
+            let response = await isPortReachable(parseFloat(adapter.config.pollingPort), {host: adapter.config.ipAddress});
             adapter.setState('powerOn', response, true, function (err) {
                 if (err) adapter.log.error(err);
             });
