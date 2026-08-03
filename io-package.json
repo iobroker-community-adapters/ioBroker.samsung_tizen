@@ -140,7 +140,8 @@
     "macAddress": "ab:12:cd:34:ef:56",
     "cmdDelay": "1000",
     "pollingPort": "9110",
-    "pollingInterval": "60"
+    "pollingInterval": "60",
+    "useUPnPVolume": false
   },
   "objects": []
 }
