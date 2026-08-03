@@ -105,6 +105,21 @@ can be deactivated with value "0"
 ### 2.7. Command Delay
 delay in milliseconds between the commands sent via the iobroker.samsung_tizen.0.control.sendCmd object. 
 
+### 2.8. Volume control via UPnP
+Adds the objects iobroker.samsung_tizen.0.media.volume and iobroker.samsung_tizen.0.media.mute,
+which report the current TV volume and can also set it directly.
+
+This uses the UPnP RenderingControl service on port 9197 instead of the WebSocket remote control
+channel, so it can read the volume level and set an absolute value, which the KEY_VOLUP and
+KEY_VOLDOWN keys cannot do. No pairing token is needed.
+
+The TV only answers this service for clients on its own subnet. If ioBroker reaches the TV through
+a router, from a different subnet or VLAN, the TV replies "401 Unauthorized" and the volume can
+neither be read nor set. The service is also only reachable while the TV is switched on, so the
+values are not updated in standby.
+
+Disabled by default, as not every model provides the service.
+
 ## 3. Usage
 
 ### 3.1. Control
@@ -160,6 +175,13 @@ There are few example commands but you can also create your own macros.
 </p>
 </details>
 
+### 3.4. Volume and mute
+read the current volume from iobroker.samsung_tizen.0.media.volume, or write a value between
+0 and 100 to it to set the volume directly. iobroker.samsung_tizen.0.media.mute reports and sets
+the mute state. Both are updated on every polling interval while the TV is on.
+
+Requires "volume control via UPnP" to be enabled in the instance configuration.
+
 ## Credits
 
 The first generation of this adapter has been developed by Stefan0875 (https://github.com/Stefan0875) which has been adapted and maintined by highpressure (https://github.com/Highpressure) and finaly dahuby (https://github.com/dahuby). Thanks a lot for their work and grantig a publich license.
@@ -172,6 +194,7 @@ The first generation of this adapter has been developed by Stefan0875 (https://g
 -->
 
 ### **WORK IN PROGRESS**
+- (AlanSRU) Added volume and mute control via the UPnP RenderingControl service, disabled by default
 - (copilot) Adapter requires node.js >= 22 now
 - (iobroker-bot) Adapter requires node.js >= 20 now.
 - (copilot) Adapter requires admin >= 7.7.22 now

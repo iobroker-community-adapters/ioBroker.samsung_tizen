@@ -6,8 +6,17 @@ const adapter = utils.adapter('samsung_tizen');
 const isPortReachable = require('is-port-reachable');
 const wol = require('wake_on_lan');
 const WebSocket = require('ws');
+const http = require('node:http');
 
 let ws;
+
+// UPnP RenderingControl service, used for volume and mute.
+// The port is fixed: these TVs do not answer SSDP discovery, and 9197 only
+// listens while the TV is switched on.
+const UPNP_PORT = 9197;
+const UPNP_PATH = '/upnp/control/RenderingControl1';
+const UPNP_SERVICE = 'urn:schemas-upnp-org:service:RenderingControl:1';
+const UPNP_MASTER = '<InstanceID>0</InstanceID><Channel>Master</Channel>';
 
 adapter.on('stateChange', function (id, state) {
     const key = id.split('.');
@@ -30,6 +39,11 @@ adapter.on('stateChange', function (id, state) {
     if (key[2] === 'config' && key[3] === 'getToken'){
         getToken();
     } 
+    if (key[2] === 'media' && state && !state.ack){
+        if (key[3] === 'volume'){ setVolume(state.val); }
+        if (key[3] === 'mute'){ setMute(state.val); }
+        return;
+    }
     if (key[3].toUpperCase() === 'SENDCMD'){
         sendCmd(state.val.split(','), 0);
     }
@@ -64,11 +78,16 @@ function main() {
         },
         native: {}
     });
+    if (adapter.config.useUPnPVolume){createVolumeStates();}
     if (parseFloat(adapter.config.pollingInterval) > 0){getPowerOnState();};
     adapter.subscribeStates('control.*');
     adapter.subscribeStates('apps.*');
     adapter.subscribeStates('command.*');
     adapter.subscribeStates('config.*');
+    if (adapter.config.useUPnPVolume){
+        adapter.subscribeStates('media.*');
+        updateVolumeStates();
+    }
     adapter.log.info(adapter.name + '.' + adapter.instance + ' started with config : ' + JSON.stringify(adapter.config));
 }
 function getPowerOnState(){
@@ -87,6 +106,8 @@ function getPowerOnState(){
             adapter.setState('powerOn', response, true, function (err) {
                 if (err) adapter.log.error(err);
             });
+            // port 9197 is closed while the TV is in standby
+            if (response && adapter.config.useUPnPVolume){ await updateVolumeStates(); }
         })();
 
     }, parseFloat(adapter.config.pollingInterval) * 1000)
@@ -307,4 +328,119 @@ async function getPowerStateInstant(){
             });
             return response
         
+}
+
+function createVolumeStates() {
+    adapter.setObject('media', {
+        type: 'channel',
+        common: {
+            name: 'volume and mute'
+        },
+        native: {}
+    });
+    adapter.setObject('media.volume', {
+        type: 'state',
+        common: {
+            name: 'volume level',
+            type: 'number',
+            role: 'level.volume',
+            min: 0,
+            max: 100,
+            def: 0,
+            read: true,
+            write: true
+        },
+        native: {}
+    });
+    adapter.setObject('media.mute', {
+        type: 'state',
+        common: {
+            name: 'mute',
+            type: 'boolean',
+            role: 'media.mute',
+            def: false,
+            read: true,
+            write: true
+        },
+        native: {}
+    });
+}
+// Send a SOAP action to the TV. Resolves with the response body, or null on error.
+function upnpRequest(action, args) {
+    return new Promise((resolve) => {
+        const envelope = '<?xml version="1.0" encoding="utf-8"?>'
+            + '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">'
+            + '<s:Body><u:' + action + ' xmlns:u="' + UPNP_SERVICE + '">' + args + '</u:' + action + '></s:Body>'
+            + '</s:Envelope>';
+        const req = http.request({
+            hostname: adapter.config.ipAddress,
+            port: UPNP_PORT,
+            path: UPNP_PATH,
+            method: 'POST',
+            timeout: 5000,
+            headers: {
+                'Content-Type': 'text/xml; charset="utf-8"',
+                'SOAPACTION': '"' + UPNP_SERVICE + '#' + action + '"',
+                'Content-Length': Buffer.byteLength(envelope)
+            }
+        }, function (res) {
+            let data = '';
+            res.on('data', function (chunk) { data += chunk; });
+            res.on('end', function () {
+                const error = data.match(/<errorCode>(\d+)<\/errorCode>/);
+                if (error) {
+                    if (error[1] === '401') {
+                        // the TV only answers clients on its own subnet
+                        adapter.log.warn('UPnP ' + action + ' refused (401 Unauthorized): the TV only accepts this from its own subnet, and ioBroker appears to be on a different one');
+                    } else {
+                        adapter.log.warn('UPnP ' + action + ' failed with upnp:' + error[1]);
+                    }
+                    resolve(null);
+                } else {
+                    resolve(data);
+                }
+            });
+        });
+        req.on('error', function (e) {
+            adapter.log.debug('UPnP ' + action + ' request failed: ' + e.message);
+            resolve(null);
+        });
+        req.on('timeout', function () {
+            req.destroy();
+            adapter.log.debug('UPnP ' + action + ' request timed out');
+            resolve(null);
+        });
+        req.end(envelope);
+    });
+}
+// Read volume and mute from the TV and store them as acknowledged states
+async function updateVolumeStates() {
+    const volume = await upnpRequest('GetVolume', UPNP_MASTER);
+    if (volume) {
+        const match = volume.match(/<CurrentVolume>(\d+)<\/CurrentVolume>/);
+        if (match) { adapter.setState('media.volume', parseInt(match[1], 10), true); }
+    }
+    const mute = await upnpRequest('GetMute', UPNP_MASTER);
+    if (mute) {
+        const match = mute.match(/<CurrentMute>([^<]+)<\/CurrentMute>/);
+        if (match) { adapter.setState('media.mute', match[1] === '1' || match[1] === 'true', true); }
+    }
+}
+async function setVolume(value) {
+    const volume = Math.round(parseFloat(value));
+    // the TV rejects anything outside 0-100 with upnp:402, so catch it here
+    if (isNaN(volume) || volume < 0 || volume > 100) {
+        adapter.log.warn('media.volume: ' + value + ' is not a level between 0 and 100, ignored');
+        await updateVolumeStates();
+        return;
+    }
+    const res = await upnpRequest('SetVolume', UPNP_MASTER + '<DesiredVolume>' + volume + '</DesiredVolume>');
+    if (res) { adapter.log.info('volume set to ' + volume); }
+    // read back, so the state reflects the TV even if the command was refused
+    await updateVolumeStates();
+}
+async function setMute(value) {
+    const res = await upnpRequest('SetMute', UPNP_MASTER + '<DesiredMute>' + (value ? 1 : 0) + '</DesiredMute>');
+    if (res) { adapter.log.info('mute set to ' + !!value); }
+    await updateVolumeStates();
 }

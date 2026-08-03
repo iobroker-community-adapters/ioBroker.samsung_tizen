@@ -21,6 +21,7 @@
 	    "pollingPort":                    {"en": "polling port", "de": "Polling Port"},
 	    "pollingInterval":                    {"en": "polling interval", "de": "Polling Intervall"},
         "macAddress":                    {"en": "mac address", "de": "MAC Adresse"},
+        "useUPnPVolume":               {"en": "volume control via UPnP", "de": "Lautstärkeregelung über UPnP"},
         "cmdDelay":                    {"en": "command delay", "de": "Command Verzögerung"},
         "on save adapter restarts with new config immediately": {
             "de": "Beim Speichern der Einstellungen wird der Adapter sofort neu gestartet.",
@@ -48,7 +49,11 @@ function save(callback) {
         var obj = {};
         $('.value').each(function () {
             var $this = $(this);
-            obj[$this.attr('id')] = $this.val();
+            if ($this.attr('type') === 'checkbox') {
+                obj[$this.attr('id')] = $this.prop('checked');
+            } else {
+                obj[$this.attr('id')] = $this.val();
+            }
         });
         callback(obj);
     }
@@ -69,6 +74,7 @@ function save(callback) {
         <span class="translate">pollingPort</span> <input class="value" id="pollingPort"/><br>
         <span class="translate">pollingInterval</span> <input class="value" id="pollingInterval"/>in s <span class="translate">(0 to deactivate)</span><br>
         <span class="translate">cmdDelay</span> <input class="value" id="cmdDelay"/>in ms<br>
+        <span class="translate">useUPnPVolume</span> <input class="value" id="useUPnPVolume" type="checkbox"/><br>
     </p>
         <p class="translate">on save adapter restarts with new config immediately</p>
 </div>
