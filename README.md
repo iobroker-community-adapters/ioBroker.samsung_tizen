@@ -142,7 +142,7 @@ There are few example commands but you can also create your own macros.
 
 ## Installation
 
-Install this adapater using ioBroker repositories.
+Install this adapter using ioBroker repositories.
 
 >[!NOTE]
 > This adapter does not support installation from GitHub.
