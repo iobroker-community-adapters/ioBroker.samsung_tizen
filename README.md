@@ -140,6 +140,13 @@ There are few example commands but you can also create your own macros.
 </p>
 </details>
 
+## Installation
+
+Install this adapater using ioBroker repositories.
+
+>[!NOTE]
+> This adapter does not support installation from GitHub.
+
 ## Credits
 
 The first generation of this adapter has been developed by Stefan0875 (https://github.com/Stefan0875) which has been adapted and maintined by highpressure (https://github.com/Highpressure) and finaly dahuby (https://github.com/dahuby). Thanks a lot for their work and grantig a publich license.
