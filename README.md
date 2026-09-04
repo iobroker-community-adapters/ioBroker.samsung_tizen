@@ -158,7 +158,7 @@ The first generation of this adapter has been developed by Stefan0875 (https://g
     ### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
-- (mcm1957) BREAKING: enhanced security (added encryption) requires that you enter the access token one more time 
+- (mcm1957) **BREAKING:** enhanced security (added encryption) requires that you enter the access token one more time 
 - (copilot) Adapter requires node.js >= 22 now
 - (copilot) Adapter requires admin >= 7.7.22 now
 - (copilot) Adapter requires js-controller >= 6.0.11 now
