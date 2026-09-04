@@ -41,40 +41,6 @@
         "pl": "Oficjalne wydanie zostało stworzone",
         "uk": "Створено офіційне видання",
         "zh-cn": "正式获释"
-      },
-      "1.0.0-alpha.2": {
-        "en": "Dependencies have been updated",
-        "de": "Abhängigkeiten wurden aktualisiert",
-        "ru": "В зависимости были обновлены",
-        "pt": "As dependências foram atualizadas",
-        "nl": "Afhankelijkheid",
-        "fr": "Les dépendances ont été mises à jour",
-        "it": "Le dipendenze sono state aggiornate",
-        "es": "Se han actualizado las dependencias",
-        "pl": "Zależności zostały zaktualizowane",
-        "uk": "Оновлено залежність",
-        "zh-cn": "已更新了属地"
-      },
-      "1.0.0-alpha.1": {
-        "en": "Adapter requires node 16 or newer now.\nAdapter has been moved to iobroker-community-adapters organization.",
-        "de": "Adapter benötigt nun node 16 oder neuer.\nAdapter wurde zur iobroker-community-adapters Organisation verschoben.",
-        "ru": "Адаптер требует ноды 16 или новее теперь.\nАдаптер переехал в организацию iobroker-community-adapters.",
-        "pt": "Adaptador requer nó 16 ou mais recente agora.\nAdapter foi movido para iobroker-community-adapters organização.",
-        "nl": "Adapter vereist node 16 of Newer nu.\nAdapter is verplaatst naar iobroker-community-papters organisatie.",
-        "fr": "L'adaptateur nécessite 16 ans ou plus maintenant.\nL'adaptateur a été déplacé à l'organisation iobroker-community-adapters.",
-        "it": "Adattatore richiede nodo 16 o più nuovo ora.\nL'adattatore è stato trasferito all'organizzazione iobroker-community-adapters.",
-        "es": "Adaptador requiere nodo 16 o más nuevo ahora.\nEl adaptador ha sido trasladado a la organización de ibroker-community-adapters.",
-        "pl": "Adapter wymaga węzła 16 lub nowszego.\nAdapter przeniesiono do organizacji iobroker-community-adapter.",
-        "uk": "Адаптер вимагає вузла 16 або новіше зараз.\nПереміщено перехід на організацію iobroker-community-adapters.",
-        "zh-cn": "现在不需要16个或新的人员。.\n现已移到加勒比妓院。."
-      },
-      "0.0.12": {
-        "en": "wol bug fix",
-        "de": "wol bug fix"
-      },
-      "0.0.11": {
-        "en": "rename to iobroker.samsung_tizen",
-        "de": "umbennat zu iobroker.samsung_tizen"
       }
     },
     "titleLang": {
