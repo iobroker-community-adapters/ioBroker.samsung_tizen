@@ -157,7 +157,7 @@ The first generation of this adapter has been developed by Stefan0875 (https://g
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### 2.0.1 (2026-09-04)
+### **WORK IN PROGRESS**
 - (mcm1957) **BREAKING:** enhanced security (added encryption) requires that you enter the access token one more time 
 - (copilot) Adapter requires node.js >= 22 now
 - (copilot) Adapter requires admin >= 7.7.22 now
