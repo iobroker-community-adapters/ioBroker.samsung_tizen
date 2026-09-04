@@ -256,7 +256,10 @@ function getApps(x) {
             })
         } if (!err) {
             ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
-            ws.on('message', function incoming(data) {
+            const onInstalledApps = function (data) {
+                // the socket is shared, so ignore anything that is not the reply we asked for
+                if (!data.includes('ed.installedApp.get')){ return; }
+                ws.removeListener('message', onInstalledApps);
                 data = JSON.parse(data);
                 for(let i = 0; i < data.data.data.length; i++){
                     adapter.setObject('apps.start_'+data.data.data[i].name, {
@@ -269,8 +272,9 @@ function getApps(x) {
                         native: {}
                     });
                 }
-                adapter.log.info('getInstalledApps successfully sent to tv')
-            })
+                adapter.log.info('getInstalledApps successfully sent to tv');
+            };
+            ws.on('message', onInstalledApps);
         };
 
     });
@@ -286,7 +290,9 @@ function startApp(app,x) {
             })
         } if (!err) {
             ws.send(JSON.stringify({"method":"ms.channel.emit","params":{"event": "ed.installedApp.get", "to":"host"}}));
-            ws.on('message', function incoming(data) {
+            const onInstalledApps = function (data) {
+                if (!data.includes('ed.installedApp.get')){ return; }
+                ws.removeListener('message', onInstalledApps);
                 data = JSON.parse(data);
                 if (data.event === 'ed.installedApp.get'){
                     for(let i = 0; i < data.data.data.length; i++){
@@ -296,7 +302,8 @@ function startApp(app,x) {
                         }
                     }
                 }
-            });
+            };
+            ws.on('message', onInstalledApps);
           }
         });
 };
