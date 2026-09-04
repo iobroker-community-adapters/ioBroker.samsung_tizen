@@ -7,7 +7,11 @@
             "text": "Connection",
             "size": 5,
             "newLine": true,
-            "sm": 12
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "xl": 12
         },
         "protocol": {
             "type": "select",
@@ -19,16 +23,20 @@
             ],
             "help": "Use wss for newer TVs",
             "newLine": true,
+            "xs": 12,
             "sm": 12,
             "md": 4,
-            "lg": 2
+            "lg": 2,
+            "xl": 2
         },
         "ipAddress": {
             "type": "text",
             "label": "IP address",
+            "xs": 12,
             "sm": 12,
             "md": 4,
-            "lg": 3
+            "lg": 3,
+            "xl": 3
         },
         "port": {
             "type": "select",
@@ -37,26 +45,32 @@
                 { "label": "8001 = unencrypted", "value": "8001" },
                 { "label": "8002 = encrypted", "value": "8002" }
             ],
+            "xs": 12,
             "sm": 12,
             "md": 4,
-            "lg": 2
+            "lg": 2,
+            "xl": 2
         },
         "token": {
             "type": "text",
             "label": "Token",
             "help": "0 = deactivated. The token can be requested with the state config.getToken",
             "newLine": true,
+            "xs": 12,
             "sm": 12,
             "md": 6,
-            "lg": 4
+            "lg": 4,
+            "xl": 4
         },
         "macAddress": {
             "type": "text",
             "label": "MAC address",
             "help": "Used to switch the TV on via Wake-on-LAN. 0 = deactivated",
+            "xs": 12,
             "sm": 12,
             "md": 6,
-            "lg": 4
+            "lg": 4,
+            "xl": 4
         },
 
         "_polling": {
@@ -64,26 +78,34 @@
             "text": "Power state polling",
             "size": 5,
             "newLine": true,
-            "sm": 12
-        },
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "xl": 12
+
         "pollingPort": {
             "type": "number",
             "label": "Polling port",
             "help": "Port that is checked to detect whether the TV is switched on",
             "newLine": true,
             "max": 65535,
+            "xs": 12,
             "sm": 12,
             "md": 6,
-            "lg": 3
+            "lg": 3,
+            "xl": 3
         },
         "pollingInterval": {
             "type": "number",
             "label": "Polling interval",
             "unit": "seconds",
             "help": "0 = deactivated",
+            "xs": 12,
             "sm": 12,
             "md": 6,
-            "lg": 3
+            "lg": 3,
+            "xl": 3
         },
 
         "_commands": {
@@ -91,7 +113,11 @@
             "text": "Commands",
             "size": 5,
             "newLine": true,
-            "sm": 12
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "xl": 12
         },
         "cmdDelay": {
             "type": "number",
@@ -99,9 +125,11 @@
             "unit": "ms",
             "help": "Delay between two keys of a command sequence",
             "newLine": true,
+            "xs": 12,
             "sm": 12,
             "md": 6,
-            "lg": 3
+            "lg": 3,
+            "xl": 3
         }
     }
 }
