@@ -157,16 +157,17 @@ The first generation of this adapter has been developed by Stefan0875 (https://g
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### 2.0.0 (2026-09-04)
-- (@AlanSRU) Fixed the installed-app message handlers, which stayed attached to the shared websocket: they piled up with every call and made the adapter crash with "Cannot read properties of undefined (reading 'length')" as soon as another message arrived (#302)
-- (@AlanSRU) Synced `engines.node` in package-lock.json with package.json (#301)
-- (@GermanBluefox) The adapter was refactored to TypeScript. The sources moved to `src/` and are compiled to `build/`
-- (@GermanBluefox) The configuration dialog was migrated from the old HTML admin page to JsonConfig
-- (@GermanBluefox) The states created by the adapter now carry explicit `common.read` / `common.write` flags
-- (@GermanBluefox) The adapter can only be installed from npm now, no longer directly from GitHub (`common.nogit`)
-- (@copilot) Adapter requires node.js >= 22 now
-- (@copilot) Adapter requires admin >= 7.7.22 now
-- (@copilot) Adapter requires js-controller >= 6.0.11 now
+### **WORK IN PROGRESS**
+- (mcm1957) BREAKING: enhanced security (added encryption) requires that you enter the access token one more time 
+- (copilot) Adapter requires node.js >= 22 now
+- (copilot) Adapter requires admin >= 7.7.22 now
+- (copilot) Adapter requires js-controller >= 6.0.11 now
+- (AlanSRU) Fixed the installed-app message handlers, which stayed attached to the shared websocket: they piled up with every call and made the adapter crash with "Cannot read properties of undefined (reading 'length')" as soon as another message arrived (#302)
+- (AlanSRU) Synced `engines.node` in package-lock.json with package.json (#301)
+- (GermanBluefox) The adapter was refactored to TypeScript. 
+- (GermanBluefox) The configuration dialog was migrated from the old HTML admin page to JsonConfig
+- (GermanBluefox) The states created by the adapter now carry explicit `common.read` / `common.write` flags
+- (GermanBluefox) The adapter can only be installed from npm now, no longer directly from GitHub (`common.nogit`)
 
 ### 1.1.0 (2024-04-26)
 * (mcm1957) Adapter requires node.js >= 18 and js-controller >= 5 now
