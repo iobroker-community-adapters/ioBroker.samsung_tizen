@@ -150,8 +150,7 @@ The first generation of this adapter has been developed by Stefan0875 (https://g
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 2.0.0 (2026-09-04)
 - (@AlanSRU) Fixed the installed-app message handlers, which stayed attached to the shared websocket: they piled up with every call and made the adapter crash with "Cannot read properties of undefined (reading 'length')" as soon as another message arrived (#302)
 - (@AlanSRU) Synced `engines.node` in package-lock.json with package.json (#301)
 - (@GermanBluefox) The adapter was refactored to TypeScript. The sources moved to `src/` and are compiled to `build/`
