@@ -1,0 +1,107 @@
+{
+    "i18n": true,
+    "type": "panel",
+    "items": {
+        "_connection": {
+            "type": "header",
+            "text": "Connection",
+            "size": 5,
+            "newLine": true,
+            "sm": 12
+        },
+        "protocol": {
+            "type": "select",
+            "label": "Protocol",
+            "noTranslation": true,
+            "options": [
+                { "value": "wss", "label": "wss" },
+                { "value": "http", "label": "http" }
+            ],
+            "help": "Use wss for newer TVs",
+            "newLine": true,
+            "sm": 12,
+            "md": 4,
+            "lg": 2
+        },
+        "ipAddress": {
+            "type": "text",
+            "label": "IP address",
+            "sm": 12,
+            "md": 4,
+            "lg": 3
+        },
+        "port": {
+            "type": "select",
+            "label": "Port",
+            "options": [
+                { "label": "8001 = unencrypted", "value": "8001" },
+                { "label": "8002 = encrypted", "value": "8002" }
+            ],
+            "sm": 12,
+            "md": 4,
+            "lg": 2
+        },
+        "token": {
+            "type": "text",
+            "label": "Token",
+            "help": "0 = deactivated. The token can be requested with the state config.getToken",
+            "newLine": true,
+            "sm": 12,
+            "md": 6,
+            "lg": 4
+        },
+        "macAddress": {
+            "type": "text",
+            "label": "MAC address",
+            "help": "Used to switch the TV on via Wake-on-LAN. 0 = deactivated",
+            "sm": 12,
+            "md": 6,
+            "lg": 4
+        },
+
+        "_polling": {
+            "type": "header",
+            "text": "Power state polling",
+            "size": 5,
+            "newLine": true,
+            "sm": 12
+        },
+        "pollingPort": {
+            "type": "number",
+            "label": "Polling port",
+            "help": "Port that is checked to detect whether the TV is switched on",
+            "newLine": true,
+            "max": 65535,
+            "sm": 12,
+            "md": 6,
+            "lg": 3
+        },
+        "pollingInterval": {
+            "type": "number",
+            "label": "Polling interval",
+            "unit": "seconds",
+            "help": "0 = deactivated",
+            "sm": 12,
+            "md": 6,
+            "lg": 3
+        },
+
+        "_commands": {
+            "type": "header",
+            "text": "Commands",
+            "size": 5,
+            "newLine": true,
+            "sm": 12
+        },
+        "cmdDelay": {
+            "type": "number",
+            "label": "Command delay",
+            "unit": "ms",
+            "help": "Delay between two keys of a command sequence",
+            "newLine": true,
+            "sm": 12,
+            "md": 6,
+            "lg": 3
+        }
+    }
+}

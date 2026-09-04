@@ -1,0 +1,22 @@
+{
+    "0 = deactivated": "0 = 停用",
+    "0 = deactivated. The token can be requested with the state config.getToken": "0 = 停用。可通过状态 config.getToken 请求令牌",
+    "8001 = unencrypted, 8002 = encrypted": "8001 = 未加密，8002 = 加密",
+    "Command delay (ms)": "命令延迟（毫秒）",
+    "Commands": "命令",
+    "Connection": "连接",
+    "Delay between two keys of a command sequence": "命令序列中两个按键之间的延迟",
+    "IP address": "IP 地址",
+    "MAC address": "MAC 地址",
+    "On save the adapter restarts with the new configuration immediately": "保存后适配器会立即以新配置重启",
+    "Polling interval (s)": "轮询间隔（秒）",
+    "Polling port": "轮询端口",
+    "Port": "端口",
+    "Port that is checked to detect whether the TV is switched on": "用于检测电视是否已开机的端口",
+    "Power state polling": "电源状态轮询",
+    "Protocol": "协议",
+    "Samsung TizenOS TV settings": "Samsung TizenOS 电视设置",
+    "Token": "令牌",
+    "Use wss for newer TVs": "较新的电视请使用 wss",
+    "Used to switch the TV on via Wake-on-LAN. 0 = deactivated": "用于通过 Wake-on-LAN 打开电视。0 = 停用"
+}

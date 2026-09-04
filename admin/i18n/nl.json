@@ -1,0 +1,22 @@
+{
+    "0 = deactivated": "0 = gedeactiveerd",
+    "0 = deactivated. The token can be requested with the state config.getToken": "0 = gedeactiveerd. Het token kan worden opgevraagd met de state config.getToken",
+    "8001 = unencrypted, 8002 = encrypted": "8001 = onversleuteld, 8002 = versleuteld",
+    "Command delay (ms)": "Commandovertraging (ms)",
+    "Commands": "Commando's",
+    "Connection": "Verbinding",
+    "Delay between two keys of a command sequence": "Vertraging tussen twee toetsen van een commandoreeks",
+    "IP address": "IP-adres",
+    "MAC address": "MAC-adres",
+    "On save the adapter restarts with the new configuration immediately": "Bij het opslaan start de adapter direct opnieuw op met de nieuwe configuratie",
+    "Polling interval (s)": "Pollinginterval (s)",
+    "Polling port": "Pollingpoort",
+    "Port": "Poort",
+    "Port that is checked to detect whether the TV is switched on": "Poort die wordt gecontroleerd om te bepalen of de tv aan staat",
+    "Power state polling": "Opvragen van de voedingsstatus",
+    "Protocol": "Protocol",
+    "Samsung TizenOS TV settings": "Samsung TizenOS TV-instellingen",
+    "Token": "Token",
+    "Use wss for newer TVs": "Gebruik wss voor nieuwere tv's",
+    "Used to switch the TV on via Wake-on-LAN. 0 = deactivated": "Wordt gebruikt om de tv via Wake-on-LAN in te schakelen. 0 = gedeactiveerd"
+}

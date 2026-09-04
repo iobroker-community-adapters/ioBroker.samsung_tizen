@@ -1,0 +1,22 @@
+{
+    "0 = deactivated": "0 = desativado",
+    "0 = deactivated. The token can be requested with the state config.getToken": "0 = desativado. O token pode ser solicitado com o estado config.getToken",
+    "8001 = unencrypted, 8002 = encrypted": "8001 = não criptografado, 8002 = criptografado",
+    "Command delay (ms)": "Atraso do comando (ms)",
+    "Commands": "Comandos",
+    "Connection": "Conexão",
+    "Delay between two keys of a command sequence": "Atraso entre duas teclas de uma sequência de comandos",
+    "IP address": "Endereço IP",
+    "MAC address": "Endereço MAC",
+    "On save the adapter restarts with the new configuration immediately": "Ao salvar, o adaptador reinicia imediatamente com a nova configuração",
+    "Polling interval (s)": "Intervalo de consulta (s)",
+    "Polling port": "Porta de consulta",
+    "Port": "Porta",
+    "Port that is checked to detect whether the TV is switched on": "Porta verificada para detectar se a TV está ligada",
+    "Power state polling": "Consulta do estado de energia",
+    "Protocol": "Protocolo",
+    "Samsung TizenOS TV settings": "Configurações da TV Samsung TizenOS",
+    "Token": "Token",
+    "Use wss for newer TVs": "Use wss para TVs mais recentes",
+    "Used to switch the TV on via Wake-on-LAN. 0 = deactivated": "Usado para ligar a TV via Wake-on-LAN. 0 = desativado"
+}
