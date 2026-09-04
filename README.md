@@ -157,7 +157,7 @@ The first generation of this adapter has been developed by Stefan0875 (https://g
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 2.0.2 (2026-09-04)
 - (mcm1957) **BREAKING:** enhanced security (added encryption) requires that you enter the access token one more time 
 - (copilot) Adapter requires node.js >= 22 now
 - (copilot) Adapter requires admin >= 7.7.22 now
@@ -182,6 +182,7 @@ The first generation of this adapter has been developed by Stefan0875 (https://g
 ### 1.0.0-alpha.1 (2023-09-24)
 - (mcm1957) Adapter requires node 16 or newer now.
 - (mcm1957) Adapter has been moved to iobroker-community-adapters organization.
+
 
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
