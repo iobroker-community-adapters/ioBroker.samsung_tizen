@@ -2,19 +2,11 @@
   "name": "iobroker.samsung_tizen",
   "version": "1.1.0",
   "description": "ioBroker adapter to control Samsung TizenOs tvs(mj>= 2016)",
-  "author": {
-    "name": "DaHuby",
-    "email": "michael.hubeny@me.com"
-  },
+  "author": "DaHuby <michael.hubeny@me.com>",
   "contributors": [
-    {
-      "name": "Michael Hubeny",
-      "email": "michael.hubeny@me.com"
-    },
-    {
-      "name": "mcm1957",
-      "email": "mcm57@gmx.at"
-    }
+    "Michael Hubeny <michael.hubeny@me.com>",
+    "mcm1957 <mcm57@gmx.at>",
+    "iobroker-community-adapters <iobroker-community-adapters@gmx.de>"
   ],
   "homepage": "https://github.com/iobroker-community-adapters/ioBroker.samsung_tizen",
   "license": "MIT",
@@ -30,7 +22,7 @@
     "url": "https://github.com/iobroker-community-adapters/ioBroker.samsung_tizen.git"
   },
   "engines": {
-    "node": ">= 18"
+    "node": ">= 22"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^3.1.6",
@@ -45,7 +37,7 @@
     "@alcalzone/release-script-plugin-manual-review": "^3.7.0",
     "@iobroker/adapter-dev": "^1.4.0",
     "@iobroker/testing": "^4.1.3",
-    "@tsconfig/node14": "^14.1.5",
+    "@tsconfig/node20": "^20.1.9",
     "@types/chai": "^4.3.11",
     "@types/chai-as-promised": "^7.1.8",
     "@types/mocha": "^10.0.6",
