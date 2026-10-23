@@ -45,7 +45,13 @@ const KEYBOARD: Record<string, string> = {
 };
 
 /** What a press sends: a remote key, or Wake-on-LAN */
-type Command = { key: string } | { wake: true } | { app: string };
+type Command = { key: string } | { wake: true } | { app: string } | { scene: string };
+
+/** A scene of the settings as `scenes` of the instance reports it */
+interface TvScene {
+    id: string;
+    name: string;
+}
 
 /** An app of the TV as `apps` of the instance reports it (`key` of `TV_APPS`) */
 interface TvApp {
@@ -84,6 +90,8 @@ interface RemoteControlComponentState extends ConfigGenericState {
     powerOn: boolean | null;
     /** Apps installed on the TV, `null` while asking */
     apps: TvApp[] | null;
+    /** Scenes of the saved settings */
+    scenes: TvScene[];
 }
 
 const COLORS = {
@@ -118,6 +126,7 @@ export default class RemoteControlComponent extends ConfigGeneric<ConfigGenericP
             error: '',
             powerOn: null,
             apps: null,
+            scenes: [],
         };
     }
 
@@ -133,6 +142,7 @@ export default class RemoteControlComponent extends ConfigGeneric<ConfigGenericP
         void super.componentDidMount();
         this.mounted = true;
         void this.loadApps();
+        void this.loadScenes();
         try {
             const state = await this.props.oContext.socket.getState(this.powerOnId);
             if (state && this.mounted) {
@@ -148,6 +158,20 @@ export default class RemoteControlComponent extends ConfigGeneric<ConfigGenericP
         this.mounted = false;
         super.componentWillUnmount();
         void this.props.oContext.socket.unsubscribeState(this.powerOnId, this.onPowerOnChanged);
+    }
+
+    async loadScenes(): Promise<void> {
+        if (!this.props.alive) {
+            return;
+        }
+        try {
+            const response = await this.props.oContext.socket.sendTo(this.target, 'scenes', {});
+            if (this.mounted) {
+                this.setState({ scenes: response?.scenes ?? [] });
+            }
+        } catch {
+            // no scenes - nothing to show
+        }
     }
 
     async loadApps(refresh = false): Promise<void> {
@@ -185,7 +209,9 @@ export default class RemoteControlComponent extends ConfigGeneric<ConfigGenericP
                     ? this.props.oContext.socket.sendTo(this.target, 'wake', {})
                     : 'app' in command
                       ? this.props.oContext.socket.sendTo(this.target, 'launchApp', { app: command.app })
-                      : this.props.oContext.socket.sendTo(this.target, 'remote', { key: command.key }),
+                      : 'scene' in command
+                        ? this.props.oContext.socket.sendTo(this.target, 'runScene', { scene: command.scene })
+                        : this.props.oContext.socket.sendTo(this.target, 'remote', { key: command.key }),
                 new Promise(resolve => setTimeout(() => resolve({ error: 'custom_samsung_no_answer' }), SEND_TIMEOUT)),
             ])) as { error?: string } | null;
             error = response?.error ? I18n.t(response.error) : '';
@@ -392,6 +418,52 @@ export default class RemoteControlComponent extends ConfigGeneric<ConfigGenericP
         );
     }
 
+    /** The scenes of the settings as outlined buttons below the apps */
+    renderScenes(): React.JSX.Element | null {
+        if (!this.state.scenes.length) {
+            return null;
+        }
+        return (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}>
+                {this.state.scenes.map(scene => {
+                    const busy = this.state.busy === `scene:${scene.id}`;
+                    return (
+                        <ButtonBase
+                            key={scene.id}
+                            aria-label={scene.name}
+                            disabled={!this.props.alive || (!!this.state.busy && !busy)}
+                            onClick={() => void this.send(`scene:${scene.id}`, { scene: scene.id })}
+                            sx={{
+                                height: 34,
+                                borderRadius: '17px',
+                                border: `1px solid ${COLORS.textDim}`,
+                                color: COLORS.text,
+                                fontSize: 12,
+                                fontWeight: 'bold',
+                                px: 1.5,
+                                '&:hover': { backgroundColor: COLORS.keyHover },
+                                '&:active': { transform: 'scale(0.97)' },
+                                '&.Mui-disabled': { opacity: 0.45 },
+                            }}
+                        >
+                            {busy ? (
+                                <CircularProgress
+                                    size={16}
+                                    sx={{ color: COLORS.text }}
+                                />
+                            ) : (
+                                <>
+                                    <PlayArrow sx={{ fontSize: 16, mr: 0.5 }} />
+                                    {scene.name}
+                                </>
+                            )}
+                        </ButtonBase>
+                    );
+                })}
+            </Box>
+        );
+    }
+
     renderStatus(): React.JSX.Element {
         const { powerOn } = this.state;
         let color = '#5f6368';
@@ -509,6 +581,8 @@ export default class RemoteControlComponent extends ConfigGeneric<ConfigGenericP
                     </Box>
 
                     {this.renderApps()}
+
+                    {this.renderScenes()}
 
                     <Typography
                         sx={{

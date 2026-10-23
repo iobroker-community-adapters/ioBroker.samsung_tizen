@@ -190,6 +190,56 @@
                 }
             }
         },
+        "_scenes": {
+            "type": "panel",
+            "label": "Scenes",
+            "items": {
+                "_scenesHelp": {
+                    "type": "staticText",
+                    "text": "Steps separated by commas: keys (HOME, OK, BACK, UP, DOWN, LEFT, RIGHT, MENU, SOURCE, VOLUP, VOLDOWN, MUTE, 0-9 or KEY_...), apps (YOUTUBE, NETFLIX, DISNEY_PLUS, PRIME_VIDEO, APPLE_TV, JOYN, RTL_PLUS, ARD_MEDIATHEK, ZDF_MEDIATHEK, SPOTIFY, BROWSER, ...) and pauses (WAIT 2000). Example: HOME, YOUTUBE, WAIT 3000, OK. Every scene becomes a button scenes.<name> and a key of the remote control.",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12
+                },
+                "scenes": {
+                    "type": "table",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12,
+                    "items": [
+                        {
+                            "type": "text",
+                            "attr": "name",
+                            "title": "Name",
+                            "width": "25%",
+                            "filter": false,
+                            "sort": false
+                        },
+                        {
+                            "type": "text",
+                            "attr": "steps",
+                            "title": "Steps",
+                            "width": "60%"
+                        },
+                        {
+                            "type": "number",
+                            "attr": "delay",
+                            "title": "Delay between steps (ms)",
+                            "width": "15%",
+                            "min": 0,
+                            "max": 10000,
+                            "default": 500
+                        }
+                    ]
+                }
+            }
+        },
         "_remote": {
             "type": "panel",
             "label": "Remote control",

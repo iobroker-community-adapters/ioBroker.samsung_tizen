@@ -23,6 +23,8 @@ declare global {
             pollingPort: string;
             /** power state polling interval in seconds, "0" to deactivate */
             pollingInterval: string;
+            /** scenes of the settings table: name, steps (`HOME, YOUTUBE, WAIT 3000, OK`) and the delay between two steps in ms */
+            scenes: { name: string; steps: string; delay?: number | string }[];
         }
     }
 }

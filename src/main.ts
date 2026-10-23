@@ -11,8 +11,9 @@ import { Adapter, type AdapterOptions } from '@iobroker/adapter-core';
 import WebSocket from 'ws';
 import { wake } from 'wake_on_lan';
 
-import { type InstalledTvApp, findInstalledApps, launchApp } from './lib/apps';
+import { type InstalledTvApp, SAMSUNG_APPS, findInstalledApps, launchApp } from './lib/apps';
 import { discoverTvs, readDeviceInfo } from './lib/discover';
+import { parseScene, runScene, sceneId } from './lib/scenes';
 import { type ConnectionParams, PairingError, pair, sendTestKey } from './lib/pairing';
 import { keys } from './lib/remotekeys';
 import type { TvEventMessage } from './lib/types';
@@ -29,6 +30,8 @@ const RETRY_DELAY = 2_000;
 const REMOTE_TIMEOUT = 5_000;
 /** Remote keys are sent as given, so only accept what looks like one */
 const KEY_PATTERN = /^KEY_[A-Z0-9_]+$/;
+/** Pause between two steps of a scene if the settings name none, in ms */
+const DEFAULT_SCENE_DELAY = 500;
 /** An IP address or a host name from the setup assistant - it ends up in a URL */
 const HOST_PATTERN = /^[A-Za-z0-9][A-Za-z0-9.-]{0,252}$/;
 
@@ -82,6 +85,7 @@ class SamsungTizen extends Adapter {
      * - `wake`: Wake-on-LAN to `mac` or, without it, to the configured MAC address
      * - `apps`: the known apps installed on the TV (`refresh: true` asks the TV again)
      * - `launchApp`: start the app `app` (a key of `TV_APPS`, e.g. `YOUTUBE`)
+     * - `scenes`: the scenes of the settings, `runScene`: run the scene `scene` (its state ID)
      *
      * The setup assistant works with the data being entered, not with the saved configuration:
      * - `listTvs`: all TVs found, with name, model, MAC address and power state
@@ -102,11 +106,21 @@ class SamsungTizen extends Adapter {
             token?: string;
             app?: string;
             refresh?: boolean;
+            scene?: string;
         };
         let response: unknown;
 
         try {
             switch (obj.command) {
+                case 'scenes':
+                    response = {
+                        scenes: [...this.scenes].map(([id, scene]) => ({ id, name: scene.name })),
+                    };
+                    break;
+                case 'runScene':
+                    await this.runSceneById(String(message.scene ?? ''));
+                    response = {};
+                    break;
                 case 'apps': {
                     const apps = await this.getInstalledApps(!!message.refresh);
                     response = { apps: apps.map(({ key, name }) => ({ key, name })) };
@@ -234,6 +248,75 @@ class SamsungTizen extends Adapter {
         this.sendTo(obj.from, obj.command, response, obj.callback);
     }
 
+    /** The scenes of the settings with a valid name, keyed by their state ID */
+    private get scenes(): Map<string, { name: string; steps: string; delay: number }> {
+        const scenes = new Map<string, { name: string; steps: string; delay: number }>();
+        for (const scene of Array.isArray(this.config.scenes) ? this.config.scenes : []) {
+            const id = sceneId(scene?.name);
+            if (id && !scenes.has(id)) {
+                const delay = parseFloat(String(scene.delay ?? ''));
+                scenes.set(id, {
+                    name: scene.name.trim(),
+                    steps: scene.steps ?? '',
+                    delay: Number.isFinite(delay) && delay >= 0 ? delay : DEFAULT_SCENE_DELAY,
+                });
+            }
+        }
+        return scenes;
+    }
+
+    /** One button per scene under `scenes.*`; buttons of scenes that are gone from the settings are deleted */
+    private async createSceneStates(): Promise<void> {
+        const scenes = this.scenes;
+        if (scenes.size) {
+            await this.setObjectNotExistsAsync('scenes', {
+                type: 'channel',
+                common: { name: 'Scenes' },
+                native: {},
+            });
+        }
+        for (const [id, scene] of scenes) {
+            try {
+                parseScene(scene.steps, Object.keys(SAMSUNG_APPS));
+            } catch (e) {
+                this.log.warn(`Scene "${scene.name}": ${(e as Error).message}`);
+            }
+            await this.setObject(`scenes.${id}`, {
+                type: 'state',
+                common: { name: scene.name, type: 'boolean', role: 'button', read: false, write: true },
+                native: { steps: scene.steps },
+            });
+        }
+        const existing = await this.getStatesOfAsync('scenes');
+        for (const obj of existing ?? []) {
+            const id = obj._id.split('.').pop() ?? '';
+            if (!scenes.has(id)) {
+                await this.delObjectAsync(obj._id);
+            }
+        }
+    }
+
+    /** Run the scene with the state ID `id` */
+    private async runSceneById(id: string): Promise<void> {
+        const scene = this.scenes.get(id);
+        if (!scene) {
+            throw new Error('There is no such scene in the settings');
+        }
+        const steps = parseScene(scene.steps, Object.keys(SAMSUNG_APPS));
+        this.log.info(`Scene "${scene.name}": ${steps.length} steps`);
+        await runScene(steps, scene.delay, {
+            sendKey: key => this.sendKeyNow(key),
+            launchApp: async key => {
+                const app = (await this.getInstalledApps(false)).find(entry => entry.key === key);
+                if (!app) {
+                    throw new Error(`App ${key} is not installed on the TV`);
+                }
+                await launchApp(this.config.ipAddress, app.appId);
+            },
+            sleep: ms => new Promise(resolve => this.setTimeout(resolve, ms)),
+        });
+    }
+
     /**
      * The known apps installed on the TV. Asked once and kept, because it takes one request per known app ID;
      * an empty answer - the TV was off - is not kept.
@@ -334,10 +417,13 @@ class SamsungTizen extends Adapter {
             await this.startPowerStatePolling();
         }
 
+        await this.createSceneStates();
+
         this.subscribeStates('control.*');
         this.subscribeStates('apps.*');
         this.subscribeStates('command.*');
         this.subscribeStates('config.*');
+        this.subscribeStates('scenes.*');
 
         this.log.info(`${this.namespace} started with config : ${JSON.stringify(this.config)}`);
     }
@@ -372,6 +458,11 @@ class SamsungTizen extends Adapter {
         }
         if (channel === 'config' && key[3] === 'getToken') {
             this.getToken();
+        }
+        if (channel === 'scenes' && !state.ack && key[3]) {
+            void this.runSceneById(key[3]).catch((e: unknown) =>
+                this.log.error(`Scene ${key[3]}: ${(e as Error).message}`),
+            );
         }
         if (name === 'SENDCMD') {
             this.sendCmd(String(state.val ?? '').split(','), 0);
