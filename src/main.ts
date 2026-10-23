@@ -30,6 +30,12 @@ const RETRY_DELAY = 2_000;
 const REMOTE_TIMEOUT = 5_000;
 /** Remote keys are sent as given, so only accept what looks like one */
 const KEY_PATTERN = /^KEY_[A-Z0-9_]+$/;
+/** How long to wait for the TV after Wake-on-LAN before KEY_POWER is tried, in ms */
+const POWER_ON_WOL_WAIT = 15_000;
+/** How long to wait for the TV to reach the wanted power state, in ms */
+const POWER_TIMEOUT = 20_000;
+/** How long KEY_POWER is held to switch The Frame off instead of into art mode, in ms */
+const FRAME_POWER_OFF_HOLD = 3_000;
 /** Pause between two steps of a scene if the settings name none, in ms */
 const DEFAULT_SCENE_DELAY = 500;
 /** An IP address or a host name from the setup assistant - it ends up in a URL */
@@ -347,7 +353,7 @@ class SamsungTizen extends Adapter {
     }
 
     /** Send one key and resolve once it is written to the websocket - for the remote control tab */
-    private sendKeyNow(key: string): Promise<void> {
+    private sendKeyNow(key: string, cmd: 'Click' | 'Press' | 'Release' = 'Click'): Promise<void> {
         return new Promise((resolve, reject) => {
             const pending: { settled: boolean; timer?: ioBroker.Timeout } = { settled: false };
             const finish = (err: Error | null): void => {
@@ -377,7 +383,7 @@ class SamsungTizen extends Adapter {
                 this.ws.send(
                     JSON.stringify({
                         method: 'ms.remote.control',
-                        params: { Cmd: 'Click', DataOfCmd: key, Option: 'false', TypeOfRemote: 'SendRemoteKey' },
+                        params: { Cmd: cmd, DataOfCmd: key, Option: 'false', TypeOfRemote: 'SendRemoteKey' },
                     }),
                     sendErr => finish(sendErr ?? null),
                 );
@@ -424,6 +430,7 @@ class SamsungTizen extends Adapter {
         this.subscribeStates('command.*');
         this.subscribeStates('config.*');
         this.subscribeStates('scenes.*');
+        this.subscribeStates('powerOn');
 
         this.log.info(`${this.namespace} started with config : ${JSON.stringify(this.config)}`);
     }
@@ -458,6 +465,9 @@ class SamsungTizen extends Adapter {
         }
         if (channel === 'config' && key[3] === 'getToken') {
             this.getToken();
+        }
+        if (id === `${this.namespace}.powerOn` && !state.ack) {
+            void this.setPower(!!state.val).catch((e: unknown) => this.log.error(`powerOn: ${(e as Error).message}`));
         }
         if (channel === 'scenes' && !state.ack && key[3]) {
             void this.runSceneById(key[3]).catch((e: unknown) =>
@@ -499,9 +509,10 @@ class SamsungTizen extends Adapter {
             common: {
                 name: 'power state of TV',
                 type: 'boolean',
-                role: 'state',
+                role: 'switch.power',
                 read: true,
-                write: false,
+                // writing switches the TV on or off, see setPower()
+                write: true,
             },
             native: {},
         });
@@ -527,6 +538,67 @@ class SamsungTizen extends Adapter {
         }
 
         return response;
+    }
+
+    /**
+     * Switch the TV on or off from `powerOn` and ask the power state until it is reached.
+     *
+     * On: Wake-on-LAN first (works from the network standby, also over WLAN), then - if the TV is still off
+     * but its websocket answers in the network standby - KEY_POWER. Sending KEY_POWER first could switch
+     * off a TV that is just starting.
+     * Off: a short KEY_POWER only toggles The Frame between TV and art mode; held for 3 s it switches off,
+     * as the user manual of The Frame describes for the remote control.
+     */
+    private async setPower(on: boolean): Promise<void> {
+        if ((await this.getPowerStateInstant()) === on) {
+            return;
+        }
+        if (on) {
+            const mac = this.config.macAddress;
+            if (mac && mac !== '0') {
+                // throws synchronously on a malformed MAC address
+                wake(mac);
+                this.log.info('powerOn: Wake-on-LAN sent');
+                if (await this.waitForPower(true, POWER_ON_WOL_WAIT)) {
+                    return;
+                }
+            }
+            this.log.info('powerOn: sending KEY_POWER');
+            await this.sendKeyNow('KEY_POWER').catch((e: unknown) =>
+                this.log.warn(`powerOn: KEY_POWER not possible: ${(e as Error).message}`),
+            );
+            if (!(await this.waitForPower(true, POWER_TIMEOUT))) {
+                this.log.warn('powerOn: the TV did not switch on. Is "Power on with mobile" enabled on the TV?');
+            }
+            return;
+        }
+        const frameTv =
+            HOST_PATTERN.test(this.config.ipAddress) && !!(await readDeviceInfo(this.config.ipAddress))?.frameTv;
+        if (frameTv) {
+            await this.sendKeyNow('KEY_POWER', 'Press');
+            await new Promise<void>(resolve => this.setTimeout(resolve, FRAME_POWER_OFF_HOLD));
+            await this.sendKeyNow('KEY_POWER', 'Release');
+        } else {
+            await this.sendKeyNow('KEY_POWER');
+        }
+        this.log.info(`powerOn: KEY_POWER ${frameTv ? 'held' : 'sent'} to switch off`);
+        if (!(await this.waitForPower(false, POWER_TIMEOUT))) {
+            this.log.warn('powerOn: the TV did not switch off');
+        }
+    }
+
+    /** Ask the power state every 1.5 s until it is `target` or `timeout` ms are over */
+    private async waitForPower(target: boolean, timeout: number): Promise<boolean> {
+        const end = Date.now() + timeout;
+        for (;;) {
+            if ((await this.getPowerStateInstant()) === target) {
+                return true;
+            }
+            if (Date.now() >= end || this.unloaded) {
+                return false;
+            }
+            await new Promise<void>(resolve => this.setTimeout(resolve, 1500));
+        }
     }
 
     /** URL of the remote control websocket */

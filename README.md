@@ -142,6 +142,10 @@ You can start an app by clicking the `samsung_tizen.0.apps.start_<app name>` obj
 
 If the power state polling is configured as described above, `samsung_tizen.0.powerOn` is `true` while your TV is on and `false` while it is off.
 
+Write `true` or `false` to `samsung_tizen.0.powerOn` to switch the TV on or off. The adapter asks the power state right after that, every 1.5 s, until the TV reached it (at most about 20 s):
+- on: Wake-on-LAN to the configured MAC address first; if the TV is not on after 15 s, KEY_POWER (works from the network standby)
+- off: KEY_POWER, held for 3 s on a The Frame - a short press only switches The Frame between TV and art mode
+
 ### 2.4. Commands
 
 Commands can be sent manually via the `samsung_tizen.0.control.sendCmd` object, as described under Control, or via a custom object below `samsung_tizen.0.command`.
@@ -182,6 +186,7 @@ The first generation of this adapter was developed by Stefan0875 (https://github
 - (GermanBluefox) Added: button "Search TV" that finds the TV in the network and fills in IP address, MAC address, protocol and port; the IP address field lists all TVs found (SSDP, confirmed by the REST API of the TV)
 - (GermanBluefox) Added: button to read the MAC address for Wake-on-LAN from the TV
 - (GermanBluefox) Added: setup assistant (tab "Setup"): search, pairing without copying the token, Wake-on-LAN, test key and save in one go
+- (GermanBluefox) Added: `powerOn` can be written to switch the TV on (Wake-on-LAN, then KEY_POWER) or off (KEY_POWER, held on The Frame); the power state is asked right after that until it is reached
 - (GermanBluefox) Added: scenes - named sequences of keys, apps and pauses, configured in a table, each with a button `scenes.<name>`
 - (GermanBluefox) Added: buttons for the apps installed on the TV; the adapter knows the Samsung app IDs of YouTube, Netflix, Disney+, Prime Video, Apple TV, Max, Paramount+, DAZN, Joyn, RTL+, MagentaTV, ARD, ZDF, Spotify, Twitch, Plex and the browser and asks the TV which of them are installed
 - (GermanBluefox) Added: tab "Remote control" in the settings with a remote control to test the connection right away (custom component, needs admin 8)
