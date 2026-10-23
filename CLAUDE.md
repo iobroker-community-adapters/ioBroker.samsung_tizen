@@ -88,7 +88,7 @@ Every `native` value is a **string**, including the numeric ones (`port`, `cmdDe
 - Apps are always launched with `action_type: 'DEEP_LINK'`. The original condition was `app_type === 1 || 2`, which is always true; changing it now would change which apps still start.
 - `sendCmd`'s error path splices `KEY_POWERON` out of the command array while the retry counter `x` indexes into the same array — the retry can skip keys. Preserved from the JS version.
 - `wsError` treats `readyState > CONNECTING` as "worth closing", so it also closes an already closed socket.
-- The adapter logs a lot at `info` level, including the full websocket URL with the token.
+- The adapter logs a lot at `info` level. The pairing token is masked (`redactToken()`, `token: '***'` in the startup config) — keep it that way, `token` is an encrypted native.
 
 ## Release flow
 

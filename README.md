@@ -165,6 +165,9 @@ The first generation of this adapter was developed by Stefan0875 (https://github
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+- (GermanBluefox) The pairing token is no longer written to the log (startup config, websocket URL, getToken)
+
 ### 2.0.2 (2026-09-04)
 - (mcm1957) **BREAKING:** enhanced security (added encryption) requires that you enter the access token one more time 
 - (copilot) Adapter requires node.js >= 22 now

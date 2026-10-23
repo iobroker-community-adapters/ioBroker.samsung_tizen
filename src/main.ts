@@ -37,6 +37,11 @@ function rawDataToString(data: WebSocket.RawData): string {
     return Buffer.from(data).toString();
 }
 
+/** Mask the pairing token in a websocket URL, so it never ends up in the log */
+function redactToken(url: string): string {
+    return url.replace(/([?&]token=)[^&]+/, '$1***');
+}
+
 /** `common.name` may be a translated object; the states of this adapter always carry a plain string */
 function nameToString(name: ioBroker.StringOrTranslated | undefined): string {
     if (typeof name === 'string') {
@@ -97,7 +102,9 @@ class SamsungTizen extends Adapter {
         this.subscribeStates('command.*');
         this.subscribeStates('config.*');
 
-        this.log.info(`${this.namespace} started with config : ${JSON.stringify(this.config)}`);
+        // `token` is an encrypted native - do not undo that by printing it
+        const config = { ...this.config, token: parseFloat(this.config.token) > 0 ? '***' : this.config.token };
+        this.log.info(`${this.namespace} started with config : ${JSON.stringify(config)}`);
     }
 
     private onStateChange(id: string, state: ioBroker.State | null | undefined): void {
@@ -211,7 +218,7 @@ class SamsungTizen extends Adapter {
     private wsConnect(done: DoneCallback): void {
         if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
             const wsUrl = this.buildRemoteUrl(true);
-            this.log.info(`open connection: ${wsUrl}`);
+            this.log.info(`open connection: ${redactToken(wsUrl)}`);
 
             this.ws = new WebSocket(wsUrl, { rejectUnauthorized: false });
 
@@ -281,7 +288,7 @@ class SamsungTizen extends Adapter {
         this.ws.on('message', (data: WebSocket.RawData): void => {
             const message = JSON.parse(rawDataToString(data)) as TvEventMessage;
             if (message.event === 'ms.channel.connect') {
-                this.log.info(`getToken done, token: ${message.data?.token}`);
+                this.log.info(`getToken done, the token is the name of the object ${this.namespace}.config.token`);
                 // the token is intentionally stored as the object name, not as the state value
                 void this.setObject('config.token', {
                     type: 'state',
