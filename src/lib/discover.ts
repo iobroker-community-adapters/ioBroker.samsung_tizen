@@ -34,6 +34,8 @@ export interface FoundTv {
     networkType: string;
     /** true for The Frame */
     frameTv: boolean;
+    /** true if the TV hands out a token - those TVs are reached with wss on port 8002 */
+    tokenAuthSupport: boolean;
 }
 
 /** Shape of `GET /api/v2/` - only the fields used here */
@@ -47,6 +49,7 @@ interface DeviceInfoResponse {
         PowerState?: string;
         networkType?: string;
         FrameTVSupport?: string;
+        TokenAuthSupport?: string;
     };
 }
 
@@ -121,6 +124,7 @@ export function readDeviceInfo(ip: string, timeout = 2000): Promise<FoundTv | nu
                         powerState: device.PowerState ?? '',
                         networkType: device.networkType ?? '',
                         frameTv: device.FrameTVSupport === 'true',
+                        tokenAuthSupport: device.TokenAuthSupport === 'true',
                     });
                 } catch {
                     resolve(null);

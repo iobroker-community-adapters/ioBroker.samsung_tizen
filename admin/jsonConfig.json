@@ -17,6 +17,23 @@
                     "lg": 12,
                     "xl": 12
                 },
+                "_searchTv": {
+                    "type": "sendTo",
+                    "label": "Search TV",
+                    "command": "searchTv",
+                    "useNative": true,
+                    "showProcess": true,
+                    "variant": "contained",
+                    "color": "primary",
+                    "icon": "search",
+                    "help": "Searches the network and fills in the IP address, MAC address, protocol and port of a TV that is switched on",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 3
+                },
                 "protocol": {
                     "type": "select",
                     "label": "Protocol",
@@ -38,7 +55,7 @@
                     "label": "IP address",
                     "command": "discover",
                     "freeSolo": true,
-                    "help": "Opening the list searches the network for TVs that are switched on",
+                    "help": "The list offers the TVs found in the network when the settings were opened",
                     "xs": 12,
                     "sm": 12,
                     "md": 4,

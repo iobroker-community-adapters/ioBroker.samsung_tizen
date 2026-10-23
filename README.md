@@ -18,7 +18,7 @@ Possible values are `http` or `wss`. On newer devices use `wss`.
 ### 1.2. IP Address
 The IP address of your Samsung TV.
 
-Opening the list of the field searches the network for Samsung TVs that are switched on and offers their addresses. The adapter instance must be running for that. A TV in deep standby or in another subnet cannot be found - enter its address by hand then.
+Do not know the address? Click **Search TV** at the top of the settings: the adapter searches the network for a Samsung TV that is switched on and fills in its IP address, MAC address, protocol and port. If several TVs answer, the first one is taken and the others are offered in the list of the IP address field, which is filled when the settings are opened. The adapter instance must be running for the search. A TV in deep standby or in another subnet cannot be found - enter its address by hand then.
 
 ### 1.3. Port
 Port for the websocket connection to your TV:
@@ -173,7 +173,7 @@ The first generation of this adapter was developed by Stefan0875 (https://github
     ### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
-- (GermanBluefox) Added: the IP address field lists the TVs found in the network (SSDP, confirmed by the REST API of the TV)
+- (GermanBluefox) Added: button "Search TV" that finds the TV in the network and fills in IP address, MAC address, protocol and port; the IP address field lists all TVs found (SSDP, confirmed by the REST API of the TV)
 - (GermanBluefox) Added: button to read the MAC address for Wake-on-LAN from the TV
 - (GermanBluefox) Added: tab "Remote control" in the settings to test the connection right away (power, Wake-on-LAN, navigation, volume, playback)
 

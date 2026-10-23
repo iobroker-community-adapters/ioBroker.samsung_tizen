@@ -70,6 +70,7 @@ class SamsungTizen extends Adapter {
     /**
      * Messages of the configuration dialog:
      * - `discover`: list of the TVs found in the network, for the `autocompleteSendTo` of the IP address
+     * - `searchTv`: IP address, MAC address, protocol and port of the first TV found, written into the form via `useNative`
      * - `readDeviceInfo`: MAC address of the TV at `ip`, written into the form via `useNative`
      * - `remote`: send the key `key` - the buttons of the remote control tab
      * - `wake`: Wake-on-LAN to the configured MAC address
@@ -89,6 +90,25 @@ class SamsungTizen extends Adapter {
                         label: `${tv.name || tv.model} (${tv.model}) - ${tv.ip}`,
                         value: tv.ip,
                     }));
+                    break;
+                }
+                case 'searchTv': {
+                    const [tv] = await discoverTvs();
+                    if (!tv) {
+                        response = { error: 'No Samsung TV found. Is it switched on and in the same network?' };
+                        break;
+                    }
+                    this.log.info(`TV found: ${tv.name} (${tv.model}) at ${tv.ip}`);
+                    response = {
+                        native: {
+                            ipAddress: tv.ip,
+                            // keep what the user entered if the TV does not tell
+                            macAddress: tv.mac || this.config.macAddress,
+                            // TVs that hand out a token only accept the secure websocket
+                            protocol: tv.tokenAuthSupport ? 'wss' : 'http',
+                            port: tv.tokenAuthSupport ? '8002' : '8001',
+                        },
+                    };
                     break;
                 }
                 case 'readDeviceInfo': {
