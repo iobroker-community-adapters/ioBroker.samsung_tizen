@@ -104,7 +104,7 @@ Delay in milliseconds between the commands sent via the `samsung_tizen.0.control
 ## 2. Usage
 
 ### 2.0. Remote control tab
-The tab "Remote control" of the settings sends keys to the TV right away - power, Wake-on-LAN, source, the arrow keys, OK, back, home, menu, volume and playback. It goes through the running instance with the saved configuration, so save first after changing the IP address or the token. A key that does not reach the TV shows the error at the button.
+The tab "Remote control" of the settings shows a remote control: power, Wake-on-LAN, source, menu, info, the arrow keys with OK, back, home, mute, volume and channel rockers and the playback keys. Click it and the arrow keys, Enter, Backspace, + and - of the keyboard work as well. A LED shows the power state if the power state polling is on. The keys go through the running instance with the saved configuration, so save first after changing the IP address or the token. A key that does not reach the TV shows the error below the remote. The tab needs admin 8 or newer.
 
 ### 2.1. Control
 
@@ -175,7 +175,7 @@ The first generation of this adapter was developed by Stefan0875 (https://github
 ### **WORK IN PROGRESS**
 - (GermanBluefox) Added: button "Search TV" that finds the TV in the network and fills in IP address, MAC address, protocol and port; the IP address field lists all TVs found (SSDP, confirmed by the REST API of the TV)
 - (GermanBluefox) Added: button to read the MAC address for Wake-on-LAN from the TV
-- (GermanBluefox) Added: tab "Remote control" in the settings to test the connection right away (power, Wake-on-LAN, navigation, volume, playback)
+- (GermanBluefox) Added: tab "Remote control" in the settings with a remote control to test the connection right away (custom component, needs admin 8)
 
 ### 2.0.2 (2026-09-04)
 - (mcm1957) **BREAKING:** enhanced security (added encryption) requires that you enter the access token one more time 

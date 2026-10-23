@@ -7,7 +7,7 @@ export default [
     {
         languageOptions: {
             parserOptions: {
-                projectService: { allowDefaultProject: ['*.mjs'] },
+                projectService: { allowDefaultProject: ['*.js', '*.mjs'] },
                 tsconfigRootDir: import.meta.dirname,
             },
         },
@@ -19,6 +19,9 @@ export default [
             '.vscode/',
             'admin/**/*',
             'build/**/*',
+            'src-admin/build/**/*',
+            'src-admin/node_modules/**/*',
+            'src-admin/vite.config.ts',
             'node_modules/**/*',
             'test/**/*',
             'tmp/**/*',
