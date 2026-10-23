@@ -72,5 +72,6 @@
     "custom_samsung_setup_err_timeout": "Подключение не было вовремя разрешено на телевизоре. Сядьте перед телевизором и попробуйте снова.",
     "custom_samsung_setup_err_unreachable": "Телевизор не отвечает. Он включён и в той же сети?",
     "custom_samsung_setup_err_no_token": "Телевизор принял подключение, но не прислал токен. Попробуйте снова; если повторится, удалите «ioBroker» в диспетчере подключения устройств.",
-    "custom_samsung_setup_err_unknown": "Неожиданный ответ телевизора"
+    "custom_samsung_setup_err_unknown": "Неожиданный ответ телевизора",
+    "custom_samsung_apps_reload": "Найти приложения на телевизоре"
 }

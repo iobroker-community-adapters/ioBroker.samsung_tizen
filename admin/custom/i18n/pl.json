@@ -72,5 +72,6 @@
     "custom_samsung_setup_err_timeout": "Połączenie nie zostało na czas zatwierdzone na telewizorze. Usiądź przed telewizorem i spróbuj ponownie.",
     "custom_samsung_setup_err_unreachable": "Telewizor nie odpowiada. Czy jest włączony i w tej samej sieci?",
     "custom_samsung_setup_err_no_token": "Telewizor przyjął połączenie, ale nie wysłał tokenu. Spróbuj ponownie; jeśli się powtórzy, usuń „ioBroker” w menedżerze połączeń.",
-    "custom_samsung_setup_err_unknown": "Nieoczekiwana odpowiedź telewizora"
+    "custom_samsung_setup_err_unknown": "Nieoczekiwana odpowiedź telewizora",
+    "custom_samsung_apps_reload": "Znajdź aplikacje na telewizorze"
 }

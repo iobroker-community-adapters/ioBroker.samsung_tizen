@@ -72,5 +72,6 @@
     "custom_samsung_setup_err_timeout": "Nobody allowed the connection on the TV in time. Sit in front of the TV and try again.",
     "custom_samsung_setup_err_unreachable": "The TV does not answer. Is it switched on and in the same network?",
     "custom_samsung_setup_err_no_token": "The TV accepted the connection but sent no token. Try again; if it keeps happening, delete \"ioBroker\" in the device connection manager of the TV.",
-    "custom_samsung_setup_err_unknown": "Unexpected answer of the TV"
+    "custom_samsung_setup_err_unknown": "Unexpected answer of the TV",
+    "custom_samsung_apps_reload": "Find apps on the TV"
 }

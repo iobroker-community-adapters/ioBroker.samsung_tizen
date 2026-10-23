@@ -72,5 +72,6 @@
     "custom_samsung_setup_err_timeout": "De verbinding is niet op tijd toegestaan op de tv. Ga voor de tv zitten en probeer het opnieuw.",
     "custom_samsung_setup_err_unreachable": "De tv antwoordt niet. Staat hij aan en zit hij in hetzelfde netwerk?",
     "custom_samsung_setup_err_no_token": "De tv heeft de verbinding geaccepteerd maar geen token gestuurd. Probeer het opnieuw; gebeurt het weer, verwijder dan \"ioBroker\" in het apparaatverbindingsbeheer.",
-    "custom_samsung_setup_err_unknown": "Onverwacht antwoord van de tv"
+    "custom_samsung_setup_err_unknown": "Onverwacht antwoord van de tv",
+    "custom_samsung_apps_reload": "Apps op de tv zoeken"
 }

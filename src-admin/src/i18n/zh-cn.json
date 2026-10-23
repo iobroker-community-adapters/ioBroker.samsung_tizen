@@ -72,5 +72,6 @@
     "custom_samsung_setup_err_timeout": "未能及时在电视上允许连接。请坐到电视前重试。",
     "custom_samsung_setup_err_unreachable": "电视无响应。是否已开启并位于同一网络？",
     "custom_samsung_setup_err_no_token": "电视接受了连接但未发送令牌。请重试；如果再次发生，请在电视的设备连接管理器中删除“ioBroker”。",
-    "custom_samsung_setup_err_unknown": "电视返回了意外的响应"
+    "custom_samsung_setup_err_unknown": "电视返回了意外的响应",
+    "custom_samsung_apps_reload": "查找电视上的应用"
 }

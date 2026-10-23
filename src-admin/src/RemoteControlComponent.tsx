@@ -45,7 +45,35 @@ const KEYBOARD: Record<string, string> = {
 };
 
 /** What a press sends: a remote key, or Wake-on-LAN */
-type Command = { key: string } | { wake: true };
+type Command = { key: string } | { wake: true } | { app: string };
+
+/** An app of the TV as `apps` of the instance reports it (`key` of `TV_APPS`) */
+interface TvApp {
+    key: string;
+    name: string;
+}
+
+/** Brand-like colors of the app buttons - text only, no logos */
+const APP_COLORS: Record<string, string> = {
+    YOUTUBE: '#ff0000',
+    YOUTUBE_MUSIC: '#ff0000',
+    NETFLIX: '#e50914',
+    DISNEY_PLUS: '#113ccf',
+    PRIME_VIDEO: '#00a8e1',
+    APPLE_TV: '#000000',
+    MAX: '#002be7',
+    PARAMOUNT_PLUS: '#0064ff',
+    DAZN: '#0c161c',
+    JOYN: '#e6007e',
+    RTL_PLUS: '#000000',
+    MAGENTA_TV: '#e20074',
+    ARD_MEDIATHEK: '#003480',
+    ZDF_MEDIATHEK: '#fa7d19',
+    SPOTIFY: '#1db954',
+    TWITCH: '#9146ff',
+    PLEX: '#e5a00d',
+    BROWSER: '#5f6368',
+};
 
 interface RemoteControlComponentState extends ConfigGenericState {
     /** Key or command that is being sent right now */
@@ -54,6 +82,8 @@ interface RemoteControlComponentState extends ConfigGenericState {
     error: string;
     /** `powerOn` of the instance - only there if the power state polling is configured */
     powerOn: boolean | null;
+    /** Apps installed on the TV, `null` while asking */
+    apps: TvApp[] | null;
 }
 
 const COLORS = {
@@ -87,6 +117,7 @@ export default class RemoteControlComponent extends ConfigGeneric<ConfigGenericP
             busy: null,
             error: '',
             powerOn: null,
+            apps: null,
         };
     }
 
@@ -101,6 +132,7 @@ export default class RemoteControlComponent extends ConfigGeneric<ConfigGenericP
     async componentDidMount(): Promise<void> {
         void super.componentDidMount();
         this.mounted = true;
+        void this.loadApps();
         try {
             const state = await this.props.oContext.socket.getState(this.powerOnId);
             if (state && this.mounted) {
@@ -116,6 +148,22 @@ export default class RemoteControlComponent extends ConfigGeneric<ConfigGenericP
         this.mounted = false;
         super.componentWillUnmount();
         void this.props.oContext.socket.unsubscribeState(this.powerOnId, this.onPowerOnChanged);
+    }
+
+    async loadApps(refresh = false): Promise<void> {
+        if (!this.props.alive) {
+            return;
+        }
+        try {
+            const response = await this.props.oContext.socket.sendTo(this.target, 'apps', { refresh });
+            if (this.mounted) {
+                this.setState({ apps: response?.apps ?? [] });
+            }
+        } catch {
+            if (this.mounted) {
+                this.setState({ apps: [] });
+            }
+        }
     }
 
     onPowerOnChanged = (_id: string, state: ioBroker.State | null | undefined): void => {
@@ -135,7 +183,9 @@ export default class RemoteControlComponent extends ConfigGeneric<ConfigGenericP
             const response = (await Promise.race([
                 'wake' in command
                     ? this.props.oContext.socket.sendTo(this.target, 'wake', {})
-                    : this.props.oContext.socket.sendTo(this.target, 'remote', { key: command.key }),
+                    : 'app' in command
+                      ? this.props.oContext.socket.sendTo(this.target, 'launchApp', { app: command.app })
+                      : this.props.oContext.socket.sendTo(this.target, 'remote', { key: command.key }),
                 new Promise(resolve => setTimeout(() => resolve({ error: 'custom_samsung_no_answer' }), SEND_TIMEOUT)),
             ])) as { error?: string } | null;
             error = response?.error ? I18n.t(response.error) : '';
@@ -277,6 +327,71 @@ export default class RemoteControlComponent extends ConfigGeneric<ConfigGenericP
         );
     }
 
+    /** The apps installed on the TV as a grid of buttons, like the app keys of a real remote */
+    renderApps(): React.JSX.Element | null {
+        const { apps } = this.state;
+        if (apps === null) {
+            return (
+                <CircularProgress
+                    size={18}
+                    sx={{ color: COLORS.textDim }}
+                />
+            );
+        }
+        if (!apps.length) {
+            return (
+                <ButtonBase
+                    onClick={() => void this.loadApps(true)}
+                    sx={{ color: COLORS.textDim, fontSize: 12, borderRadius: 1, px: 1 }}
+                >
+                    {I18n.t('custom_samsung_apps_reload')}
+                </ButtonBase>
+            );
+        }
+        return (
+            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, width: '100%' }}>
+                {apps.map(app => {
+                    const busy = this.state.busy === `app:${app.key}`;
+                    return (
+                        <ButtonBase
+                            key={app.key}
+                            aria-label={app.name}
+                            disabled={!this.props.alive || (!!this.state.busy && !busy)}
+                            onClick={() => void this.send(`app:${app.key}`, { app: app.key })}
+                            sx={{
+                                height: 34,
+                                borderRadius: '17px',
+                                backgroundColor: APP_COLORS[app.key] ?? COLORS.key,
+                                color: '#ffffff',
+                                fontSize: 12,
+                                fontWeight: 'bold',
+                                px: 1,
+                                overflow: 'hidden',
+                                whiteSpace: 'nowrap',
+                                textOverflow: 'ellipsis',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12)',
+                                border: '1px solid rgba(255,255,255,0.12)',
+                                transition: 'filter 120ms, transform 80ms',
+                                '&:hover': { filter: 'brightness(1.15)' },
+                                '&:active': { transform: 'scale(0.96)' },
+                                '&.Mui-disabled': { opacity: 0.45 },
+                            }}
+                        >
+                            {busy ? (
+                                <CircularProgress
+                                    size={16}
+                                    sx={{ color: '#ffffff' }}
+                                />
+                            ) : (
+                                app.name
+                            )}
+                        </ButtonBase>
+                    );
+                })}
+            </Box>
+        );
+    }
+
     renderStatus(): React.JSX.Element {
         const { powerOn } = this.state;
         let color = '#5f6368';
@@ -392,6 +507,8 @@ export default class RemoteControlComponent extends ConfigGeneric<ConfigGenericP
                             height: 40,
                         })}
                     </Box>
+
+                    {this.renderApps()}
 
                     <Typography
                         sx={{

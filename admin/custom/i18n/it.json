@@ -72,5 +72,6 @@
     "custom_samsung_setup_err_timeout": "La connessione non è stata consentita in tempo sul televisore. Mettiti davanti al televisore e riprova.",
     "custom_samsung_setup_err_unreachable": "Il televisore non risponde. È acceso e nella stessa rete?",
     "custom_samsung_setup_err_no_token": "Il televisore ha accettato la connessione ma non ha inviato il token. Riprova; se succede ancora, elimina \"ioBroker\" nella gestione connessione dispositivi.",
-    "custom_samsung_setup_err_unknown": "Risposta inattesa del televisore"
+    "custom_samsung_setup_err_unknown": "Risposta inattesa del televisore",
+    "custom_samsung_apps_reload": "Cerca app sul televisore"
 }

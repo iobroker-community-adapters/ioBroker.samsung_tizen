@@ -11,6 +11,7 @@ import { Adapter, type AdapterOptions } from '@iobroker/adapter-core';
 import WebSocket from 'ws';
 import { wake } from 'wake_on_lan';
 
+import { type InstalledTvApp, findInstalledApps, launchApp } from './lib/apps';
 import { discoverTvs, readDeviceInfo } from './lib/discover';
 import { type ConnectionParams, PairingError, pair, sendTestKey } from './lib/pairing';
 import { keys } from './lib/remotekeys';
@@ -60,6 +61,8 @@ class SamsungTizen extends Adapter {
     private pollingTimer: ioBroker.Interval | null = null;
     /** Set in `onUnload` so that pending retries do not reconnect during shutdown */
     private unloaded = false;
+    /** Apps found on the TV - asking for all known app IDs takes a moment, so it is done once */
+    private installedApps: InstalledTvApp[] | null = null;
 
     public constructor(options: Partial<AdapterOptions> = {}) {
         super({ ...options, name: 'samsung_tizen' });
@@ -77,6 +80,8 @@ class SamsungTizen extends Adapter {
      * - `readDeviceInfo`: MAC address of the TV at `ip`, written into the form via `useNative`
      * - `remote`: send the key `key` - the buttons of the remote control tab
      * - `wake`: Wake-on-LAN to `mac` or, without it, to the configured MAC address
+     * - `apps`: the known apps installed on the TV (`refresh: true` asks the TV again)
+     * - `launchApp`: start the app `app` (a key of `TV_APPS`, e.g. `YOUTUBE`)
      *
      * The setup assistant works with the data being entered, not with the saved configuration:
      * - `listTvs`: all TVs found, with name, model, MAC address and power state
@@ -95,11 +100,29 @@ class SamsungTizen extends Adapter {
             protocol?: string;
             port?: string | number;
             token?: string;
+            app?: string;
+            refresh?: boolean;
         };
         let response: unknown;
 
         try {
             switch (obj.command) {
+                case 'apps': {
+                    const apps = await this.getInstalledApps(!!message.refresh);
+                    response = { apps: apps.map(({ key, name }) => ({ key, name })) };
+                    break;
+                }
+                case 'launchApp': {
+                    const app = (await this.getInstalledApps(false)).find(entry => entry.key === message.app);
+                    if (!app) {
+                        response = { error: `App ${message.app} is not installed on the TV` };
+                        break;
+                    }
+                    await launchApp(this.config.ipAddress, app.appId);
+                    this.log.debug(`remote control tab: app ${app.name} started`);
+                    response = {};
+                    break;
+                }
                 case 'listTvs':
                     response = { tvs: await discoverTvs() };
                     break;
@@ -209,6 +232,19 @@ class SamsungTizen extends Adapter {
         }
 
         this.sendTo(obj.from, obj.command, response, obj.callback);
+    }
+
+    /**
+     * The known apps installed on the TV. Asked once and kept, because it takes one request per known app ID;
+     * an empty answer - the TV was off - is not kept.
+     */
+    private async getInstalledApps(refresh: boolean): Promise<InstalledTvApp[]> {
+        if (!this.installedApps?.length || refresh) {
+            this.installedApps = HOST_PATTERN.test(this.config.ipAddress)
+                ? await findInstalledApps(this.config.ipAddress)
+                : [];
+        }
+        return this.installedApps;
     }
 
     /** Validated connection data of the setup assistant - it ends up in a URL */
