@@ -1,136 +1,485 @@
 {
     "i18n": true,
-    "type": "panel",
+    "type": "tabs",
     "items": {
-        "_connection": {
-            "type": "header",
-            "text": "Connection",
-            "size": 5,
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 12,
-            "lg": 12,
-            "xl": 12
+        "_settings": {
+            "type": "panel",
+            "label": "Settings",
+            "items": {
+                "_connection": {
+                    "type": "header",
+                    "text": "Connection",
+                    "size": 5,
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12
+                },
+                "protocol": {
+                    "type": "select",
+                    "label": "Protocol",
+                    "noTranslation": true,
+                    "options": [
+                        { "value": "wss", "label": "wss" },
+                        { "value": "http", "label": "http" }
+                    ],
+                    "help": "Use wss for newer TVs",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 2,
+                    "xl": 2
+                },
+                "ipAddress": {
+                    "type": "autocompleteSendTo",
+                    "label": "IP address",
+                    "command": "discover",
+                    "freeSolo": true,
+                    "help": "Opening the list searches the network for TVs that are switched on",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 3,
+                    "xl": 3
+                },
+                "port": {
+                    "type": "select",
+                    "label": "Port",
+                    "options": [
+                        { "label": "8001 = unencrypted", "value": "8001" },
+                        { "label": "8002 = encrypted", "value": "8002" }
+                    ],
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 2,
+                    "xl": 2
+                },
+                "token": {
+                    "type": "text",
+                    "label": "Token",
+                    "help": "0 = deactivated. The token can be requested with the state config.getToken",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4
+                },
+                "macAddress": {
+                    "type": "text",
+                    "label": "MAC address",
+                    "help": "Used to switch the TV on via Wake-on-LAN. 0 = deactivated",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4
+                },
+                "_readDeviceInfo": {
+                    "type": "sendTo",
+                    "label": "Read MAC address from TV",
+                    "command": "readDeviceInfo",
+                    "jsonData": "{\"ip\": \"${data.ipAddress}\"}",
+                    "useNative": true,
+                    "showProcess": true,
+                    "variant": "outlined",
+                    "help": "The TV must be switched on",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 3,
+                    "xl": 3
+                },
+                "_polling": {
+                    "type": "header",
+                    "text": "Power state polling",
+                    "size": 5,
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12
+                },
+                "pollingPort": {
+                    "type": "number",
+                    "label": "Polling port",
+                    "help": "Port that is checked to detect whether the TV is switched on",
+                    "newLine": true,
+                    "max": 65535,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 3,
+                    "xl": 3
+                },
+                "pollingInterval": {
+                    "type": "number",
+                    "label": "Polling interval",
+                    "unit": "seconds",
+                    "help": "0 = deactivated",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 3,
+                    "xl": 3
+                },
+                "_commands": {
+                    "type": "header",
+                    "text": "Commands",
+                    "size": 5,
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12
+                },
+                "cmdDelay": {
+                    "type": "number",
+                    "label": "Command delay",
+                    "unit": "ms",
+                    "help": "Delay between two keys of a command sequence",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 3,
+                    "xl": 3
+                }
+            }
         },
-        "protocol": {
-            "type": "select",
-            "label": "Protocol",
-            "noTranslation": true,
-            "options": [
-                { "value": "wss", "label": "wss" },
-                { "value": "http", "label": "http" }
-            ],
-            "help": "Use wss for newer TVs",
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 4,
-            "lg": 2,
-            "xl": 2
-        },
-        "ipAddress": {
-            "type": "text",
-            "label": "IP address",
-            "xs": 12,
-            "sm": 12,
-            "md": 4,
-            "lg": 3,
-            "xl": 3
-        },
-        "port": {
-            "type": "select",
-            "label": "Port",
-            "options": [
-                { "label": "8001 = unencrypted", "value": "8001" },
-                { "label": "8002 = encrypted", "value": "8002" }
-            ],
-            "xs": 12,
-            "sm": 12,
-            "md": 4,
-            "lg": 2,
-            "xl": 2
-        },
-        "token": {
-            "type": "text",
-            "label": "Token",
-            "help": "0 = deactivated. The token can be requested with the state config.getToken",
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 6,
-            "lg": 4,
-            "xl": 4
-        },
-        "macAddress": {
-            "type": "text",
-            "label": "MAC address",
-            "help": "Used to switch the TV on via Wake-on-LAN. 0 = deactivated",
-            "xs": 12,
-            "sm": 12,
-            "md": 6,
-            "lg": 4,
-            "xl": 4
-        },
-
-        "_polling": {
-            "type": "header",
-            "text": "Power state polling",
-            "size": 5,
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 12,
-            "lg": 12,
-            "xl": 12
-        },
-
-        "pollingPort": {
-            "type": "number",
-            "label": "Polling port",
-            "help": "Port that is checked to detect whether the TV is switched on",
-            "newLine": true,
-            "max": 65535,
-            "xs": 12,
-            "sm": 12,
-            "md": 6,
-            "lg": 3,
-            "xl": 3
-        },
-        "pollingInterval": {
-            "type": "number",
-            "label": "Polling interval",
-            "unit": "seconds",
-            "help": "0 = deactivated",
-            "xs": 12,
-            "sm": 12,
-            "md": 6,
-            "lg": 3,
-            "xl": 3
-        },
-
-        "_commands": {
-            "type": "header",
-            "text": "Commands",
-            "size": 5,
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 12,
-            "lg": 12,
-            "xl": 12
-        },
-        "cmdDelay": {
-            "type": "number",
-            "label": "Command delay",
-            "unit": "ms",
-            "help": "Delay between two keys of a command sequence",
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 6,
-            "lg": 3,
-            "xl": 3
+        "_remote": {
+            "type": "panel",
+            "label": "Remote control",
+            "items": {
+                "_remoteInfo": {
+                    "type": "staticText",
+                    "text": "The buttons control the TV through the running instance with the saved configuration",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12
+                },
+                "_hPower": {
+                    "type": "header",
+                    "text": "Power",
+                    "size": 5,
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12
+                },
+                "_power": {
+                    "type": "sendTo",
+                    "label": "Power",
+                    "command": "remote",
+                    "jsonData": "{\"key\":\"KEY_POWER\"}",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1,
+                    "newLine": true
+                },
+                "_wake": {
+                    "type": "sendTo",
+                    "label": "Wake-on-LAN",
+                    "command": "wake",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1
+                },
+                "_source": {
+                    "type": "sendTo",
+                    "label": "Source",
+                    "command": "remote",
+                    "jsonData": "{\"key\":\"KEY_SOURCE\"}",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1
+                },
+                "_hNavigation": {
+                    "type": "header",
+                    "text": "Navigation",
+                    "size": 5,
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12
+                },
+                "_sp1": {
+                    "type": "staticText",
+                    "text": "",
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1,
+                    "newLine": true
+                },
+                "_up": {
+                    "type": "sendTo",
+                    "label": "▲",
+                    "command": "remote",
+                    "jsonData": "{\"key\":\"KEY_UP\"}",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1,
+                    "noTranslation": true
+                },
+                "_sp2": {
+                    "type": "staticText",
+                    "text": "",
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1
+                },
+                "_left": {
+                    "type": "sendTo",
+                    "label": "◀",
+                    "command": "remote",
+                    "jsonData": "{\"key\":\"KEY_LEFT\"}",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1,
+                    "noTranslation": true,
+                    "newLine": true
+                },
+                "_enter": {
+                    "type": "sendTo",
+                    "label": "OK",
+                    "command": "remote",
+                    "jsonData": "{\"key\":\"KEY_ENTER\"}",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1,
+                    "noTranslation": true
+                },
+                "_right": {
+                    "type": "sendTo",
+                    "label": "▶",
+                    "command": "remote",
+                    "jsonData": "{\"key\":\"KEY_RIGHT\"}",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1,
+                    "noTranslation": true
+                },
+                "_sp3": {
+                    "type": "staticText",
+                    "text": "",
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1,
+                    "newLine": true
+                },
+                "_down": {
+                    "type": "sendTo",
+                    "label": "▼",
+                    "command": "remote",
+                    "jsonData": "{\"key\":\"KEY_DOWN\"}",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1,
+                    "noTranslation": true
+                },
+                "_sp4": {
+                    "type": "staticText",
+                    "text": "",
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1
+                },
+                "_back": {
+                    "type": "sendTo",
+                    "label": "Back",
+                    "command": "remote",
+                    "jsonData": "{\"key\":\"KEY_RETURN\"}",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1,
+                    "newLine": true
+                },
+                "_home": {
+                    "type": "sendTo",
+                    "label": "Home",
+                    "command": "remote",
+                    "jsonData": "{\"key\":\"KEY_HOME\"}",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1
+                },
+                "_menu": {
+                    "type": "sendTo",
+                    "label": "Menu",
+                    "command": "remote",
+                    "jsonData": "{\"key\":\"KEY_MENU\"}",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1
+                },
+                "_hVolume": {
+                    "type": "header",
+                    "text": "Volume",
+                    "size": 5,
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12
+                },
+                "_volDown": {
+                    "type": "sendTo",
+                    "label": "Volume -",
+                    "command": "remote",
+                    "jsonData": "{\"key\":\"KEY_VOLDOWN\"}",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1,
+                    "newLine": true
+                },
+                "_mute": {
+                    "type": "sendTo",
+                    "label": "Mute",
+                    "command": "remote",
+                    "jsonData": "{\"key\":\"KEY_MUTE\"}",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1
+                },
+                "_volUp": {
+                    "type": "sendTo",
+                    "label": "Volume +",
+                    "command": "remote",
+                    "jsonData": "{\"key\":\"KEY_VOLUP\"}",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1
+                },
+                "_hPlayback": {
+                    "type": "header",
+                    "text": "Playback",
+                    "size": 5,
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12
+                },
+                "_play": {
+                    "type": "sendTo",
+                    "label": "Play",
+                    "command": "remote",
+                    "jsonData": "{\"key\":\"KEY_PLAY\"}",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1,
+                    "newLine": true
+                },
+                "_pause": {
+                    "type": "sendTo",
+                    "label": "Pause",
+                    "command": "remote",
+                    "jsonData": "{\"key\":\"KEY_PAUSE\"}",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1
+                },
+                "_stop": {
+                    "type": "sendTo",
+                    "label": "Stop",
+                    "command": "remote",
+                    "jsonData": "{\"key\":\"KEY_STOP\"}",
+                    "variant": "outlined",
+                    "showProcess": true,
+                    "xs": 4,
+                    "sm": 4,
+                    "md": 2,
+                    "lg": 2,
+                    "xl": 1
+                }
+            }
         }
     }
 }

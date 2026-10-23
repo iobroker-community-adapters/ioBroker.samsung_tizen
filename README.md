@@ -18,6 +18,8 @@ Possible values are `http` or `wss`. On newer devices use `wss`.
 ### 1.2. IP Address
 The IP address of your Samsung TV.
 
+Opening the list of the field searches the network for Samsung TVs that are switched on and offers their addresses. The adapter instance must be running for that. A TV in deep standby or in another subnet cannot be found - enter its address by hand then.
+
 ### 1.3. Port
 Port for the websocket connection to your TV:
 - 8001 - insecure port
@@ -72,6 +74,8 @@ Take the token from the returned JSON response:
 ### 1.5. MAC Address
 The MAC address of your Samsung TV is used for Wake-on-LAN.
 
+The button "Read MAC address from TV" asks the TV at the entered IP address for it. The TV must be switched on.
+
 This only works if your TV is connected by cable and not wirelessly.
 
 If your TV is connected wirelessly, it can only be powered on from short standby.
@@ -98,6 +102,9 @@ Can be deactivated with the value "0".
 Delay in milliseconds between the commands sent via the `samsung_tizen.0.control.sendCmd` object.
 
 ## 2. Usage
+
+### 2.0. Remote control tab
+The tab "Remote control" of the settings sends keys to the TV right away - power, Wake-on-LAN, source, the arrow keys, OK, back, home, menu, volume and playback. It goes through the running instance with the saved configuration, so save first after changing the IP address or the token. A key that does not reach the TV shows the error at the button.
 
 ### 2.1. Control
 
@@ -165,6 +172,11 @@ The first generation of this adapter was developed by Stefan0875 (https://github
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+- (GermanBluefox) Added: the IP address field lists the TVs found in the network (SSDP, confirmed by the REST API of the TV)
+- (GermanBluefox) Added: button to read the MAC address for Wake-on-LAN from the TV
+- (GermanBluefox) Added: tab "Remote control" in the settings to test the connection right away (power, Wake-on-LAN, navigation, volume, playback)
+
 ### 2.0.2 (2026-09-04)
 - (mcm1957) **BREAKING:** enhanced security (added encryption) requires that you enter the access token one more time 
 - (copilot) Adapter requires node.js >= 22 now

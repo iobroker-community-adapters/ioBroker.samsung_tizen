@@ -11,6 +11,7 @@ import { Adapter, type AdapterOptions } from '@iobroker/adapter-core';
 import WebSocket from 'ws';
 import { wake } from 'wake_on_lan';
 
+import { discoverTvs, readDeviceInfo } from './lib/discover';
 import { keys } from './lib/remotekeys';
 import type { TvEventMessage } from './lib/types';
 
@@ -22,6 +23,10 @@ const REMOTE_PATH = '/api/v2/channels/samsung.remote.control';
 const MAX_RETRIES = 5;
 /** Delay between two retries in ms */
 const RETRY_DELAY = 2_000;
+/** How long a key of the remote control tab may take before the button reports an error, in ms */
+const REMOTE_TIMEOUT = 5_000;
+/** Remote keys are sent as given, so only accept what looks like one */
+const KEY_PATTERN = /^KEY_[A-Z0-9_]+$/;
 
 /** Callback style used throughout this adapter: `null` means success */
 type DoneCallback = (error: Error | null) => void;
@@ -58,7 +63,114 @@ class SamsungTizen extends Adapter {
 
         this.on('ready', () => this.onReady());
         this.on('stateChange', (id, state) => this.onStateChange(id, state));
+        this.on('message', obj => void this.onMessage(obj));
         this.on('unload', callback => this.onUnload(callback));
+    }
+
+    /**
+     * Messages of the configuration dialog:
+     * - `discover`: list of the TVs found in the network, for the `autocompleteSendTo` of the IP address
+     * - `readDeviceInfo`: MAC address of the TV at `ip`, written into the form via `useNative`
+     * - `remote`: send the key `key` - the buttons of the remote control tab
+     * - `wake`: Wake-on-LAN to the configured MAC address
+     */
+    private async onMessage(obj: ioBroker.Message): Promise<void> {
+        if (!obj?.callback) {
+            return;
+        }
+        const message = (obj.message ?? {}) as { ip?: string; key?: string };
+        let response: unknown;
+
+        try {
+            switch (obj.command) {
+                case 'discover': {
+                    const tvs = await discoverTvs();
+                    response = tvs.map(tv => ({
+                        label: `${tv.name || tv.model} (${tv.model}) - ${tv.ip}`,
+                        value: tv.ip,
+                    }));
+                    break;
+                }
+                case 'readDeviceInfo': {
+                    const ip = (message.ip ?? '').trim();
+                    const tv = ip ? await readDeviceInfo(ip) : null;
+                    if (!tv) {
+                        response = { error: 'No Samsung TV answers at this address. Is the TV switched on?' };
+                    } else if (!tv.mac) {
+                        response = { error: 'The TV does not report its MAC address' };
+                    } else {
+                        response = { native: { macAddress: tv.mac } };
+                    }
+                    break;
+                }
+                case 'remote': {
+                    const key = String(message.key ?? '');
+                    if (!KEY_PATTERN.test(key)) {
+                        response = { error: `Unknown key ${key}` };
+                        break;
+                    }
+                    await this.sendKeyNow(key);
+                    // no `result`: admin would show it in an alert after every key
+                    response = {};
+                    break;
+                }
+                case 'wake':
+                    if (!this.config.macAddress || this.config.macAddress === '0') {
+                        response = { error: 'No MAC address configured' };
+                        break;
+                    }
+                    // throws synchronously on a malformed MAC address
+                    wake(this.config.macAddress);
+                    response = {};
+                    break;
+                default:
+                    response = { error: `Unknown command ${obj.command}` };
+            }
+        } catch (e) {
+            response = { error: (e as Error).message };
+        }
+
+        this.sendTo(obj.from, obj.command, response, obj.callback);
+    }
+
+    /** Send one key and resolve once it is written to the websocket - for the remote control tab */
+    private sendKeyNow(key: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const pending: { settled: boolean; timer?: ioBroker.Timeout } = { settled: false };
+            const finish = (err: Error | null): void => {
+                if (pending.settled) {
+                    return;
+                }
+                pending.settled = true;
+                if (pending.timer) {
+                    this.clearTimeout(pending.timer);
+                }
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            };
+            pending.timer = this.setTimeout(
+                () => finish(new Error('The TV does not answer. Is it switched on and the token accepted?')),
+                REMOTE_TIMEOUT,
+            );
+
+            this.wsConnect(err => {
+                if (err || !this.ws) {
+                    finish(err ?? new Error('No connection to the TV'));
+                    return;
+                }
+                this.ws.send(
+                    JSON.stringify({
+                        method: 'ms.remote.control',
+                        params: { Cmd: 'Click', DataOfCmd: key, Option: 'false', TypeOfRemote: 'SendRemoteKey' },
+                    }),
+                    sendErr => finish(sendErr ?? null),
+                );
+                this.log.debug(`remote control tab: ${key} sent to tv`);
+            });
+        });
     }
 
     private async onReady(): Promise<void> {
