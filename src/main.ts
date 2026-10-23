@@ -12,6 +12,7 @@ import WebSocket from 'ws';
 import { wake } from 'wake_on_lan';
 
 import { discoverTvs, readDeviceInfo } from './lib/discover';
+import { type ConnectionParams, PairingError, pair, sendTestKey } from './lib/pairing';
 import { keys } from './lib/remotekeys';
 import type { TvEventMessage } from './lib/types';
 
@@ -27,6 +28,8 @@ const RETRY_DELAY = 2_000;
 const REMOTE_TIMEOUT = 5_000;
 /** Remote keys are sent as given, so only accept what looks like one */
 const KEY_PATTERN = /^KEY_[A-Z0-9_]+$/;
+/** An IP address or a host name from the setup assistant - it ends up in a URL */
+const HOST_PATTERN = /^[A-Za-z0-9][A-Za-z0-9.-]{0,252}$/;
 
 /** Callback style used throughout this adapter: `null` means success */
 type DoneCallback = (error: Error | null) => void;
@@ -73,17 +76,67 @@ class SamsungTizen extends Adapter {
      * - `searchTv`: IP address, MAC address, protocol and port of the first TV found, written into the form via `useNative`
      * - `readDeviceInfo`: MAC address of the TV at `ip`, written into the form via `useNative`
      * - `remote`: send the key `key` - the buttons of the remote control tab
-     * - `wake`: Wake-on-LAN to the configured MAC address
+     * - `wake`: Wake-on-LAN to `mac` or, without it, to the configured MAC address
+     *
+     * The setup assistant works with the data being entered, not with the saved configuration:
+     * - `listTvs`: all TVs found, with name, model, MAC address and power state
+     * - `deviceInfo`: the same for the TV at `ip`
+     * - `pair`: connect to `ip` without a token, so the TV asks the user, and answer with the token
+     * - `testKey`: send `key` (default `KEY_INFO`) with `ip`, `protocol`, `port` and `token`
      */
     private async onMessage(obj: ioBroker.Message): Promise<void> {
         if (!obj?.callback) {
             return;
         }
-        const message = (obj.message ?? {}) as { ip?: string; key?: string };
+        const message = (obj.message ?? {}) as {
+            ip?: string;
+            key?: string;
+            mac?: string;
+            protocol?: string;
+            port?: string | number;
+            token?: string;
+        };
         let response: unknown;
 
         try {
             switch (obj.command) {
+                case 'listTvs':
+                    response = { tvs: await discoverTvs() };
+                    break;
+                case 'deviceInfo': {
+                    const ip = (message.ip ?? '').trim();
+                    const device = HOST_PATTERN.test(ip) ? await readDeviceInfo(ip) : null;
+                    response = device
+                        ? { device }
+                        : {
+                              error: 'No Samsung TV answers at this address. Is the TV switched on?',
+                              code: 'unreachable',
+                          };
+                    break;
+                }
+                case 'pair':
+                case 'testKey': {
+                    const params = this.connectionParams(message);
+                    if (!params) {
+                        response = { error: 'Invalid connection data', code: 'protocol' };
+                        break;
+                    }
+                    if (obj.command === 'pair') {
+                        this.log.info(`Pairing with the TV at ${params.ip} - please allow the connection on the TV`);
+                        const token = await pair(params);
+                        this.log.info('Pairing done, the token is handed to the settings');
+                        response = { token };
+                    } else {
+                        const key = message.key ?? 'KEY_INFO';
+                        if (!KEY_PATTERN.test(key)) {
+                            response = { error: `Unknown key ${key}`, code: 'protocol' };
+                            break;
+                        }
+                        await sendTestKey(params, key);
+                        response = {};
+                    }
+                    break;
+                }
                 case 'discover': {
                     const tvs = await discoverTvs();
                     response = tvs.map(tv => ({
@@ -134,23 +187,44 @@ class SamsungTizen extends Adapter {
                     response = {};
                     break;
                 }
-                case 'wake':
-                    if (!this.config.macAddress || this.config.macAddress === '0') {
+                case 'wake': {
+                    const mac = message.mac ?? this.config.macAddress;
+                    if (!mac || mac === '0') {
                         response = { error: 'No MAC address configured' };
                         break;
                     }
                     // throws synchronously on a malformed MAC address
-                    wake(this.config.macAddress);
+                    wake(mac);
                     response = {};
                     break;
+                }
                 default:
                     response = { error: `Unknown command ${obj.command}` };
             }
         } catch (e) {
-            response = { error: (e as Error).message };
+            response =
+                e instanceof PairingError
+                    ? { error: e.message, code: e.code }
+                    : { error: (e as Error).message, code: 'protocol' };
         }
 
         this.sendTo(obj.from, obj.command, response, obj.callback);
+    }
+
+    /** Validated connection data of the setup assistant - it ends up in a URL */
+    private connectionParams(message: {
+        ip?: string;
+        protocol?: string;
+        port?: string | number;
+        token?: string;
+    }): ConnectionParams | null {
+        const ip = (message.ip ?? '').trim();
+        const protocol = message.protocol === 'http' ? 'http' : 'wss';
+        const port = Number(message.port ?? (protocol === 'wss' ? 8002 : 8001));
+        if (!HOST_PATTERN.test(ip) || !Number.isInteger(port) || port < 1 || port > 65535) {
+            return null;
+        }
+        return { ip, protocol, port, name: REMOTE_NAME, token: message.token };
     }
 
     /** Send one key and resolve once it is written to the websocket - for the remote control tab */

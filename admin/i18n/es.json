@@ -26,6 +26,7 @@
     "Search TV": "Buscar televisor",
     "Searches the network and fills in the IP address, MAC address, protocol and port of a TV that is switched on": "Busca en la red y rellena la dirección IP, la dirección MAC, el protocolo y el puerto de un televisor encendido",
     "Settings": "Ajustes",
+    "Setup": "Configuración",
     "The TV does not answer. Is it switched on and the token accepted?": "El televisor no responde. ¿Está encendido y el token aceptado?",
     "The TV does not report its MAC address": "El televisor no informa su dirección MAC",
     "The TV must be switched on": "El televisor debe estar encendido",

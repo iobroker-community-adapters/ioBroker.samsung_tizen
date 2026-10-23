@@ -1,3 +1,4 @@
 import RemoteControlComponent from './RemoteControlComponent';
+import SetupWizardComponent from './SetupWizardComponent';
 
-export default { RemoteControlComponent };
+export default { RemoteControlComponent, SetupWizardComponent };

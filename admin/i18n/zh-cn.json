@@ -26,6 +26,7 @@
     "Search TV": "搜索电视",
     "Searches the network and fills in the IP address, MAC address, protocol and port of a TV that is switched on": "搜索网络并填入已开启电视的 IP 地址、MAC 地址、协议和端口",
     "Settings": "设置",
+    "Setup": "设置向导",
     "The TV does not answer. Is it switched on and the token accepted?": "电视无响应。是否已开启并接受了令牌？",
     "The TV does not report its MAC address": "电视未报告其 MAC 地址",
     "The TV must be switched on": "电视必须处于开启状态",

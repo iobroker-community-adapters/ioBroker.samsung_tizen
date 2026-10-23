@@ -26,6 +26,7 @@
     "Search TV": "Rechercher le téléviseur",
     "Searches the network and fills in the IP address, MAC address, protocol and port of a TV that is switched on": "Recherche sur le réseau et renseigne l'adresse IP, l'adresse MAC, le protocole et le port d'un téléviseur allumé",
     "Settings": "Paramètres",
+    "Setup": "Configuration",
     "The TV does not answer. Is it switched on and the token accepted?": "Le téléviseur ne répond pas. Est-il allumé et le jeton accepté ?",
     "The TV does not report its MAC address": "Le téléviseur n'indique pas son adresse MAC",
     "The TV must be switched on": "Le téléviseur doit être allumé",
