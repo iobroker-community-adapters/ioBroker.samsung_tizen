@@ -36,6 +36,7 @@
     "@alcalzone/release-script-plugin-license": "^5.2.2",
     "@alcalzone/release-script-plugin-manual-review": "^5.2.0",
     "@iobroker/adapter-dev": "^1.5.0",
+    "@iobroker/build-tools": "^3.0.3",
     "@iobroker/eslint-config": "^2.3.4",
     "@iobroker/testing": "^6.2.2",
     "@iobroker/types": "^7.2.5",
@@ -53,18 +54,21 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "build:admin": "node tasks",
     "watch": "tsc -p tsconfig.build.json --watch",
     "check": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint -c eslint.config.mjs",
     "test:package": "mocha test/packageFiles --exit",
+    "test:unit": "mocha test/unitScenes --exit",
     "test:integration": "mocha test/integrationAdapter --exit",
-    "test": "npm run test:package",
+    "test": "npm run test:package && npm run test:unit",
     "translate": "translate-adapter -b admin/i18n/en.json",
     "release": "release-script -y",
     "release-patch": "release-script patch --yes",
     "release-minor": "release-script minor --yes",
     "release-major": "release-script major --yes",
-    "update-packages": "npx -y npm-check-updates --upgrade"
+    "update-packages": "npx -y npm-check-updates --upgrade",
+    "npm": "npm i && cd src-admin && npm i -f"
   },
   "bugs": {
     "url": "https://github.com/iobroker-community-adapters/ioBroker.samsung_tizen/issues"
