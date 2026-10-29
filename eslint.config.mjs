@@ -19,9 +19,8 @@ export default [
             '.vscode/',
             'admin/**/*',
             'build/**/*',
-            'src-admin/build/**/*',
-            'src-admin/node_modules/**/*',
-            'src-admin/vite.config.ts',
+            // src-admin has its own dependencies (not installed in CI), check it with: cd src-admin && npx tsc
+            'src-admin/**/*',
             'node_modules/**/*',
             'test/**/*',
             'tmp/**/*',
