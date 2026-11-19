@@ -120,6 +120,9 @@ The tab "Remote control" of the settings shows a remote control: power, Wake-on-
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+- (GermanBluefox) The pairing token is no longer written to the log (startup config, websocket URL, getToken)
+
 ### 2.2.0 (2026-11-19)
 * (GermanBluefox) Fixed the README structure (changelog section) (#321)
 * (GermanBluefox) Added the message "help": a description of all messages and states for AI agents (e.g. pi-agent), and `common.supportedMessages.help`
