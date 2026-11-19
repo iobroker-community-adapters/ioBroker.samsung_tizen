@@ -7,7 +7,7 @@ export default [
     {
         languageOptions: {
             parserOptions: {
-                projectService: { allowDefaultProject: ['*.mjs'] },
+                projectService: { allowDefaultProject: ['*.js', '*.mjs'] },
                 tsconfigRootDir: import.meta.dirname,
             },
         },
@@ -19,6 +19,8 @@ export default [
             '.vscode/',
             'admin/**/*',
             'build/**/*',
+            // src-admin has its own dependencies (not installed in CI), check it with: cd src-admin && npx tsc
+            'src-admin/**/*',
             'node_modules/**/*',
             'test/**/*',
             'tmp/**/*',

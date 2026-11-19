@@ -1,136 +1,264 @@
 {
     "i18n": true,
-    "type": "panel",
+    "type": "tabs",
     "items": {
-        "_connection": {
-            "type": "header",
-            "text": "Connection",
-            "size": 5,
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 12,
-            "lg": 12,
-            "xl": 12
+        "_setup": {
+            "type": "panel",
+            "label": "Setup",
+            "items": {
+                "_setupWizard": {
+                    "type": "custom",
+                    "url": "custom/customComponents.js",
+                    "name": "ConfigCustomSamsungTizenSet/Components/SetupWizardComponent",
+                    "i18n": true,
+                    "guiApi": 2,
+                    "bundlerType": "module",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12
+                }
+            }
         },
-        "protocol": {
-            "type": "select",
-            "label": "Protocol",
-            "noTranslation": true,
-            "options": [
-                { "value": "wss", "label": "wss" },
-                { "value": "http", "label": "http" }
-            ],
-            "help": "Use wss for newer TVs",
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 4,
-            "lg": 2,
-            "xl": 2
+        "_settings": {
+            "type": "panel",
+            "label": "Settings",
+            "items": {
+                "_connection": {
+                    "type": "header",
+                    "text": "Connection",
+                    "size": 5,
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12
+                },
+                "_searchTv": {
+                    "type": "sendTo",
+                    "label": "Search TV",
+                    "command": "searchTv",
+                    "useNative": true,
+                    "showProcess": true,
+                    "variant": "contained",
+                    "color": "primary",
+                    "icon": "search",
+                    "help": "Searches the network and fills in the IP address, MAC address, protocol and port of a TV that is switched on",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 3
+                },
+                "protocol": {
+                    "type": "select",
+                    "label": "Protocol",
+                    "noTranslation": true,
+                    "options": [
+                        { "value": "wss", "label": "wss" },
+                        { "value": "http", "label": "http" }
+                    ],
+                    "help": "Use wss for newer TVs",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 2,
+                    "xl": 2
+                },
+                "ipAddress": {
+                    "type": "autocompleteSendTo",
+                    "label": "IP address",
+                    "command": "discover",
+                    "freeSolo": true,
+                    "help": "The list offers the TVs found in the network when the settings were opened",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 3,
+                    "xl": 3
+                },
+                "port": {
+                    "type": "select",
+                    "label": "Port",
+                    "options": [
+                        { "label": "8001 = unencrypted", "value": "8001" },
+                        { "label": "8002 = encrypted", "value": "8002" }
+                    ],
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 2,
+                    "xl": 2
+                },
+                "token": {
+                    "type": "text",
+                    "label": "Token",
+                    "help": "0 = deactivated. The token can be requested with the state config.getToken",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4
+                },
+                "macAddress": {
+                    "type": "text",
+                    "label": "MAC address",
+                    "help": "Used to switch the TV on via Wake-on-LAN. 0 = deactivated",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4
+                },
+                "_readDeviceInfo": {
+                    "type": "sendTo",
+                    "label": "Read MAC address from TV",
+                    "command": "readDeviceInfo",
+                    "jsonData": "{\"ip\": \"${data.ipAddress}\"}",
+                    "useNative": true,
+                    "showProcess": true,
+                    "variant": "outlined",
+                    "help": "The TV must be switched on",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 3,
+                    "xl": 3
+                },
+                "_polling": {
+                    "type": "header",
+                    "text": "Power state polling",
+                    "size": 5,
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12
+                },
+                "pollingPort": {
+                    "type": "number",
+                    "label": "Polling port",
+                    "help": "Port that is checked to detect whether the TV is switched on",
+                    "newLine": true,
+                    "max": 65535,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 3,
+                    "xl": 3
+                },
+                "pollingInterval": {
+                    "type": "number",
+                    "label": "Polling interval",
+                    "unit": "seconds",
+                    "help": "0 = deactivated",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 3,
+                    "xl": 3
+                },
+                "_commands": {
+                    "type": "header",
+                    "text": "Commands",
+                    "size": 5,
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12
+                },
+                "cmdDelay": {
+                    "type": "number",
+                    "label": "Command delay",
+                    "unit": "ms",
+                    "help": "Delay between two keys of a command sequence",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 3,
+                    "xl": 3
+                }
+            }
         },
-        "ipAddress": {
-            "type": "text",
-            "label": "IP address",
-            "xs": 12,
-            "sm": 12,
-            "md": 4,
-            "lg": 3,
-            "xl": 3
+        "_scenes": {
+            "type": "panel",
+            "label": "Scenes",
+            "items": {
+                "_scenesHelp": {
+                    "type": "staticText",
+                    "text": "Steps separated by commas: keys (HOME, OK, BACK, UP, DOWN, LEFT, RIGHT, MENU, SOURCE, VOLUP, VOLDOWN, MUTE, 0-9 or KEY_...), apps (YOUTUBE, NETFLIX, DISNEY_PLUS, PRIME_VIDEO, APPLE_TV, JOYN, RTL_PLUS, ARD_MEDIATHEK, ZDF_MEDIATHEK, SPOTIFY, BROWSER, ...) and pauses (WAIT 2000). Example: HOME, YOUTUBE, WAIT 3000, OK. Every scene becomes a button scenes.<name> and a key of the remote control.",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12
+                },
+                "scenes": {
+                    "type": "table",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12,
+                    "items": [
+                        {
+                            "type": "text",
+                            "attr": "name",
+                            "title": "Name",
+                            "width": "25%",
+                            "filter": false,
+                            "sort": false
+                        },
+                        {
+                            "type": "text",
+                            "attr": "steps",
+                            "title": "Steps",
+                            "width": "60%"
+                        },
+                        {
+                            "type": "number",
+                            "attr": "delay",
+                            "title": "Delay between steps (ms)",
+                            "width": "15%",
+                            "min": 0,
+                            "max": 10000,
+                            "default": 500
+                        }
+                    ]
+                }
+            }
         },
-        "port": {
-            "type": "select",
-            "label": "Port",
-            "options": [
-                { "label": "8001 = unencrypted", "value": "8001" },
-                { "label": "8002 = encrypted", "value": "8002" }
-            ],
-            "xs": 12,
-            "sm": 12,
-            "md": 4,
-            "lg": 2,
-            "xl": 2
-        },
-        "token": {
-            "type": "text",
-            "label": "Token",
-            "help": "0 = deactivated. The token can be requested with the state config.getToken",
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 6,
-            "lg": 4,
-            "xl": 4
-        },
-        "macAddress": {
-            "type": "text",
-            "label": "MAC address",
-            "help": "Used to switch the TV on via Wake-on-LAN. 0 = deactivated",
-            "xs": 12,
-            "sm": 12,
-            "md": 6,
-            "lg": 4,
-            "xl": 4
-        },
-
-        "_polling": {
-            "type": "header",
-            "text": "Power state polling",
-            "size": 5,
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 12,
-            "lg": 12,
-            "xl": 12
-        },
-
-        "pollingPort": {
-            "type": "number",
-            "label": "Polling port",
-            "help": "Port that is checked to detect whether the TV is switched on",
-            "newLine": true,
-            "max": 65535,
-            "xs": 12,
-            "sm": 12,
-            "md": 6,
-            "lg": 3,
-            "xl": 3
-        },
-        "pollingInterval": {
-            "type": "number",
-            "label": "Polling interval",
-            "unit": "seconds",
-            "help": "0 = deactivated",
-            "xs": 12,
-            "sm": 12,
-            "md": 6,
-            "lg": 3,
-            "xl": 3
-        },
-
-        "_commands": {
-            "type": "header",
-            "text": "Commands",
-            "size": 5,
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 12,
-            "lg": 12,
-            "xl": 12
-        },
-        "cmdDelay": {
-            "type": "number",
-            "label": "Command delay",
-            "unit": "ms",
-            "help": "Delay between two keys of a command sequence",
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 6,
-            "lg": 3,
-            "xl": 3
+        "_remote": {
+            "type": "panel",
+            "label": "Remote control",
+            "items": {
+                "_remoteControl": {
+                    "type": "custom",
+                    "url": "custom/customComponents.js",
+                    "name": "ConfigCustomSamsungTizenSet/Components/RemoteControlComponent",
+                    "i18n": true,
+                    "guiApi": 2,
+                    "bundlerType": "module",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12
+                }
+            }
         }
     }
 }
