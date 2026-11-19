@@ -1,7 +1,4 @@
 # Older changes
-## 1.0.0 (2023-09-30)
-- (mcm1957) An official release has been created
-
 ## 1.0.0-alpha.2 (2023-09-24)
 - (mcm1957) Dependencies have been updated
 

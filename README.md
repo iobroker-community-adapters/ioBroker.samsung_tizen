@@ -120,7 +120,7 @@ The tab "Remote control" of the settings shows a remote control: power, Wake-on-
 	Placeholder for the next version (at the beginning of the line):
 	### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 2.2.0 (2026-11-19)
 * (GermanBluefox) Fixed the README structure (changelog section) (#321)
 * (GermanBluefox) Added the message "help": a description of all messages and states for AI agents (e.g. pi-agent), and `common.supportedMessages.help`
 
@@ -148,6 +148,9 @@ The tab "Remote control" of the settings shows a remote control: power, Wake-on-
 ### 1.1.0 (2024-04-26)
 * (mcm1957) Adapter requires node.js >= 18 and js-controller >= 5 now
 * (mcm1957) Dependencies have been updated
+
+### 1.0.0 (2023-09-30)
+- (mcm1957) An official release has been created
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 
