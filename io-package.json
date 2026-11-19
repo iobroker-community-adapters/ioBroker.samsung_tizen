@@ -108,6 +108,10 @@
     "tier": 2,
     "mode": "daemon",
     "messagebox": true,
+    "supportedMessages": {
+      "custom": true,
+      "help": true
+    },
     "nogit": true,
     "type": "multimedia",
     "compact": false,

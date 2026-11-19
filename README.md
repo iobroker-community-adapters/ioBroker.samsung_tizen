@@ -112,6 +112,9 @@ The tab "Scenes" holds a table of named sequences, e.g. `SceneYouTube`: `HOME, Y
 ### 2.3. Remote control tab
 The tab "Remote control" of the settings shows a remote control: power, Wake-on-LAN, source, menu, info, the arrow keys with OK, back, home, mute, volume and channel rockers, the playback keys and a button for every known app installed on the TV (YouTube, Netflix, Disney+, Prime Video, ...). Click it and the arrow keys, Enter, Backspace, + and - of the keyboard work as well. A LED shows the power state if the power state polling is on. The keys go through the running instance with the saved configuration, so save first after changing the IP address or the token. A key that does not reach the TV shows the error below the remote. The tab needs admin 8 or newer.
 
+### 2.4. Messages for scripts and AI agents
+`sendTo('samsung_tizen.0', 'help', {})` answers a description of the messages and states of the adapter for AI agents (e.g. ioBroker.pi-agent) and script authors: `{ help, commands }`, where `commands` lists every message with `write` (whether it changes something). Scripts can use `apps` (the known apps installed on the TV), `launchApp` (`{ app: 'YOUTUBE' }`), `remote` (`{ key: 'KEY_HOME' }`), `wake`, `scenes` and `runScene` (`{ scene: '<id>' }`).
+
 ## Changelog
 <!--
 	Placeholder for the next version (at the beginning of the line):
@@ -119,6 +122,7 @@ The tab "Remote control" of the settings shows a remote control: power, Wake-on-
 -->
 ### **WORK IN PROGRESS**
 * (GermanBluefox) Fixed the README structure (changelog section) (#321)
+* (GermanBluefox) Added the message "help": a description of all messages and states for AI agents (e.g. pi-agent), and `common.supportedMessages.help`
 
 ### 2.1.0 (2026-10-29)
 - (GermanBluefox) Added: button "Search TV" that finds the TV in the network and fills in IP address, MAC address, protocol and port; the IP address field lists all TVs found (SSDP, confirmed by the REST API of the TV)

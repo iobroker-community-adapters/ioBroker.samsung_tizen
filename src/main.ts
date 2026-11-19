@@ -13,6 +13,7 @@ import { wake } from 'wake_on_lan';
 
 import { type InstalledTvApp, SAMSUNG_APPS, findInstalledApps, launchApp } from './lib/apps';
 import { discoverTvs, readDeviceInfo } from './lib/discover';
+import { COMMANDS, HELP } from './lib/help';
 import { parseScene, runScene, sceneId } from './lib/scenes';
 import { type ConnectionParams, PairingError, pair, sendTestKey } from './lib/pairing';
 import { keys } from './lib/remotekeys';
@@ -83,6 +84,8 @@ class SamsungTizen extends Adapter {
     }
 
     /**
+     * `help`: the description of the commands and states for AI agents (lib/help.ts).
+     *
      * Messages of the configuration dialog:
      * - `discover`: list of the TVs found in the network, for the `autocompleteSendTo` of the IP address
      * - `searchTv`: IP address, MAC address, protocol and port of the first TV found, written into the form via `useNative`
@@ -118,6 +121,10 @@ class SamsungTizen extends Adapter {
 
         try {
             switch (obj.command) {
+                case 'help':
+                    // what the commands and states do, for AI agents; it needs no TV
+                    response = { help: HELP, commands: COMMANDS };
+                    break;
                 case 'scenes':
                     response = {
                         scenes: [...this.scenes].map(([id, scene]) => ({ id, name: scene.name })),

@@ -75,3 +75,53 @@ describe('scenes', () => {
         ]);
     });
 });
+
+describe('help', () => {
+    const fs = require('node:fs');
+    const { COMMANDS, HELP } = require(path.join(__dirname, '..', 'build', 'lib', 'help.js'));
+
+    /** The commands of the switch in `onMessage` of src/main.ts */
+    function commandsOfMain() {
+        const source = fs.readFileSync(path.join(__dirname, '..', 'src', 'main.ts'), 'utf8');
+        const start = source.indexOf('private async onMessage(');
+        const end = source.indexOf('private get scenes(');
+        assert.ok(start > 0 && end > start, 'onMessage found');
+        return [...source.slice(start, end).matchAll(/case '([^']+)':/g)].map(m => m[1]);
+    }
+
+    it('lists every command onMessage answers, each once', () => {
+        const names = COMMANDS.map(c => c.command);
+        assert.strictEqual(new Set(names).size, names.length);
+        assert.deepStrictEqual([...names].sort(), commandsOfMain().sort());
+    });
+
+    it('marks the commands that act on the TV as writing', () => {
+        assert.deepStrictEqual(
+            COMMANDS.filter(c => c.write)
+                .map(c => c.command)
+                .sort(),
+            ['launchApp', 'pair', 'remote', 'runScene', 'testKey', 'wake'],
+        );
+    });
+
+    it('names every command, every known app and the states an agent needs', () => {
+        for (const word of [
+            ...COMMANDS.filter(c => c.command !== 'help').map(c => c.command),
+            ...APPS,
+            'sendTo samsung_tizen.0',
+            'powerOn',
+            'control.sendCmd',
+            'control.KEY_POWERON',
+            'How to talk to the user:',
+            'ask which TV',
+        ]) {
+            assert.ok(HELP.includes(word), word);
+        }
+    });
+
+    it('keeps the lines short', () => {
+        for (const line of HELP.split('\n')) {
+            assert.ok(line.length <= 120, line);
+        }
+    });
+});
