@@ -32,6 +32,7 @@ export const SAMSUNG_APPS: Readonly<Record<string, { name: string; ids: string[]
     ARD_MEDIATHEK: { name: 'ARD Mediathek', ids: ['3201412000679'] },
     ZDF_MEDIATHEK: { name: 'ZDF Mediathek', ids: ['3201705012365'] },
     SPOTIFY: { name: 'Spotify', ids: ['3201606009684'] },
+    AMAZON_MUSIC: { name: 'Amazon Music', ids: ['3201710014874'] },
     TWITCH: { name: 'Twitch', ids: ['3202203026841'] },
     PLEX: { name: 'Plex', ids: ['3201512006963'] },
     BROWSER: { name: 'Browser', ids: ['3202010022079', '3201907018784', 'org.tizen.browser'] },

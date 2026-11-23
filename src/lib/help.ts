@@ -35,8 +35,8 @@ TV, the one in its settings; several TVs are several instances (samsung_tizen.0,
 Commands (sendTo samsung_tizen.0, or the instance of the TV): the answer is {} when done, else {error, code?}
 (e.g. the TV is off, does not answer within 5 s, or the token is not accepted).
 - apps {refresh?}: the known apps installed on the TV: {apps: [{key, name}]}, e.g. {key: "YOUTUBE", name:
-  "YouTube"}. Known keys: YOUTUBE, NETFLIX, DISNEY_PLUS, PRIME_VIDEO, APPLE_TV, MAX, PARAMOUNT_PLUS, DAZN, JOYN,
-  RTL_PLUS, MAGENTA_TV, ARD_MEDIATHEK, ZDF_MEDIATHEK, SPOTIFY, TWITCH, PLEX, BROWSER.
+  "YouTube"}. Known keys: YOUTUBE, NETFLIX, DISNEY_PLUS, PRIME_VIDEO, APPLE_TV, MAX, PARAMOUNT_PLUS, DAZN,
+  JOYN, RTL_PLUS, MAGENTA_TV, ARD_MEDIATHEK, ZDF_MEDIATHEK, SPOTIFY, AMAZON_MUSIC, TWITCH, PLEX, BROWSER.
   The TV must be on; the list is kept, refresh true asks the TV again.
 - launchApp {app}: starts an app, app = a key from apps, e.g. "NETFLIX".
 - remote {key}: sends one key, a Samsung key code KEY_... in capitals: KEY_HOME, KEY_ENTER (ok), KEY_RETURN

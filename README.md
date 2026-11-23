@@ -121,6 +121,7 @@ The tab "Remote control" of the settings shows a remote control: power, Wake-on-
 	### **WORK IN PROGRESS**
 -->
 ### **WORK IN PROGRESS**
+- (Gaspode69) Added Amazon Music to the known Samsung TV apps
 - (GermanBluefox) The pairing token is no longer written to the log (startup config, websocket URL, getToken)
 
 ### 2.2.0 (2026-11-19)

@@ -11,6 +11,15 @@ const { SAMSUNG_APPS } = require(path.join(__dirname, '..', 'build', 'lib', 'app
 
 const APPS = Object.keys(SAMSUNG_APPS);
 
+describe('apps', () => {
+    it('contains Amazon Music with its verified Samsung app ID', () => {
+        assert.deepStrictEqual(SAMSUNG_APPS.AMAZON_MUSIC, {
+            name: 'Amazon Music',
+            ids: ['3201710014874'],
+        });
+    });
+});
+
 describe('scenes', () => {
     it('parses keys, apps and pauses', () => {
         assert.deepStrictEqual(parseScene('HOME, YOUTUBE, WAIT 3000, OK', APPS), [
