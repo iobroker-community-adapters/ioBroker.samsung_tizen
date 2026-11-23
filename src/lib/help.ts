@@ -4,18 +4,25 @@
  * and `onStateChange` in main.ts and the README.
  */
 
-/** A command of `onMessage`; `write` = it has an effect (sends to the TV) */
+/**
+ * A command of `onMessage`; `write` = it has an effect (sends to the TV); `standard` = the command of the shared
+ * catalog of commands for adapter families (ioBroker.assistant HELP.md) that it follows
+ */
 export interface HelpCommand {
     command: string;
     write: boolean;
+    standard?: string;
 }
 
 /** Every command `onMessage` answers */
 export const COMMANDS: HelpCommand[] = [
     { command: 'help', write: false },
     { command: 'apps', write: false },
-    { command: 'launchApp', write: true },
-    { command: 'remote', write: true },
+    { command: 'getApps', write: false, standard: 'tv.getApps' },
+    { command: 'launchApp', write: true, standard: 'tv.launchApp' },
+    { command: 'remote', write: true, standard: 'tv.remote' },
+    { command: 'power', write: true, standard: 'tv.power' },
+    { command: 'setChannel', write: true, standard: 'tv.setChannel' },
     { command: 'wake', write: true },
     { command: 'scenes', write: false },
     { command: 'runScene', write: true },
@@ -31,18 +38,34 @@ export const COMMANDS: HelpCommand[] = [
 export const HELP = `ioBroker.samsung_tizen: controls a Samsung TV with Tizen (model year 2016 and newer): remote keys,
 apps, scenes (sequences of keys, apps and pauses from the settings), switching on and off. One instance controls one
 TV, the one in its settings; several TVs are several instances (samsung_tizen.0, samsung_tizen.1, ...).
+getApps, launchApp, remote, power and setChannel follow the shared catalog of commands for TVs (tv.getApps,
+tv.launchApp, tv.remote, tv.power, tv.setChannel; marked with standard in the commands list of this answer); the
+device parameter of the catalog is not needed (one TV per instance).
 
-Commands (sendTo samsung_tizen.0, or the instance of the TV): the answer is {} when done, else {error, code?}
-(e.g. the TV is off, does not answer within 5 s, or the token is not accepted).
+Commands (sendTo samsung_tizen.0, or the instance of the TV): the answer is {} when done, else {error, code?,
+reason?} (e.g. the TV is off, does not answer within 5 s, or the token is not accepted; reason NOT_CONNECTED).
 - apps {refresh?}: the known apps installed on the TV: {apps: [{key, name}]}, e.g. {key: "YOUTUBE", name:
   "YouTube"}. Known keys: YOUTUBE, NETFLIX, DISNEY_PLUS, PRIME_VIDEO, APPLE_TV, MAX, PARAMOUNT_PLUS, DAZN, JOYN,
   RTL_PLUS, MAGENTA_TV, ARD_MEDIATHEK, ZDF_MEDIATHEK, SPOTIFY, TWITCH, PLEX, BROWSER.
   The TV must be on; the list is kept, refresh true asks the TV again.
-- launchApp {app}: starts an app, app = a key from apps, e.g. "NETFLIX".
-- remote {key}: sends one key, a Samsung key code KEY_... in capitals: KEY_HOME, KEY_ENTER (ok), KEY_RETURN
+- getApps {refresh?}: the same in the form of the catalog: {apps: [{id, name}]}, id = the key.
+- launchApp {app}: starts an app, app = a key from apps, e.g. "NETFLIX", or its name ("Netflix", "prime video").
+  Not installed: {error, reason: NOT_FOUND, candidates: [names]}; several fit: reason AMBIGUOUS.
+- remote {key}: sends one key, a Samsung key code KEY_...: KEY_HOME, KEY_ENTER (ok), KEY_RETURN
   (back), KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_VOLUP, KEY_VOLDOWN, KEY_MUTE, KEY_CHUP, KEY_CHDOWN,
   KEY_0 ... KEY_9, KEY_SOURCE, KEY_HDMI, KEY_MENU, KEY_INFO, KEY_GUIDE, KEY_PLAY, KEY_PAUSE, KEY_STOP, KEY_FF,
-  KEY_REWIND, KEY_RED, KEY_GREEN, KEY_YELLOW, KEY_BLUE, KEY_POWER (toggles on/off).
+  KEY_REWIND, KEY_RED, KEY_GREEN, KEY_YELLOW, KEY_BLUE, KEY_POWER (toggles on/off); or a key name of the catalog:
+  up, down, left, right, ok, back, home, menu, play, pause, volumeUp, volumeDown, mute, channelUp, channelDown,
+  0-9 (also the names of the scenes: SELECT, EXIT, INFO, GUIDE, STOP, REWIND, FAST_FORWARD, SOURCE ...).
+  Unknown key: reason BAD_REQUEST.
+- power {on}: switches the TV on (true) or off (false) like the state powerOn, only if it is not in that state
+  yet; answers {ok: true, on} when the TV reached it, {ok: true, on, pending: true} if it takes longer than 15 s
+  (it goes on, up to about 35 s), else {error, reason} (NOT_CONNECTED: it did not come on). Needs the power state
+  polling of the settings; without it only on works (Wake-on-LAN, answer pending, not checked), off answers
+  reason NOT_SUPPORTED.
+- setChannel {channel}: a channel number (1-4 digits), sent as digit keys; the TV switches to it after the last
+  digit while it shows live TV (not inside an app). Answers {ok: true, channel}. Channel names: reason
+  NOT_SUPPORTED (the TV gives no channel list).
 - wake {mac?}: sends Wake-on-LAN to mac, default the MAC address of the settings (switches the TV on if it
   allows that).
 - scenes: the scenes of the settings: {scenes: [{id, name}]}.
@@ -61,8 +84,8 @@ States (samsung_tizen.0.*), written with ack false:
 How to talk to the user:
 - Which TV: one instance per TV. If there are several instances and the request names none, ask which TV
   (title or room of the instance); do not guess and do not reuse the one of an earlier request.
-- Keys, apps, scenes and switching act at once on a TV someone may be watching: only on the user's request.
-  KEY_POWER toggles: to switch on or off use powerOn or control.KEY_POWERON / control.KEY_POWEROFF.
+- Keys, apps, channels, scenes and switching act at once on a TV someone may be watching: only on the user's
+  request. KEY_POWER toggles: to switch on or off use power, powerOn or control.KEY_POWERON / KEY_POWEROFF.
 - Name apps by their name (Netflix), not by key; if an app is not in the answer of apps, tell the user it was
   not found on the TV (or the TV is off).
 - An error that the TV does not answer: it is off or unreachable; wake or powerOn can switch it on.`;

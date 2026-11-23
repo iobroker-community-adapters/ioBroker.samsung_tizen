@@ -115,6 +115,8 @@ The tab "Remote control" of the settings shows a remote control: power, Wake-on-
 ### 2.4. Messages for scripts and AI agents
 `sendTo('samsung_tizen.0', 'help', {})` answers a description of the messages and states of the adapter for AI agents (e.g. ioBroker.pi-agent) and script authors: `{ help, commands }`, where `commands` lists every message with `write` (whether it changes something). Scripts can use `apps` (the known apps installed on the TV), `launchApp` (`{ app: 'YOUTUBE' }`), `remote` (`{ key: 'KEY_HOME' }`), `wake`, `scenes` and `runScene` (`{ scene: '<id>' }`).
 
+`getApps`, `launchApp`, `remote`, `power` and `setChannel` follow the shared catalog of commands for TVs of ioBroker.assistant (`tv.getApps`, `tv.launchApp`, `tv.remote`, `tv.power`, `tv.setChannel`; `help` marks them with `standard`): `getApps` answers `{ apps: [{ id, name }] }`, `launchApp` also takes the name of an app (`{ app: 'Netflix' }`), `remote` also takes the key names of the catalog (`up`, `ok`, `back`, `volumeUp`, `channelDown`, `0`-`9` ...), `power` (`{ on: true }`) switches like the state `powerOn` and answers when the TV reached the state, and `setChannel` (`{ channel: 21 }`) sends the digits of a channel number. Errors answer `{ error, reason }` (`NOT_CONNECTED`, `NOT_FOUND`, `BAD_REQUEST`, `NOT_SUPPORTED`).
+
 ## Changelog
 <!--
 	Placeholder for the next version (at the beginning of the line):
@@ -122,6 +124,7 @@ The tab "Remote control" of the settings shows a remote control: power, Wake-on-
 -->
 ### **WORK IN PROGRESS**
 - (GermanBluefox) The pairing token is no longer written to the log (startup config, websocket URL, getToken)
+- (GermanBluefox) Added the standard commands of the shared catalog: tv.getApps, tv.launchApp (also by app name), tv.remote (also the key names of the catalog), tv.power and tv.setChannel (channel numbers); commands with an effect run without a callback too
 
 ### 2.2.0 (2026-11-19)
 * (GermanBluefox) Fixed the README structure (changelog section) (#321)

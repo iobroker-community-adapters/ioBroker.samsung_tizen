@@ -17,6 +17,7 @@ import { COMMANDS, HELP } from './lib/help';
 import { parseScene, runScene, sceneId } from './lib/scenes';
 import { type ConnectionParams, PairingError, pair, sendTestKey } from './lib/pairing';
 import { keys } from './lib/remotekeys';
+import { appOf, channelKeys, powerOf, reasonOf, remoteKeyOf } from './lib/standard';
 import type { TvEventMessage } from './lib/types';
 
 /** Name this client announces to the TV — shown in the TV's device connection manager */
@@ -39,6 +40,8 @@ const POWER_TIMEOUT = 20_000;
 const FRAME_POWER_OFF_HOLD = 3_000;
 /** Pause between two steps of a scene if the settings name none, in ms */
 const DEFAULT_SCENE_DELAY = 500;
+/** A message answers {ok, pending} if switching the TV takes longer (rule 9 of the shared catalog), in ms */
+const ANSWER_WAIT = 15_000;
 /** An IP address or a host name from the setup assistant - it ends up in a URL */
 const HOST_PATTERN = /^[A-Za-z0-9][A-Za-z0-9.-]{0,252}$/;
 
@@ -101,6 +104,9 @@ class SamsungTizen extends Adapter {
      * - `launchApp`: start the app `app` (a key of `TV_APPS`, e.g. `YOUTUBE`)
      * - `scenes`: the scenes of the settings, `runScene`: run the scene `scene` (its state ID)
      *
+     * The commands of the shared catalog of ioBroker.assistant (lib/standard.ts): `getApps` (tv.getApps),
+     * `launchApp` (tv.launchApp), `remote` (tv.remote), `power` (tv.power) and `setChannel` (tv.setChannel).
+     *
      * The setup assistant works with the data being entered, not with the saved configuration:
      * - `listTvs`: all TVs found, with name, model, MAC address and power state
      * - `deviceInfo`: the same for the TV at `ip`
@@ -108,7 +114,8 @@ class SamsungTizen extends Adapter {
      * - `testKey`: send `key` (default `KEY_INFO`) with `ip`, `protocol`, `port` and `token`
      */
     private async onMessage(obj: ioBroker.Message): Promise<void> {
-        if (!obj?.callback) {
+        // a command with an effect runs without a callback too
+        if (!obj?.command || (!obj.callback && !COMMANDS.find(c => c.command === obj.command)?.write)) {
             return;
         }
         const message = (obj.message ?? {}) as {
@@ -121,6 +128,8 @@ class SamsungTizen extends Adapter {
             app?: string;
             refresh?: boolean;
             scene?: string;
+            on?: unknown;
+            channel?: unknown;
         };
         let response: unknown;
 
@@ -144,10 +153,17 @@ class SamsungTizen extends Adapter {
                     response = { apps: apps.map(({ key, name }) => ({ key, name })) };
                     break;
                 }
+                case 'getApps': {
+                    // tv.getApps: apps in the form of the catalog, id = the key for launchApp
+                    const apps = await this.getInstalledApps(!!message.refresh);
+                    response = { apps: apps.map(({ key, name }) => ({ id: key, name })) };
+                    break;
+                }
                 case 'launchApp': {
-                    const app = (await this.getInstalledApps(false)).find(entry => entry.key === message.app);
-                    if (!app) {
-                        response = { error: `App ${message.app} is not installed on the TV` };
+                    // tv.launchApp: the key (as before) or the name of the app
+                    const app = appOf(await this.getInstalledApps(false), message.app);
+                    if ('error' in app) {
+                        response = app;
                         break;
                     }
                     await launchApp(this.config.ipAddress, app.appId);
@@ -232,14 +248,46 @@ class SamsungTizen extends Adapter {
                     break;
                 }
                 case 'remote': {
-                    const key = String(message.key ?? '');
-                    if (!KEY_PATTERN.test(key)) {
-                        response = { error: `Unknown key ${key}` };
+                    // tv.remote: a Samsung key code (as before) or a key name of the catalog (up, ok, volumeUp, ...)
+                    const key = remoteKeyOf(message.key);
+                    if (!key) {
+                        response = { error: `Unknown key ${String(message.key ?? '')}`, reason: 'BAD_REQUEST' };
                         break;
                     }
                     await this.sendKeyNow(key);
                     // no `result`: admin would show it in an alert after every key
                     response = {};
+                    break;
+                }
+                case 'power': {
+                    // tv.power: like the state powerOn
+                    const on = powerOf(message.on);
+                    response =
+                        on === undefined
+                            ? { error: 'on must be true or false', reason: 'BAD_REQUEST' }
+                            : await this.powerMessage(on);
+                    break;
+                }
+                case 'setChannel': {
+                    // tv.setChannel: a channel number through the digit keys
+                    const digits = channelKeys(message.channel);
+                    if (!digits) {
+                        response = {
+                            error: 'Only a channel number can be set (the TV gives no channel list)',
+                            reason: 'NOT_SUPPORTED',
+                        };
+                        break;
+                    }
+                    await runScene(
+                        digits.map(key => ({ type: 'key' as const, key })),
+                        DEFAULT_SCENE_DELAY,
+                        {
+                            sendKey: key => this.sendKeyNow(key),
+                            launchApp: () => Promise.resolve(),
+                            sleep: ms => new Promise(resolve => this.setTimeout(resolve, ms)),
+                        },
+                    );
+                    response = { ok: true, channel: digits.map(key => key.slice(4)).join('') };
                     break;
                 }
                 case 'wake': {
@@ -257,13 +305,51 @@ class SamsungTizen extends Adapter {
                     response = { error: `Unknown command ${obj.command}` };
             }
         } catch (e) {
+            const reason = reasonOf((e as Error).message);
             response =
                 e instanceof PairingError
                     ? { error: e.message, code: e.code }
-                    : { error: (e as Error).message, code: 'protocol' };
+                    : { error: (e as Error).message, code: 'protocol', ...(reason ? { reason } : {}) };
         }
 
-        this.sendTo(obj.from, obj.command, response, obj.callback);
+        if (obj.callback) {
+            this.sendTo(obj.from, obj.command, response, obj.callback);
+        }
+    }
+
+    /**
+     * tv.power: switch the TV like the state powerOn and answer when it is reached; if that takes longer than
+     * ANSWER_WAIT, answer {ok, pending} and go on. Without the power state polling of the settings the TV can only
+     * be switched on, by Wake-on-LAN, and the state is not checked.
+     */
+    private async powerMessage(on: boolean): Promise<Record<string, unknown>> {
+        if (!HOST_PATTERN.test(this.config.ipAddress)) {
+            return { error: 'No IP address of the TV in the settings', reason: 'NOT_CONNECTED' };
+        }
+        if (!(parseFloat(this.config.pollingInterval) > 0)) {
+            const mac = this.config.macAddress;
+            if (!on || !mac || mac === '0') {
+                return {
+                    error: 'Switch on the power state polling in the settings (and set the MAC address to switch on)',
+                    reason: 'NOT_SUPPORTED',
+                };
+            }
+            wake(mac);
+            return { ok: true, on, pending: true };
+        }
+        let timer: ioBroker.Timeout | undefined;
+        const switching = this.setPower(on);
+        const pending = new Promise<'pending'>(resolve => {
+            timer = this.setTimeout(() => resolve('pending'), ANSWER_WAIT);
+        });
+        const reached = await Promise.race([switching, pending]).finally(() => this.clearTimeout(timer));
+        if (reached === 'pending') {
+            switching.catch((e: unknown) => this.log.error(`power: ${(e as Error).message}`));
+            return { ok: true, on, pending: true };
+        }
+        return reached
+            ? { ok: true, on }
+            : { error: `The TV did not switch ${on ? 'on' : 'off'}`, reason: on ? 'NOT_CONNECTED' : 'TIMEOUT' };
     }
 
     /** The scenes of the settings with a valid name, keyed by their state ID */
@@ -562,10 +648,12 @@ class SamsungTizen extends Adapter {
      * off a TV that is just starting.
      * Off: a short KEY_POWER only toggles The Frame between TV and art mode; held for 3 s it switches off,
      * as the user manual of The Frame describes for the remote control.
+     *
+     * @returns whether the TV reached the state
      */
-    private async setPower(on: boolean): Promise<void> {
+    private async setPower(on: boolean): Promise<boolean> {
         if ((await this.getPowerStateInstant()) === on) {
-            return;
+            return true;
         }
         if (on) {
             const mac = this.config.macAddress;
@@ -574,7 +662,7 @@ class SamsungTizen extends Adapter {
                 wake(mac);
                 this.log.info('powerOn: Wake-on-LAN sent');
                 if (await this.waitForPower(true, POWER_ON_WOL_WAIT)) {
-                    return;
+                    return true;
                 }
             }
             this.log.info('powerOn: sending KEY_POWER');
@@ -583,8 +671,9 @@ class SamsungTizen extends Adapter {
             );
             if (!(await this.waitForPower(true, POWER_TIMEOUT))) {
                 this.log.warn('powerOn: the TV did not switch on. Is "Power on with mobile" enabled on the TV?');
+                return false;
             }
-            return;
+            return true;
         }
         const frameTv =
             HOST_PATTERN.test(this.config.ipAddress) && !!(await readDeviceInfo(this.config.ipAddress))?.frameTv;
@@ -598,7 +687,9 @@ class SamsungTizen extends Adapter {
         this.log.info(`powerOn: KEY_POWER ${frameTv ? 'held' : 'sent'} to switch off`);
         if (!(await this.waitForPower(false, POWER_TIMEOUT))) {
             this.log.warn('powerOn: the TV did not switch off');
+            return false;
         }
+        return true;
     }
 
     /** Ask the power state every 1.5 s until it is `target` or `timeout` ms are over */
