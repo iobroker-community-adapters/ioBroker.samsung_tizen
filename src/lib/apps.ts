@@ -83,7 +83,11 @@ export async function findInstalledApps(ip: string): Promise<InstalledTvApp[]> {
     // Some TVs accept only one REST request at a time; parallel requests make discovery incomplete.
     for (const [key, app] of Object.entries(SAMSUNG_APPS)) {
         for (const appId of app.ids) {
-            if ((await appRequest(ip, appId, 'GET')) === 200) {
+            const status = await appRequest(ip, appId, 'GET');
+            if (status === 0) {
+                return found;
+            }
+            if (status === 200) {
                 found.push({ key, name: app.name, appId });
                 break;
             }

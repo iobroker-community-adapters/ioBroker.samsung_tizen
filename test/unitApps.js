@@ -58,4 +58,42 @@ describe('apps', () => {
             http.request = originalRequest;
         }
     });
+
+    it('stops discovery when the TV does not answer', async () => {
+        const originalRequest = http.request;
+        const requestedIds = [];
+
+        http.request = (options, callback) => {
+            const request = new EventEmitter();
+            request.end = () => {
+                const appId = decodeURIComponent(options.path.split('/').pop());
+                requestedIds.push(appId);
+
+                setImmediate(() => {
+                    if (appId === '3201907018807') {
+                        request.emit('error', new Error('TV does not answer'));
+                        return;
+                    }
+                    const response = new EventEmitter();
+                    response.statusCode = 200;
+                    response.resume = () => {};
+                    callback(response);
+                    setImmediate(() => response.emit('end'));
+                });
+            };
+            request.destroy = () => {};
+            return request;
+        };
+
+        try {
+            const apps = await findInstalledApps('192.0.2.1');
+            assert.deepStrictEqual(
+                apps.map(app => ({ key: app.key, appId: app.appId })),
+                [{ key: 'YOUTUBE', appId: '111299001912' }],
+            );
+            assert.deepStrictEqual(requestedIds, ['111299001912', '3201907018807']);
+        } finally {
+            http.request = originalRequest;
+        }
+    });
 });
