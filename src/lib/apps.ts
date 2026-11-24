@@ -79,17 +79,21 @@ function appRequest(ip: string, appId: string, method: 'GET' | 'POST', timeout =
  * @returns the installed apps in the order of `SAMSUNG_APPS`; empty if the TV does not answer
  */
 export async function findInstalledApps(ip: string): Promise<InstalledTvApp[]> {
-    const found = await Promise.all(
-        Object.entries(SAMSUNG_APPS).map(async ([key, app]) => {
-            for (const appId of app.ids) {
-                if ((await appRequest(ip, appId, 'GET')) === 200) {
-                    return { key, name: app.name, appId };
-                }
+    const found: InstalledTvApp[] = [];
+    // Some TVs accept only one REST request at a time; parallel requests make discovery incomplete.
+    for (const [key, app] of Object.entries(SAMSUNG_APPS)) {
+        for (const appId of app.ids) {
+            const status = await appRequest(ip, appId, 'GET');
+            if (status === 0) {
+                return found;
             }
-            return null;
-        }),
-    );
-    return found.filter((app): app is InstalledTvApp => !!app);
+            if (status === 200) {
+                found.push({ key, name: app.name, appId });
+                break;
+            }
+        }
+    }
+    return found;
 }
 
 /**
